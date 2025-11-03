@@ -30,11 +30,22 @@ export function Header() {
   const headerBlur = useTransform(scrollY, [0, 100], [0, 10])
 
   React.useEffect(() => {
-    // Initialize theme from localStorage
+    // Initialize theme from localStorage or system preference
     const savedTheme = localStorage.getItem('theme') as 'light' | 'dark' | null
+    const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
+    
     if (savedTheme) {
       setTheme(savedTheme)
       document.documentElement.classList.toggle('dark', savedTheme === 'dark')
+    } else if (systemPrefersDark) {
+      // If no saved preference, use system preference
+      setTheme('dark')
+      document.documentElement.classList.add('dark')
+      localStorage.setItem('theme', 'dark')
+    } else {
+      // Default to light
+      setTheme('light')
+      document.documentElement.classList.remove('dark')
     }
   }, [])
 
@@ -167,7 +178,27 @@ export function Header() {
               {item.name}
             </Link>
           ))}
-          <div className="pt-4 border-t border-border">
+          <div className="pt-4 border-t border-border space-y-3">
+            {/* Theme Toggle for Mobile */}
+            <Button
+              variant="outline"
+              size="lg"
+              onClick={toggleTheme}
+              aria-label="Toggle theme"
+              className="w-full flex items-center justify-center gap-2"
+            >
+              {theme === 'light' ? (
+                <>
+                  <Moon className="h-5 w-5" />
+                  Switch to Dark Mode
+                </>
+              ) : (
+                <>
+                  <Sun className="h-5 w-5" />
+                  Switch to Light Mode
+                </>
+              )}
+            </Button>
             <Button variant="luxury" size="lg" className="w-full" asChild>
               <Link href="/contact" onClick={() => setMobileMenuOpen(false)}>
                 Get Started
