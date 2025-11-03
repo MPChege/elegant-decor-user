@@ -115,7 +115,7 @@ export default function HomePage() {
             className="flex flex-col sm:flex-row items-center justify-center gap-4"
           >
             <Button variant="luxury" size="xl" asChild>
-              <Link href="/contact">
+              <Link href="/consultation">
                 Start Your Project
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Link>
@@ -376,7 +376,7 @@ export default function HomePage() {
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Button variant="luxury" size="xl" asChild>
-                <Link href="/contact">
+                <Link href="/consultation">
                   Book a Consultation
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>

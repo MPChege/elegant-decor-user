@@ -239,7 +239,7 @@ export default function ServicesPage() {
               Schedule a consultation with our design team to discuss your vision.
             </p>
             <Button variant="luxury" size="xl" asChild>
-              <Link href="/contact">
+              <Link href="/consultation">
                 Book Consultation
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Link>

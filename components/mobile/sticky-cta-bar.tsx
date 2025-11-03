@@ -44,7 +44,7 @@ export function StickyCTABar() {
             asChild
             onClick={handleCTAClick}
           >
-            <Link href="/contact">
+            <Link href="/consultation">
               <MessageCircle className="mr-2 h-4 w-4" />
               Book Consultation
             </Link>

@@ -12,10 +12,10 @@ const buttonVariants = cva(
         destructive:
           'bg-destructive text-destructive-foreground hover:bg-destructive/90',
         outline:
-          'border-2 border-primary/70 bg-transparent text-foreground dark:text-foreground hover:bg-primary hover:text-primary-foreground hover:border-primary shadow-md dark:border-primary/60 font-medium',
+          'border-2 border-primary bg-background text-foreground dark:border-primary/60 dark:text-foreground hover:bg-primary hover:text-white hover:border-primary shadow-lg dark:shadow-md font-semibold',
         secondary:
-          'bg-secondary text-secondary-foreground hover:bg-secondary/80',
-        ghost: 'text-foreground dark:text-foreground hover:bg-accent hover:text-accent-foreground font-medium',
+          'bg-secondary text-secondary-foreground hover:bg-secondary/80 shadow-md',
+        ghost: 'text-foreground dark:text-foreground hover:bg-primary/10 hover:text-primary font-semibold border border-transparent hover:border-primary/20',
         link: 'text-primary underline-offset-4 hover:underline font-medium',
         luxury: 'bg-luxury-gradient text-white hover:shadow-luxury-glow border-luxury shadow-luxury-md font-semibold',
       },
