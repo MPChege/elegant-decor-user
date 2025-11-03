@@ -159,7 +159,7 @@ export function Footer() {
                 type="submit"
                 variant="luxury"
                 size="sm"
-                className="w-full"
+                className="w-full bg-primary text-white font-bold tracking-wide shadow-xl hover:shadow-2xl hover:scale-105 border-2 border-primary"
                 disabled={isSubmitting}
               >
                 {isSubmitting ? 'Subscribing...' : 'Subscribe'}

@@ -385,7 +385,7 @@ export default function ConsultationPage() {
                         type="submit"
                         variant="luxury"
                         size="lg"
-                        className="flex-1"
+                        className="flex-1 bg-primary text-white font-bold tracking-wide shadow-2xl hover:shadow-3xl hover:scale-105 border-2 border-primary"
                         disabled={isSubmitting}
                       >
                         {isSubmitting ? (
@@ -401,6 +401,7 @@ export default function ConsultationPage() {
                         type="button"
                         variant="outline"
                         size="lg"
+                        className="bg-white text-primary border-2 border-primary font-bold shadow-xl hover:bg-primary hover:text-white hover:shadow-2xl hover:scale-105"
                         asChild
                       >
                         <Link href="/contact">Or Contact Us Directly</Link>

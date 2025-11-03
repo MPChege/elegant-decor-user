@@ -132,8 +132,13 @@ export function Header() {
             </Button>
 
             {/* CTA Button */}
-            <Button variant="luxury" size="sm" className="hidden md:flex" asChild>
-              <Link href="/contact">Get Started</Link>
+            <Button 
+              variant="luxury" 
+              size="sm" 
+              className="hidden md:flex bg-primary text-white font-bold tracking-wide shadow-xl hover:shadow-2xl hover:scale-105 border-2 border-primary"
+              asChild
+            >
+              <Link href="/consultation">Get Started</Link>
             </Button>
 
             {/* Mobile Menu Toggle */}

@@ -114,13 +114,23 @@ export default function HomePage() {
             transition={{ duration: 0.8, delay: 0.8 }}
             className="flex flex-col sm:flex-row items-center justify-center gap-4"
           >
-            <Button variant="luxury" size="xl" asChild>
+            <Button 
+              variant="luxury" 
+              size="xl" 
+              className="bg-primary text-white font-bold tracking-wide shadow-2xl hover:shadow-3xl hover:scale-105 border-2 border-primary"
+              asChild
+            >
               <Link href="/consultation">
                 Start Your Project
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Link>
             </Button>
-            <Button variant="outline" size="xl" asChild>
+            <Button 
+              variant="outline" 
+              size="xl"
+              className="bg-white text-primary border-2 border-primary font-bold shadow-xl hover:bg-primary hover:text-white hover:shadow-2xl hover:scale-105"
+              asChild
+            >
               <Link href="/work">View Our Work</Link>
             </Button>
           </motion.div>
@@ -228,7 +238,12 @@ export default function HomePage() {
             viewport={{ once: true }}
             className="text-center mt-12"
           >
-            <Button variant="luxury" size="lg" asChild>
+            <Button 
+              variant="luxury" 
+              size="lg"
+              className="bg-primary text-white font-bold tracking-wide shadow-2xl hover:shadow-3xl hover:scale-105 border-2 border-primary"
+              asChild
+            >
               <Link href="/services">
                 Explore All Services
                 <ArrowRight className="ml-2 h-4 w-4" />
@@ -340,7 +355,12 @@ export default function HomePage() {
                 ))}
               </div>
 
-              <Button variant="luxury" size="lg" className="mt-8" asChild>
+              <Button 
+                variant="luxury" 
+                size="lg"
+                className="mt-8 bg-primary text-white font-bold tracking-wide shadow-2xl hover:shadow-3xl hover:scale-105 border-2 border-primary"
+                asChild
+              >
                 <Link href="/about">Learn More About Us</Link>
               </Button>
             </motion.div>
@@ -375,13 +395,23 @@ export default function HomePage() {
               expertise.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Button variant="luxury" size="xl" asChild>
+              <Button 
+                variant="luxury" 
+                size="xl"
+                className="bg-primary text-white font-bold tracking-wide shadow-2xl hover:shadow-3xl hover:scale-105 border-2 border-primary"
+                asChild
+              >
                 <Link href="/consultation">
                   Book a Consultation
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>
               </Button>
-              <Button variant="outline" size="xl" asChild>
+              <Button 
+                variant="outline" 
+                size="xl"
+                className="bg-white text-primary border-2 border-primary font-bold shadow-xl hover:bg-primary hover:text-white hover:shadow-2xl hover:scale-105"
+                asChild
+              >
                 <Link href="/products">Browse Products</Link>
               </Button>
             </div>

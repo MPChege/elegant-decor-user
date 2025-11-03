@@ -290,7 +290,12 @@ export default function AboutPage() {
             <p className="text-lg text-muted-foreground mb-8">
               Ready to transform your space? Get in touch with our team.
             </p>
-            <Button variant="luxury" size="xl" asChild>
+            <Button 
+              variant="luxury" 
+              size="xl"
+              className="bg-primary text-white font-bold tracking-wide shadow-2xl hover:shadow-3xl hover:scale-105 border-2 border-primary"
+              asChild
+            >
               <Link href="/contact">
                 Contact Us
                 <ArrowRight className="ml-2 h-5 w-5" />

@@ -65,6 +65,25 @@
 }
 
 @layer utilities {
+  /* Enhanced Button Visibility in Light Mode */
+  .btn-light-mode {
+    @apply bg-primary text-white font-bold tracking-wide shadow-2xl;
+    border: 2px solid hsl(352, 68%, 50%);
+  }
+  
+  .btn-light-mode:hover {
+    @apply bg-primary/90 shadow-3xl scale-105;
+  }
+  
+  .btn-outline-light {
+    @apply bg-white text-primary border-2 border-primary font-bold;
+    box-shadow: 0 4px 20px rgba(220, 38, 38, 0.3);
+  }
+  
+  .btn-outline-light:hover {
+    @apply bg-primary text-white shadow-2xl scale-105;
+  }
+
   /* Glassmorphism */
   .glass-light {
     background: rgba(255, 255, 255, 0.7);

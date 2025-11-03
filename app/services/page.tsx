@@ -238,7 +238,12 @@ export default function ServicesPage() {
             <p className="text-lg text-muted-foreground mb-8">
               Schedule a consultation with our design team to discuss your vision.
             </p>
-            <Button variant="luxury" size="xl" asChild>
+            <Button 
+              variant="luxury" 
+              size="xl"
+              className="bg-primary text-white font-bold tracking-wide shadow-2xl hover:shadow-3xl hover:scale-105 border-2 border-primary"
+              asChild
+            >
               <Link href="/consultation">
                 Book Consultation
                 <ArrowRight className="ml-2 h-5 w-5" />

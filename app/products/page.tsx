@@ -239,8 +239,12 @@ export default function ProductsPage() {
                   </CardContent>
                   <CardFooter className="p-6 pt-0">
                     <Button
-                      variant="luxury"
-                      className="w-full"
+                      variant={product.inStock ? "luxury" : "secondary"}
+                      className={`w-full font-bold tracking-wide ${
+                        product.inStock 
+                          ? 'bg-primary text-white shadow-xl hover:shadow-2xl hover:scale-105 border-2 border-primary' 
+                          : 'bg-muted text-muted-foreground cursor-not-allowed'
+                      }`}
                       disabled={!product.inStock}
                       asChild
                     >

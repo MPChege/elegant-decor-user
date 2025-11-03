@@ -198,7 +198,7 @@ export default function ContactPage() {
                   type="submit"
                   variant="luxury"
                   size="lg"
-                  className="w-full"
+                  className="w-full bg-primary text-white font-bold tracking-wide shadow-2xl hover:shadow-3xl hover:scale-105 border-2 border-primary"
                   disabled={isSubmitting}
                 >
                   {isSubmitting ? (
