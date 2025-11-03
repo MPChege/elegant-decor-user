@@ -2,6 +2,7 @@
 
 import * as React from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { motion, useScroll, useTransform } from 'framer-motion'
 import { Menu, X, Sun, Moon } from 'lucide-react'
@@ -69,14 +70,41 @@ export function Header() {
       >
         <nav className="container flex items-center justify-between py-4 px-6">
           {/* Logo */}
-          <Link href="/" className="flex items-center space-x-2">
+          <Link href="/" className="flex items-center space-x-3">
             <motion.div
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5 }}
-              className="font-playfair text-2xl font-bold text-luxury-gradient"
+              className="relative h-16 md:h-20 w-auto"
             >
-              Elegant Tiles
+              {/* Light Mode Logo (white background) - visible on light backgrounds */}
+              <Image
+                src="/etd logo.jpeg"
+                alt="Elegant Tiles & Décor Centre"
+                width={240}
+                height={80}
+                className={cn(
+                  "h-16 md:h-20 w-auto object-contain transition-all duration-300",
+                  theme === 'light' 
+                    ? 'opacity-100 relative' 
+                    : 'opacity-0 absolute inset-0 pointer-events-none'
+                )}
+                priority
+              />
+              {/* Dark Mode Logo (transparent background) - visible on dark backgrounds */}
+              <Image
+                src="/etd_logo-removebg-preview.png"
+                alt="Elegant Tiles & Décor Centre"
+                width={240}
+                height={80}
+                className={cn(
+                  "h-16 md:h-20 w-auto object-contain transition-all duration-300",
+                  theme === 'dark' 
+                    ? 'opacity-100 relative' 
+                    : 'opacity-0 absolute inset-0 pointer-events-none'
+                )}
+                priority
+              />
             </motion.div>
           </Link>
 

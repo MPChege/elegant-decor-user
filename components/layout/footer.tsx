@@ -2,6 +2,7 @@
 
 import * as React from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { motion } from 'framer-motion'
 import {
   Facebook,
@@ -15,6 +16,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Separator } from '@/components/ui/separator'
+import { cn } from '@/lib/utils'
 
 const footerLinks = {
   company: [
@@ -46,6 +48,22 @@ const socialLinks = [
 export function Footer() {
   const [email, setEmail] = React.useState('')
   const [isSubmitting, setIsSubmitting] = React.useState(false)
+  const [theme, setTheme] = React.useState<'light' | 'dark'>('light')
+
+  React.useEffect(() => {
+    // Get theme from document
+    const checkTheme = () => {
+      setTheme(document.documentElement.classList.contains('dark') ? 'dark' : 'light')
+    }
+    checkTheme()
+    // Listen for theme changes
+    const observer = new MutationObserver(checkTheme)
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['class'],
+    })
+    return () => observer.disconnect()
+  }, [])
 
   const handleNewsletterSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -68,9 +86,38 @@ export function Footer() {
               viewport={{ once: true }}
               transition={{ duration: 0.5 }}
             >
-              <h3 className="font-playfair text-2xl font-bold text-luxury-gradient mb-4">
-                Elegant Tiles & Décor
-              </h3>
+              <Link href="/" className="inline-block mb-4">
+                <div className="relative h-20 md:h-24 w-auto">
+                  {/* Light Mode Logo (white background) - visible on light backgrounds */}
+                  <Image
+                    src="/etd logo.jpeg"
+                    alt="Elegant Tiles & Décor Centre"
+                    width={280}
+                    height={100}
+                    className={cn(
+                      "h-20 md:h-24 w-auto object-contain transition-all duration-300",
+                      theme === 'light' 
+                        ? 'opacity-100 relative' 
+                        : 'opacity-0 absolute inset-0 pointer-events-none'
+                    )}
+                    priority
+                  />
+                  {/* Dark Mode Logo (transparent background) - visible on dark backgrounds */}
+                  <Image
+                    src="/etd_logo-removebg-preview.png"
+                    alt="Elegant Tiles & Décor Centre"
+                    width={280}
+                    height={100}
+                    className={cn(
+                      "h-20 md:h-24 w-auto object-contain transition-all duration-300",
+                      theme === 'dark' 
+                        ? 'opacity-100 relative' 
+                        : 'opacity-0 absolute inset-0 pointer-events-none'
+                    )}
+                    priority
+                  />
+                </div>
+              </Link>
               <p className="text-muted-foreground mb-6">
                 Award-winning interior design and décor company specializing in
                 luxury tiles and custom design projects.
