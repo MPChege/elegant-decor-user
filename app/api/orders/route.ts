@@ -24,15 +24,15 @@ export async function POST(request: NextRequest) {
       },
       { status: 201 }
     );
-  } catch (error: any) {
+  } catch (error) {
     console.error('Error creating order:', error);
 
-    if (error.name === 'ZodError') {
+    if (error && typeof error === 'object' && 'name' in error && error.name === 'ZodError') {
       return NextResponse.json(
         {
           success: false,
           error: 'Validation error',
-          details: error.errors,
+          details: 'errors' in error ? error.errors : [],
         },
         { status: 400 }
       );
@@ -41,7 +41,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(
       {
         success: false,
-        error: error.message || 'Failed to create order',
+        error: error instanceof Error ? error.message : 'Failed to create order',
       },
       { status: 500 }
     );
@@ -73,13 +73,13 @@ export async function GET(request: NextRequest) {
       success: true,
       data: orders,
     });
-  } catch (error: any) {
+  } catch (error) {
     console.error('Error fetching orders:', error);
 
     return NextResponse.json(
       {
         success: false,
-        error: error.message || 'Failed to fetch orders',
+        error: error instanceof Error ? error.message : 'Failed to fetch orders',
       },
       { status: 500 }
     );

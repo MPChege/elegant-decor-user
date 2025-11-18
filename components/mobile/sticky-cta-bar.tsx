@@ -2,7 +2,7 @@
 
 import * as React from 'react'
 import Link from 'next/link'
-import { motion, useScroll, useTransform } from 'framer-motion'
+import { motion, useScroll } from 'framer-motion'
 import { Phone, Mail, MessageCircle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { triggerHaptic } from '@/lib/utils'

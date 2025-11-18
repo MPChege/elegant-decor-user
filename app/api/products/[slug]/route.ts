@@ -6,20 +6,23 @@ import { productsAPI } from '@elegant/shared/lib/api';
  * Get product by slug
  */
 export async function GET(
-  request: NextRequest,
-  { params }: { params: { slug: string } }
+  _request: NextRequest,
+  context: { params: Promise<{ slug: string }> }
 ) {
   try {
-    const product = await productsAPI.getBySlug(params.slug);
+    const { slug } = await context.params;
+    const product = await productsAPI.getBySlug(slug);
 
     return NextResponse.json({
       success: true,
       data: product,
     });
-  } catch (error: any) {
+  } catch (error) {
     console.error('Error fetching product:', error);
 
-    if (error.message?.includes('not found')) {
+    const errorMessage = error instanceof Error ? error.message : '';
+
+    if (errorMessage.includes('not found')) {
       return NextResponse.json(
         {
           success: false,
@@ -32,7 +35,7 @@ export async function GET(
     return NextResponse.json(
       {
         success: false,
-        error: error.message || 'Failed to fetch product',
+        error: errorMessage || 'Failed to fetch product',
       },
       { status: 500 }
     );

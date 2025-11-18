@@ -28,8 +28,8 @@ export function GlobalSearch() {
   const [results, setResults] = React.useState<SearchResult[]>([])
   const [recentSearches, setRecentSearches] = React.useState<string[]>([])
 
-  // Mock search data
-  const mockData: SearchResult[] = [
+  // Mock search data - memoized to prevent re-renders
+  const mockData: SearchResult[] = React.useMemo(() => [
     {
       id: '1',
       title: 'Italian Carrara Marble',
@@ -58,7 +58,7 @@ export function GlobalSearch() {
       type: 'page',
       url: '/services',
     },
-  ]
+  ], [])
 
   // Keyboard shortcut
   React.useEffect(() => {
@@ -88,7 +88,7 @@ export function GlobalSearch() {
     } else {
       setResults([])
     }
-  }, [query])
+  }, [query, mockData])
 
   const handleSelect = (result: SearchResult) => {
     // Save to recent searches
@@ -197,7 +197,7 @@ export function GlobalSearch() {
                   animate={{ opacity: 1 }}
                   className="p-8 text-center text-muted-foreground"
                 >
-                  No results found for "{query}"
+                  No results found for &quot;{query}&quot;
                 </motion.div>
               ) : (
                 <motion.div

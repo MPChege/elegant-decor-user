@@ -241,7 +241,7 @@ export default function ApproachPage() {
               Experience Our Approach
             </h2>
             <p className="text-lg text-muted-foreground mb-8">
-              Let's start your journey to exceptional design.
+              Let&apos;s start your journey to exceptional design.
             </p>
             <Button variant="luxury" size="xl" asChild>
               <Link href="/contact">

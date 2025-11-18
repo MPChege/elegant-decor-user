@@ -4,7 +4,6 @@ import * as React from 'react'
 import { motion, useScroll } from 'framer-motion'
 import { ArrowUp } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { smoothScrollTo } from '@/lib/utils'
 
 /**
  * Scroll to Top Button

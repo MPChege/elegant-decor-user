@@ -19,7 +19,6 @@ export function LuxuryLayout({
   children,
   className,
   ambient = true,
-  parallax = false,
 }: LuxuryLayoutProps) {
   return (
     <div className={cn('relative min-h-screen', className)}>

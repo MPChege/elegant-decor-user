@@ -57,28 +57,29 @@ const timeline = [
   },
 ]
 
-const team = [
-  {
-    name: 'Sarah Kamau',
-    role: 'Creative Director',
-    bio: '15+ years in luxury interior design',
-  },
-  {
-    name: 'David Ochieng',
-    role: 'Lead Designer',
-    bio: 'Award-winning architectural designer',
-  },
-  {
-    name: 'Amina Hassan',
-    role: 'Project Manager',
-    bio: 'Expert in seamless project execution',
-  },
-  {
-    name: 'James Mwangi',
-    role: 'Senior Consultant',
-    bio: 'Specialist in luxury residential design',
-  },
-]
+// Team data - reserved for future team section
+// const team = [
+//   {
+//     name: 'Sarah Kamau',
+//     role: 'Creative Director',
+//     bio: '15+ years in luxury interior design',
+//   },
+//   {
+//     name: 'David Ochieng',
+//     role: 'Lead Designer',
+//     bio: 'Award-winning architectural designer',
+//   },
+//   {
+//     name: 'Amina Hassan',
+//     role: 'Project Manager',
+//     bio: 'Expert in seamless project execution',
+//   },
+//   {
+//     name: 'James Mwangi',
+//     role: 'Senior Consultant',
+//     bio: 'Specialist in luxury residential design',
+//   },
+// ]
 
 export default function AboutPage() {
   return (
@@ -136,7 +137,7 @@ export default function AboutPage() {
                   commitment to excellence and innovation.
                 </p>
                 <p>
-                  Today, we've completed over 500 projects, earned numerous
+                  Today, we&apos;ve completed over 500 projects, earned numerous
                   industry awards, and built lasting relationships with clients
                   who trust us to transform their spaces into extraordinary
                   environments.
@@ -264,7 +265,7 @@ export default function AboutPage() {
             className="max-w-3xl mx-auto text-center"
           >
             <h2 className="font-playfair text-4xl md:text-5xl font-bold mb-6">
-              Let's Create Something Beautiful
+              Let&apos;s Create Something Beautiful
             </h2>
             <p className="text-lg text-muted-foreground mb-8">
               Ready to transform your space? Get in touch with our team.

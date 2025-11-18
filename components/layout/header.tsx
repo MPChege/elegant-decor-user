@@ -37,8 +37,8 @@ export function Header() {
   const { scrollY } = useScroll()
   const currentBackground = headerBackgrounds[pathname] ?? headerBackgrounds['/']
   
-  // Header background opacity based on scroll
-  const headerOpacity = useTransform(scrollY, [0, 100], [0, 1])
+  // Header background opacity based on scroll - reserved for future feature
+  // const headerOpacity = useTransform(scrollY, [0, 100], [0, 1])
   const headerBlur = useTransform(scrollY, [0, 100], [0, 10])
 
   React.useEffect(() => {

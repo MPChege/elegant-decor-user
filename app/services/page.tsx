@@ -245,7 +245,7 @@ export default function ServicesPage() {
           >
             <Clock className="h-12 w-12 text-primary mx-auto mb-6" />
             <h2 className="font-playfair text-4xl md:text-5xl font-bold mb-6">
-              Let's Start Your Project
+              Let&apos;s Start Your Project
             </h2>
             <p className="text-lg text-muted-foreground mb-8">
               Schedule a consultation with our design team to discuss your vision.

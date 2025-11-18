@@ -24,15 +24,15 @@ export async function POST(request: NextRequest) {
       },
       { status: 201 }
     );
-  } catch (error: any) {
+  } catch (error) {
     console.error('Error creating inquiry:', error);
 
-    if (error.name === 'ZodError') {
+    if (error && typeof error === 'object' && 'name' in error && error.name === 'ZodError') {
       return NextResponse.json(
         {
           success: false,
           error: 'Validation error',
-          details: error.errors,
+          details: 'errors' in error ? error.errors : [],
         },
         { status: 400 }
       );
@@ -41,7 +41,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(
       {
         success: false,
-        error: error.message || 'Failed to send message',
+        error: error instanceof Error ? error.message : 'Failed to send message',
       },
       { status: 500 }
     );

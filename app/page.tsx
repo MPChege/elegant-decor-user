@@ -4,12 +4,11 @@ import * as React from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { motion, useScroll, useTransform } from 'framer-motion'
-import { ArrowRight, Sparkles, Award, Users, CheckCircle } from 'lucide-react'
+import { ArrowRight, Sparkles, CheckCircle } from 'lucide-react'
 import { LuxuryLayout } from '@/components/layout/luxury-layout'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { cn } from '@/lib/utils'
 
 const services = [
   {
@@ -575,7 +574,7 @@ export default function HomePage() {
               Ready to Transform Your Space?
             </h2>
             <p className="text-lg text-muted-foreground mb-8">
-              Let's bring your vision to life with our award-winning design
+              Let&apos;s bring your vision to life with our award-winning design
               expertise.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">

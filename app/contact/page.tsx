@@ -78,8 +78,8 @@ export default function ContactPage() {
       setTimeout(() => {
         setSubmitSuccess(false)
       }, 5000)
-    } catch (error: any) {
-      setSubmitError(error.message)
+    } catch (error) {
+      setSubmitError(error instanceof Error ? error.message : 'An unexpected error occurred')
     } finally {
       setIsSubmitting(false)
     }
@@ -115,7 +115,7 @@ export default function ContactPage() {
               Get In <span className="text-luxury-gradient">Touch</span>
             </h1>
             <p className="text-lg md:text-xl text-white/85">
-              Let's discuss how we can transform your space into something
+              Let&apos;s discuss how we can transform your space into something
               extraordinary.
             </p>
           </motion.div>
@@ -175,7 +175,7 @@ export default function ContactPage() {
                 {submitSuccess && (
                   <div className="p-4 rounded-lg bg-green-50 border border-green-200">
                     <p className="text-sm text-green-800 font-medium">
-                      ✓ Message sent successfully! We'll get back to you soon.
+                      ✓ Message sent successfully! We&apos;ll get back to you soon.
                     </p>
                   </div>
                 )}

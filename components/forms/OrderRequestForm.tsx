@@ -72,8 +72,8 @@ export function OrderRequestForm({ product, onSuccess, onCancel }: OrderRequestF
         setSubmitSuccess(false);
         onSuccess?.();
       }, 3000);
-    } catch (error: any) {
-      setSubmitError(error.message);
+    } catch (error) {
+      setSubmitError(error instanceof Error ? error.message : 'Failed to submit order');
     } finally {
       setIsSubmitting(false);
     }

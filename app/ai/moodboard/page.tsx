@@ -1,8 +1,9 @@
 'use client'
 
 import * as React from 'react'
+import Image from 'next/image'
 import { motion } from 'framer-motion'
-import { Upload, Sparkles, Download, RefreshCw, Loader2 } from 'lucide-react'
+import { Upload, Sparkles, Download, Loader2 } from 'lucide-react'
 import { LuxuryLayout } from '@/components/layout/luxury-layout'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -12,11 +13,19 @@ import { Badge } from '@/components/ui/badge'
  * AI Moodboard Builder
  * Upload an image and get AI-generated palette and matching products
  */
+interface MatchingProduct {
+  id: string
+  name: string
+  category: string
+  image?: string
+  price?: number
+}
+
 export default function MoodboardBuilderPage() {
   const [uploadedImage, setUploadedImage] = React.useState<string | null>(null)
   const [isGenerating, setIsGenerating] = React.useState(false)
   const [generatedPalette, setGeneratedPalette] = React.useState<string[]>([])
-  const [matchingProducts, setMatchingProducts] = React.useState<any[]>([])
+  const [matchingProducts, setMatchingProducts] = React.useState<MatchingProduct[]>([])
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -48,9 +57,9 @@ export default function MoodboardBuilderPage() {
     
     // Mock matching products
     setMatchingProducts([
-      { id: 1, name: 'Walnut Ceramic Tile', category: 'Ceramic' },
-      { id: 2, name: 'Beige Marble', category: 'Marble' },
-      { id: 3, name: 'Cream Porcelain', category: 'Porcelain' },
+      { id: '1', name: 'Walnut Ceramic Tile', category: 'Ceramic' },
+      { id: '2', name: 'Beige Marble', category: 'Marble' },
+      { id: '3', name: 'Cream Porcelain', category: 'Porcelain' },
     ])
     
     setIsGenerating(false)
@@ -116,12 +125,16 @@ export default function MoodboardBuilderPage() {
                     <CardTitle>Your Inspiration</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <div className="aspect-square rounded-lg overflow-hidden mb-4">
-                      <img
-                        src={uploadedImage}
-                        alt="Uploaded"
-                        className="w-full h-full object-cover"
-                      />
+                    <div className="aspect-square rounded-lg overflow-hidden mb-4 relative">
+                      {uploadedImage && (
+                        <Image
+                          src={uploadedImage}
+                          alt="Uploaded inspiration"
+                          fill
+                          sizes="(min-width: 1024px) 45vw, 100vw"
+                          className="object-cover"
+                        />
+                      )}
                     </div>
                     <Button
                       variant="outline"

@@ -1,6 +1,7 @@
 'use client'
 
 import * as React from 'react'
+import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { CreditCard, Building, Smartphone, Truck, CheckCircle } from 'lucide-react'
 import { LuxuryLayout } from '@/components/layout/luxury-layout'
@@ -168,7 +169,7 @@ export default function CheckoutPage() {
                                 <Input id="mpesaPhone" placeholder="254700000000" required />
                               </div>
                               <p className="text-sm text-muted-foreground">
-                                You'll receive an STK push to your phone
+                                You&apos;ll receive an STK push to your phone
                               </p>
                             </motion.div>
                           )}
@@ -356,14 +357,14 @@ export default function CheckoutPage() {
                             Order Placed Successfully!
                           </h2>
                           <p className="text-muted-foreground mb-8">
-                            Thank you for your order. We'll send you a confirmation email shortly.
+                            Thank you for your order. We&apos;ll send you a confirmation email shortly.
                           </p>
                           <div className="bg-muted p-4 rounded-lg mb-6">
                             <p className="text-sm text-muted-foreground mb-1">Order Number</p>
                             <p className="font-mono text-lg font-bold">#ETD-2025-001</p>
                           </div>
                           <Button variant="luxury" size="lg" asChild>
-                            <a href="/">Back to Home</a>
+                            <Link href="/">Back to Home</Link>
                           </Button>
                         </CardContent>
                       </Card>

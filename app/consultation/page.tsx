@@ -104,20 +104,20 @@ export default function ConsultationPage() {
     setFormData({ ...formData, [e.target.name]: e.target.value })
   }
 
-  // Get next 14 days for date selection
-  const getAvailableDates = () => {
-    const dates = []
-    const today = new Date()
-    for (let i = 1; i <= 14; i++) {
-      const date = new Date(today)
-      date.setDate(today.getDate() + i)
-      // Skip Sundays
-      if (date.getDay() !== 0) {
-        dates.push(date.toISOString().split('T')[0])
-      }
-    }
-    return dates
-  }
+  // Get next 14 days for date selection - reserved for future feature
+  // const getAvailableDates = () => {
+  //   const dates = []
+  //   const today = new Date()
+  //   for (let i = 1; i <= 14; i++) {
+  //     const date = new Date(today)
+  //     date.setDate(today.getDate() + i)
+  //     // Skip Sundays
+  //     if (date.getDay() !== 0) {
+  //       dates.push(date.toISOString().split('T')[0])
+  //     }
+  //   }
+  //   return dates
+  // }
 
   const selectedConsultation = consultationTypes.find(t => t.id === selectedType)
 
