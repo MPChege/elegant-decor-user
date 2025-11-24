@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { productsAPI } from '@elegant/shared/lib/api';
+import { supabase } from '@/lib/supabase';
 import { getPublicMediaUrl } from '@/lib/s3/getPublicUrl';
-import type { Product } from '@elegant/shared/types/database.types';
 
 /**
  * GET /api/public/products/[slug]
@@ -13,9 +12,29 @@ export async function GET(
 ) {
   try {
     const { slug } = await context.params;
-    const product = await productsAPI.getBySlug(slug);
+    
+    // Query product by slug or ID (try both)
+    let { data, error } = await supabase
+      .from('products')
+      .select('*')
+      .eq('slug', slug)
+      .eq('status', 'published') // Only show published products
+      .single();
 
-    if (!product) {
+    // If not found by slug, try by id
+    if (error || !data) {
+      const result = await supabase
+        .from('products')
+        .select('*')
+        .eq('id', slug)
+        .eq('status', 'published')
+        .single();
+      
+      data = result.data;
+      error = result.error;
+    }
+
+    if (error || !data) {
       return NextResponse.json(
         {
           success: false,
@@ -25,32 +44,35 @@ export async function GET(
       );
     }
 
+    const product = data as Record<string, unknown>;
+
     // Convert image keys to full URLs
-    const images = ((product as Product).images || []).map((img) => getPublicMediaUrl(img));
-    const featuredImage = (product as Product).featured_image 
-      ? getPublicMediaUrl((product as Product).featured_image)
+    const imagesArray = Array.isArray(product.images) ? (product.images as string[]) : [];
+    const images = imagesArray.map((img: string) => getPublicMediaUrl(img));
+    const featuredImage = product.featured_image 
+      ? getPublicMediaUrl(product.featured_image as string)
       : images[0] || null;
 
     // Map to public API format
     const publicProduct = {
-      id: product.id,
-      title: product.title || product.name,
-      slug: product.slug || product.id,
-      description: product.description || null,
-      category: product.category,
-      subcategory: product.subcategory || null,
-      price: product.price || null,
-      currency: product.currency || 'KES',
+      id: product.id as string,
+      title: (product.title as string) || (product.name as string) || (product.id as string), // Use title from admin dashboard
+      slug: (product.slug as string) || (product.id as string), // Use slug if available
+      description: (product.description as string) || null,
+      category: (product.category as string) || 'Uncategorized',
+      subcategory: (product.subcategory as string) || null,
+      price: product.price ? Number(product.price) : null,
+      currency: (product.currency as string) || 'KES',
       featured_image: featuredImage,
       images: images,
-      tags: product.tags || [],
-      featured: product.featured || false,
-      in_stock: product.in_stock !== undefined ? product.in_stock : true,
-      specifications: product.specifications || null,
-      seo_title: product.seo_title || null,
-      seo_description: product.seo_description || null,
-      created_at: product.created_at,
-      updated_at: product.updated_at,
+      tags: (product.tags as string[]) || [],
+      featured: Boolean(product.featured),
+      in_stock: product.in_stock !== undefined ? Boolean(product.in_stock) : true,
+      specifications: (product.specifications as Record<string, unknown> | null) || null,
+      seo_title: (product.seo_title as string) || null,
+      seo_description: (product.seo_description as string) || null,
+      created_at: product.created_at as string,
+      updated_at: product.updated_at as string,
     };
 
     return NextResponse.json({

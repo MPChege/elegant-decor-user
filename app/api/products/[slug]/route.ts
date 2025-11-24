@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { productsAPI } from '@elegant/shared/lib/api';
+import { supabase } from '@/lib/supabase';
 
 /**
  * GET /api/products/[slug]
- * Get product by slug
+ * Get product by slug (ID)
  */
 export async function GET(
   _request: NextRequest,
@@ -11,11 +11,27 @@ export async function GET(
 ) {
   try {
     const { slug } = await context.params;
-    const product = await productsAPI.getBySlug(slug);
+    
+    // Query product by ID
+    const { data, error } = await supabase
+      .from('products')
+      .select('*')
+      .eq('id', slug)
+      .single();
+
+    if (error || !data) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Product not found',
+        },
+        { status: 404 }
+      );
+    }
 
     return NextResponse.json({
       success: true,
-      data: product,
+      data: data,
     });
   } catch (error) {
     console.error('Error fetching product:', error);

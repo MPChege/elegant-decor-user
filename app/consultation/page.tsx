@@ -75,13 +75,42 @@ export default function ConsultationPage() {
 
     setIsSubmitting(true)
     
-    // TODO: Implement booking submission to Supabase
-    await new Promise((resolve) => setTimeout(resolve, 2000))
-    
-    toast({
-      title: 'Consultation Booked!',
-      description: `We've confirmed your ${consultationTypes.find(t => t.id === selectedType)?.title} on ${selectedDate} at ${selectedTime}. We'll send a confirmation email shortly.`,
-    })
+    try {
+      // Submit consultation request to inquiries API
+      const response = await fetch('/api/inquiries', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          phone: formData.phone,
+          subject: `Consultation Request: ${consultationTypes.find(t => t.id === selectedType)?.title}`,
+          message: `Consultation Type: ${consultationTypes.find(t => t.id === selectedType)?.title}\nDate: ${selectedDate}\nTime: ${selectedTime}\nProject Type: ${formData.projectType}\nBudget: ${formData.budget}\nAddress: ${formData.address}\n\nMessage: ${formData.message}`,
+          type: 'project', // Use 'project' type for consultations
+        }),
+      })
+
+      const result = await response.json()
+
+      if (!response.ok) {
+        throw new Error(result.error || 'Failed to book consultation')
+      }
+
+      toast({
+        title: 'Consultation Booked!',
+        description: `We've confirmed your ${consultationTypes.find(t => t.id === selectedType)?.title} on ${selectedDate} at ${selectedTime}. We'll send a confirmation email shortly.`,
+      })
+    } catch (error) {
+      toast({
+        title: 'Error',
+        description: error instanceof Error ? error.message : 'Failed to book consultation. Please try again.',
+        variant: 'destructive',
+      })
+      setIsSubmitting(false)
+      return
+    }
     
     // Reset form
     setFormData({

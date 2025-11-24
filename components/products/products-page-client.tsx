@@ -3,7 +3,6 @@
 import * as React from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { motion } from 'framer-motion'
 import { Search, Filter, Grid3x3, List } from 'lucide-react'
 import type { PublicProduct } from '@/lib/public-api'
 import { Button } from '@/components/ui/button'
@@ -55,19 +54,14 @@ export function ProductsPageClient({ products }: ProductsPageClientProps) {
         />
         <div className="absolute inset-0 -z-10 bg-gradient-to-b from-black/70 via-black/45 to-background/95" />
         <div className="container px-6 text-white">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="max-w-3xl mx-auto text-center"
-          >
+          <div className="max-w-3xl mx-auto text-center">
             <h1 className="font-playfair text-5xl md:text-6xl lg:text-7xl font-bold mb-6">
               Our <span className="text-luxury-gradient">Products</span>
             </h1>
             <p className="text-lg md:text-xl text-white/85">
               Premium tiles and materials from the world&apos;s finest manufacturers.
             </p>
-          </motion.div>
+          </div>
         </div>
       </section>
 
@@ -108,11 +102,11 @@ export function ProductsPageClient({ products }: ProductsPageClientProps) {
       </section>
 
       {/* Categories */}
-      <section className="py-8 bg-card">
-        <div className="container px-6">
-          <div className="flex items-center space-x-2 overflow-x-auto pb-2 hide-scrollbar">
+      <section className="py-6 sm:py-8 bg-card">
+        <div className="container px-4 sm:px-6">
+          <div className="flex items-center space-x-2 overflow-x-auto pb-2 hide-scrollbar touch-scroll -mx-4 px-4 sm:-mx-0 sm:px-0">
             <Filter className="h-5 w-5 text-muted-foreground flex-shrink-0" />
-            <span className="text-sm text-muted-foreground flex-shrink-0">
+            <span className="text-xs sm:text-sm text-muted-foreground flex-shrink-0">
               Category:
             </span>
             <div className="flex gap-2">
@@ -122,7 +116,7 @@ export function ProductsPageClient({ products }: ProductsPageClientProps) {
                   variant={selectedCategory === category ? 'luxury' : 'outline'}
                   size="sm"
                   onClick={() => setSelectedCategory(category)}
-                  className="flex-shrink-0"
+                  className="flex-shrink-0 h-9 sm:h-10 text-xs sm:text-sm touch-target"
                 >
                   {category}
                 </Button>
@@ -133,9 +127,9 @@ export function ProductsPageClient({ products }: ProductsPageClientProps) {
       </section>
 
       {/* Products Grid */}
-      <section className="py-20">
-        <div className="container px-6">
-          <div className="mb-6 text-muted-foreground">
+      <section className="py-12 sm:py-16 md:py-20">
+        <div className="container px-4 sm:px-6">
+          <div className="mb-4 sm:mb-6 text-sm text-muted-foreground">
             Showing {filteredProducts.length} products
           </div>
 
@@ -145,66 +139,73 @@ export function ProductsPageClient({ products }: ProductsPageClientProps) {
             <div
               className={
                 viewMode === 'grid'
-                  ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8'
-                  : 'space-y-6'
+                  ? 'grid grid-cols-1 xs:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8'
+                  : 'space-y-4 sm:space-y-6'
               }
             >
-              {filteredProducts.map((product, index) => {
+              {filteredProducts.map((product) => {
                 const specs =
                   (product.specifications as Record<string, unknown> | null) ?? {}
                 const size = (specs.size as string) || ''
                 const finish = (specs.finish as string) || ''
 
                 return (
-                  <motion.div
-                    key={product.id}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5, delay: index * 0.05 }}
-                    layout
-                  >
+                  <div key={product.id}>
                     <Card className="group overflow-hidden hover:shadow-luxury-lg transition-all duration-300 border-luxury h-full">
-                      <div className="aspect-square relative overflow-hidden bg-muted">
-                        {product.featured && (
-                          <Badge
-                            variant="luxury"
-                            className="absolute top-4 left-4 z-10"
-                          >
-                            Featured
-                          </Badge>
-                        )}
-                        {!product.in_stock && (
-                          <Badge
-                            variant="secondary"
-                            className="absolute top-4 right-4 z-10"
-                          >
-                            Out of Stock
-                          </Badge>
-                        )}
-                        {/* Placeholder gradient (images come from detail view) */}
-                        <div className="absolute inset-0 bg-gradient-to-br from-primary/30 to-accent/30 group-hover:scale-110 transition-transform duration-500" />
-                      </div>
-                      <CardContent className="p-6">
-                        <Badge variant="outline" className="mb-2">
+                      <Link href={`/products/${product.slug || product.id}`}>
+                        <div className="aspect-square relative overflow-hidden bg-muted">
+                          {product.featured && (
+                            <Badge
+                              variant="luxury"
+                              className="absolute top-2 left-2 sm:top-4 sm:left-4 z-10 text-xs"
+                            >
+                              Featured
+                            </Badge>
+                          )}
+                          {!product.in_stock && (
+                            <Badge
+                              variant="secondary"
+                              className="absolute top-2 right-2 sm:top-4 sm:right-4 z-10 text-xs"
+                            >
+                              Out of Stock
+                            </Badge>
+                          )}
+                          {product.featured_image ? (
+                            <Image
+                              src={product.featured_image}
+                              alt={product.title}
+                              fill
+                              sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                              className="object-cover group-hover:scale-110 transition-transform duration-500"
+                            />
+                          ) : (
+                            <div className="absolute inset-0 bg-gradient-to-br from-primary/30 to-accent/30 group-hover:scale-110 transition-transform duration-500 flex items-center justify-center">
+                              <span className="text-muted-foreground text-xs sm:text-sm">No Image</span>
+                            </div>
+                          )}
+                        </div>
+                      </Link>
+                      <CardContent className="p-3 sm:p-4 md:p-6">
+                        <Badge variant="outline" className="mb-2 text-xs">
                           {product.category}
                         </Badge>
-                        <h3 className="font-playfair text-xl font-semibold mb-2">
+                        <h3 className="font-playfair text-base sm:text-lg md:text-xl font-semibold mb-2 line-clamp-2">
                           {product.title}
                         </h3>
-                        <div className="flex items-center justify-between text-sm text-muted-foreground mb-2">
-                          <span>{size}</span>
-                          <span>{finish}</span>
+                        <div className="flex items-center justify-between text-xs sm:text-sm text-muted-foreground mb-2">
+                          <span className="truncate">{size}</span>
+                          <span className="truncate">{finish}</span>
                         </div>
-                        <div className="font-semibold text-lg text-primary">
+                        <div className="font-semibold text-base sm:text-lg text-primary">
                           {product.price != null
                             ? `KSh ${product.price.toLocaleString()}/sqm`
                             : 'Pricing on request'}
                         </div>
                       </CardContent>
-                      <CardFooter className="p-6 pt-0">
+                      <CardFooter className="p-3 sm:p-4 md:p-6 pt-0">
                         <Button
                           variant={product.in_stock ? 'luxury' : 'secondary'}
-                          className={`w-full font-bold tracking-wide ${
+                          className={`w-full font-bold tracking-wide h-10 sm:h-11 md:h-12 text-sm touch-target ${
                             product.in_stock
                               ? 'bg-primary text-white shadow-xl hover:shadow-2xl hover:scale-105 border-2 border-primary'
                               : 'bg-muted text-muted-foreground cursor-not-allowed'
@@ -218,7 +219,7 @@ export function ProductsPageClient({ products }: ProductsPageClientProps) {
                         </Button>
                       </CardFooter>
                     </Card>
-                  </motion.div>
+                  </div>
                 )
               })}
             </div>

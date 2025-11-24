@@ -1,6 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase';
 import { z } from 'zod';
+
+// Lazy import to avoid build-time errors
+async function getSupabaseClient() {
+  const { supabase } = await import('@/lib/supabase');
+  return supabase;
+}
 
 /**
  * POST /api/newsletter
@@ -23,24 +28,27 @@ export async function POST(request: NextRequest) {
     const validatedData = newsletterSchema.parse(body);
     const { email } = validatedData;
 
+    const supabase = await getSupabaseClient();
+    
     // Check if email already exists
     const { data: existing } = await supabase
       .from('newsletter_subscribers')
       .select('id, email, active')
       .eq('email', email.toLowerCase().trim())
-      .single();
+      .maybeSingle();
 
     if (existing) {
+      const subscriber = existing as { id: string; email: string; active: boolean };
       // If already subscribed and active, return success message
-      if (existing.active) {
+      if (subscriber.active) {
         return NextResponse.json(
           {
             success: true,
             message: 'You are already subscribed to our newsletter!',
             data: {
-              id: existing.id,
-              email: existing.email,
-              active: existing.active,
+              id: subscriber.id,
+              email: subscriber.email,
+              active: subscriber.active,
             },
           },
           { status: 200 }
@@ -50,7 +58,7 @@ export async function POST(request: NextRequest) {
       // If exists but inactive, reactivate
       const { data: updated, error: updateError } = await supabase
         .from('newsletter_subscribers')
-        .update({ active: true })
+        .update({ active: true } as never)
         .eq('email', email.toLowerCase().trim())
         .select()
         .single();
@@ -73,7 +81,7 @@ export async function POST(request: NextRequest) {
       .insert({
         email: email.toLowerCase().trim(),
         active: true,
-      })
+      } as never)
       .select()
       .single();
 

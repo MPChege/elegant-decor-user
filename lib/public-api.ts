@@ -14,7 +14,7 @@ export interface PublicProduct {
   tags: string[]
   featured: boolean
   in_stock: boolean
-  specifications: any
+  specifications: Record<string, unknown> | null
   seo_title: string | null
   seo_description: string | null
   created_at: string
@@ -102,7 +102,17 @@ export async function fetchPublicProducts(filters?: {
     })
 
     if (!res.ok) {
-      console.error('Failed to fetch products:', res.status, await res.text())
+      const errorText = await res.text()
+      console.error('Failed to fetch products:', res.status, errorText)
+      
+      // Try to parse error details if available
+      try {
+        const errorJson = JSON.parse(errorText)
+        console.error('Error details:', errorJson)
+      } catch {
+        // Not JSON, just log the text
+      }
+      
       return []
     }
 

@@ -247,3 +247,125 @@
   }
 }
 
+/* Mobile Device Optimizations */
+@layer utilities {
+  /* Safe Area Insets for notched devices (iPhone X+, etc.) */
+  .safe-top {
+    padding-top: env(safe-area-inset-top);
+  }
+  .safe-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  .safe-left {
+    padding-left: env(safe-area-inset-left);
+  }
+  .safe-right {
+    padding-right: env(safe-area-inset-right);
+  }
+  .safe-x {
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+  .safe-y {
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  .safe-all {
+    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+  }
+
+  /* Touch Target Minimums (44px for accessibility) */
+  .touch-target {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* Prevent text selection on mobile for UI elements */
+  .no-select {
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+  }
+
+  /* Prevent zoom on input focus (iOS) */
+  .no-zoom {
+    font-size: 16px !important;
+  }
+
+  /* Full width on mobile, contained on larger screens */
+  .mobile-full {
+    @apply w-full md:w-auto;
+  }
+
+  /* Stack on mobile, row on desktop */
+  .mobile-stack {
+    @apply flex flex-col md:flex-row;
+  }
+
+  /* Text size adjustments for readability */
+  .text-responsive {
+    @apply text-sm sm:text-base md:text-lg;
+  }
+
+  /* Tap highlight color for mobile */
+  .tap-highlight-none {
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+
+/* Improved touch scrolling */
+.touch-scroll {
+  -webkit-overflow-scrolling: touch;
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
+}
+
+/* Responsive Typography */
+@media screen and (max-width: 640px) {
+  html {
+    font-size: 14px;
+  }
+}
+
+@media screen and (min-width: 641px) and (max-width: 1024px) {
+  html {
+    font-size: 15px;
+  }
+}
+
+@media screen and (min-width: 1025px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+/* Landscape orientation adjustments */
+@media screen and (max-height: 500px) and (orientation: landscape) {
+  .landscape-compact {
+    padding-top: 0.5rem !important;
+    padding-bottom: 0.5rem !important;
+  }
+}
+
+/* High DPI/Retina displays */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .retina-border {
+    border-width: 0.5px;
+  }
+}
+
+/* Hover only on devices that support it */
+@media (hover: hover) and (pointer: fine) {
+  .hover-lift:hover {
+    transform: translateY(-4px);
+  }
+}
+
+/* Focus visible for keyboard navigation */
+@media (hover: none) {
+  .focus-mobile:focus {
+    outline: 2px solid hsl(352, 68%, 50%);
+    outline-offset: 2px;
+  }
+}
+

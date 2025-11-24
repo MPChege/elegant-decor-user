@@ -3,12 +3,12 @@
 import * as React from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { motion, useScroll, useTransform } from 'framer-motion'
 import { ArrowRight, Sparkles, CheckCircle } from 'lucide-react'
 import { LuxuryLayout } from '@/components/layout/luxury-layout'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
+import { ProductsCarousel } from '@/components/products/products-carousel'
 
 const services = [
   {
@@ -116,15 +116,7 @@ const collageImages = {
 }
 
 export default function HomePage() {
-  const { scrollYProgress } = useScroll()
-  const opacity = useTransform(scrollYProgress, [0, 0.2], [1, 0])
-  const scale = useTransform(scrollYProgress, [0, 0.2], [1, 0.8])
-  const [mounted, setMounted] = React.useState(false)
   const [currentHeroIndex, setCurrentHeroIndex] = React.useState(0)
-
-  React.useEffect(() => {
-    setMounted(true)
-  }, [])
 
   React.useEffect(() => {
     const interval = window.setInterval(() => {
@@ -136,22 +128,15 @@ export default function HomePage() {
 
   return (
     <LuxuryLayout>
-      {/* Hero Section */}
+      {/* Hero Section - Simplified without heavy animations */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 -z-10">
           {heroImages.map((image, index) => (
-            <motion.div
+            <div
               key={image}
-              className="absolute inset-0"
-              animate={
-                index === currentHeroIndex
-                  ? { opacity: 1, scale: [1.12, 1] }
-                  : { opacity: 0, scale: 1.08 }
-              }
-              transition={{
-                duration: index === currentHeroIndex ? 7 : 1.2,
-                ease: 'easeInOut',
-              }}
+              className={`absolute inset-0 transition-opacity duration-1000 ${
+                index === currentHeroIndex ? 'opacity-100' : 'opacity-0'
+              }`}
             >
               <Image
                 src={image}
@@ -161,52 +146,30 @@ export default function HomePage() {
                 sizes="100vw"
                 className="object-cover"
               />
-            </motion.div>
+            </div>
           ))}
           <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/45 to-background/95" />
         </div>
-        <motion.div
-          style={{ opacity, scale }}
-          className="container px-6 py-20 text-center relative z-10 text-white"
-        >
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-          >
+        <div className="container px-6 py-20 text-center relative z-10 text-white">
+          <div>
             <Badge variant="luxury" className="mb-6">
               <Sparkles className="h-3 w-3 mr-2" />
               Award-Winning Design Excellence
             </Badge>
-          </motion.div>
+          </div>
 
-          <motion.h1
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
-            className="font-playfair text-5xl md:text-7xl lg:text-8xl font-bold mb-6 text-balance"
-          >
+          <h1 className="font-playfair text-5xl md:text-7xl lg:text-8xl font-bold mb-6 text-balance">
             Where Elegance
             <br />
             <span className="text-luxury-gradient">Meets Design</span>
-          </motion.h1>
+          </h1>
 
-          <motion.p
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.6 }}
-            className="text-lg md:text-xl text-white/80 max-w-2xl mx-auto mb-10 text-balance"
-          >
+          <p className="text-lg md:text-xl text-white/80 max-w-2xl mx-auto mb-10 text-balance">
             Transform your space into a masterpiece with our luxury tiles and
             bespoke interior design solutions.
-          </motion.p>
+          </p>
 
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.8 }}
-            className="flex flex-col sm:flex-row items-center justify-center gap-4"
-          >
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Button 
               variant="luxury" 
               size="xl" 
@@ -226,65 +189,25 @@ export default function HomePage() {
             >
               <Link href="/work">View Our Work</Link>
             </Button>
-          </motion.div>
-
-          {/* Floating Tiles Animation */}
-          <div className="absolute inset-0 -z-10 overflow-hidden pointer-events-none">
-            {mounted && [...Array(6)].map((_, i) => {
-              const width = typeof window !== 'undefined' ? window.innerWidth : 1920
-              const height = typeof window !== 'undefined' ? window.innerHeight : 1080
-              return (
-                <motion.div
-                  key={i}
-                  className="absolute w-32 h-32 rounded-lg bg-primary/5 backdrop-blur-sm"
-                  initial={{
-                    x: Math.random() * width,
-                    y: Math.random() * height,
-                    rotate: Math.random() * 360,
-                  }}
-                  animate={{
-                    y: [null, Math.random() * -100 - 50],
-                    rotate: Math.random() * 360,
-                  }}
-                  transition={{
-                    duration: 20 + Math.random() * 10,
-                    repeat: Infinity,
-                    repeatType: 'reverse',
-                    ease: 'linear',
-                  }}
-                />
-              )
-            })}
           </div>
-        </motion.div>
+        </div>
       </section>
 
       {/* Signature Spaces Section */}
       <section className="py-20 bg-muted/20">
         <div className="container px-6">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-16"
-          >
+          <div className="text-center mb-16">
             <h2 className="font-playfair text-4xl md:text-5xl font-bold mb-4">
               Spaces We Curate
             </h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
               A glimpse into the bathrooms, bedrooms, foyers, kitchens, and beyond that define Elegant Tiles & Décor.
             </p>
-          </motion.div>
+          </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
-            {signatureSpaces.map((space, index) => (
-              <motion.div
-                key={space.title}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.4, delay: index * 0.05 }}
-              >
+            {signatureSpaces.map((space) => (
+              <div key={space.title}>
                 <Card className="border-0 shadow-lg hover:shadow-luxury-lg transition-all duration-500 group h-full flex flex-col overflow-hidden rounded-3xl">
                   <div className="relative aspect-[4/3]">
                     <Image
@@ -305,7 +228,7 @@ export default function HomePage() {
                     </p>
                   </CardContent>
                 </Card>
-              </motion.div>
+              </div>
             ))}
           </div>
         </div>
@@ -315,51 +238,36 @@ export default function HomePage() {
       <section className="py-20 bg-card">
         <div className="container px-6">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            {stats.map((stat, index) => (
-              <motion.div
-                key={stat.label}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                className="text-center"
-              >
+            {stats.map((stat) => (
+              <div key={stat.label} className="text-center">
                 <div className="font-playfair text-4xl md:text-5xl font-bold text-luxury-gradient mb-2">
                   {stat.value}
                 </div>
                 <div className="text-sm text-muted-foreground">{stat.label}</div>
-              </motion.div>
+              </div>
             ))}
           </div>
         </div>
       </section>
 
+      {/* Products Carousel Section */}
+      <ProductsCarousel />
+
       {/* Services Section */}
       <section className="py-20">
         <div className="container px-6">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-16"
-          >
+          <div className="text-center mb-16">
             <h2 className="font-playfair text-4xl md:text-5xl font-bold mb-4">
               Our Services
             </h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
               Comprehensive design solutions tailored to your vision
             </p>
-          </motion.div>
+          </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {services.map((service, index) => (
-              <motion.div
-                key={service.title}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-              >
+            {services.map((service) => (
+              <div key={service.title}>
                 <Card className="h-full hover:shadow-luxury-lg transition-all duration-300 border-luxury group cursor-pointer">
                   <CardContent className="p-6 text-center">
                     <div className="text-5xl mb-4 group-hover:scale-110 transition-transform duration-300">
@@ -373,16 +281,11 @@ export default function HomePage() {
                     </p>
                   </CardContent>
                 </Card>
-              </motion.div>
+              </div>
             ))}
           </div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mt-12"
-          >
+          <div className="text-center mt-12">
             <Button 
               variant="luxury" 
               size="lg"
@@ -394,36 +297,25 @@ export default function HomePage() {
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
             </Button>
-          </motion.div>
+          </div>
         </div>
       </section>
 
       {/* Featured Projects Preview */}
       <section className="py-20 bg-muted/30">
         <div className="container px-6">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-16"
-          >
+          <div className="text-center mb-16">
             <h2 className="font-playfair text-4xl md:text-5xl font-bold mb-4">
               Featured Projects
             </h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
               A showcase of our finest work
             </p>
-          </motion.div>
+          </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {featuredProjects.map((project, index) => (
-              <motion.div
-                key={project.title}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-              >
+            {featuredProjects.map((project) => (
+              <div key={project.title}>
                 <Link href="/work" className="group block">
                   <Card className="overflow-hidden border-luxury hover:shadow-luxury-lg transition-all duration-300">
                     <div className="aspect-[4/3] relative overflow-hidden bg-muted">
@@ -446,20 +338,15 @@ export default function HomePage() {
                     </div>
                   </Card>
                 </Link>
-              </motion.div>
+              </div>
             ))}
           </div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mt-12"
-          >
+          <div className="text-center mt-12">
             <Button variant="outline" size="lg" asChild>
               <Link href="/work">View All Projects</Link>
             </Button>
-          </motion.div>
+          </div>
         </div>
       </section>
 
@@ -467,12 +354,7 @@ export default function HomePage() {
       <section className="py-20">
         <div className="container px-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <motion.div
-              initial={{ opacity: 0, x: -30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-            >
+            <div>
               <h2 className="font-playfair text-4xl md:text-5xl font-bold mb-6">
                 Why Choose
                 <br />
@@ -490,18 +372,11 @@ export default function HomePage() {
                   'Personalized design approach',
                   'Project management excellence',
                   'Lifetime craftsmanship warranty',
-                ].map((item, index) => (
-                  <motion.div
-                    key={item}
-                    initial={{ opacity: 0, x: -20 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.5, delay: index * 0.1 }}
-                    className="flex items-center space-x-3"
-                  >
+                ].map((item) => (
+                  <div key={item} className="flex items-center space-x-3">
                     <CheckCircle className="h-5 w-5 text-primary flex-shrink-0" />
                     <span>{item}</span>
-                  </motion.div>
+                  </div>
                 ))}
               </div>
 
@@ -513,15 +388,9 @@ export default function HomePage() {
               >
                 <Link href="/about">Learn More About Us</Link>
               </Button>
-            </motion.div>
+            </div>
 
-            <motion.div
-              initial={{ opacity: 0, x: 30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-              className="grid grid-cols-2 gap-4"
-            >
+            <div className="grid grid-cols-2 gap-4">
               <div className="col-span-2 relative rounded-3xl overflow-hidden shadow-luxury-lg">
                 <div className="aspect-[4/3] relative">
                   <Image
@@ -556,7 +425,7 @@ export default function HomePage() {
                   />
                 </div>
               </div>
-            </motion.div>
+            </div>
           </div>
         </div>
       </section>
@@ -564,12 +433,7 @@ export default function HomePage() {
       {/* CTA Section */}
       <section className="py-20 bg-card">
         <div className="container px-6">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="max-w-3xl mx-auto text-center"
-          >
+          <div className="max-w-3xl mx-auto text-center">
             <h2 className="font-playfair text-4xl md:text-5xl font-bold mb-6">
               Ready to Transform Your Space?
             </h2>
@@ -598,7 +462,7 @@ export default function HomePage() {
                 <Link href="/products">Browse Products</Link>
               </Button>
             </div>
-          </motion.div>
+          </div>
         </div>
       </section>
     </LuxuryLayout>

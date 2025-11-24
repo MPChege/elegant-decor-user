@@ -10,7 +10,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardFooter } from '@/components/ui/card'
-import { getPublicMediaUrl } from '@/lib/s3/getPublicUrl'
+import { getBlogImageUrl } from '@/lib/s3/getPublicUrl'
 
 const heroBackground = '/LEHIGH/RECEPTION%20FINAL_5%20-%20Photo.png'
 
@@ -106,7 +106,7 @@ export function JournalPageClient({ posts }: JournalPageClientProps) {
                         Featured
                       </Badge>
                       <Image
-                        src={getPublicMediaUrl(
+                        src={getBlogImageUrl(
                           featuredPost.featured_image_key ||
                             featuredPost.featured_image
                         )}
@@ -204,7 +204,7 @@ export function JournalPageClient({ posts }: JournalPageClientProps) {
                   <Card className="group h-full hover:shadow-luxury-lg transition-all duration-300 border-luxury">
                     <div className="aspect-[16/10] relative overflow-hidden bg-muted rounded-t-lg">
                       <Image
-                        src={getPublicMediaUrl(
+                        src={getBlogImageUrl(
                           post.featured_image_key || post.featured_image
                         )}
                         alt={post.title}

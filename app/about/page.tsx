@@ -34,29 +34,6 @@ const values = [
   },
 ]
 
-const timeline = [
-  {
-    year: '2008',
-    title: 'Foundation',
-    description: 'Elegant Tiles & Décor was founded with a vision to transform spaces.',
-  },
-  {
-    year: '2012',
-    title: 'Expansion',
-    description: 'Opened our flagship showroom and expanded our team.',
-  },
-  {
-    year: '2018',
-    title: 'Awards',
-    description: 'Received our first industry recognition for design excellence.',
-  },
-  {
-    year: '2024',
-    title: 'Innovation',
-    description: 'Launched AI-powered design tools and virtual consultations.',
-  },
-]
-
 // Team data - reserved for future team section
 // const team = [
 //   {

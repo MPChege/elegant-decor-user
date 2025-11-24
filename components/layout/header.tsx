@@ -4,7 +4,6 @@ import * as React from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
-import { motion, useScroll, useTransform } from 'framer-motion'
 import { Menu, X, Sun, Moon } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
@@ -34,12 +33,7 @@ export function Header() {
   const pathname = usePathname()
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false)
   const [theme, setTheme] = React.useState<'light' | 'dark'>('light')
-  const { scrollY } = useScroll()
   const currentBackground = headerBackgrounds[pathname] ?? headerBackgrounds['/']
-  
-  // Header background opacity based on scroll - reserved for future feature
-  // const headerOpacity = useTransform(scrollY, [0, 100], [0, 1])
-  const headerBlur = useTransform(scrollY, [0, 100], [0, 10])
 
   React.useEffect(() => {
     // Initialize theme from localStorage, defaulting to light mode
@@ -63,15 +57,7 @@ export function Header() {
 
   return (
     <>
-      <motion.header
-        style={{
-          backdropFilter: useTransform(
-            headerBlur,
-            (value) => `blur(${Math.max(value, 10)}px)`
-          ),
-        }}
-        className="fixed top-0 left-0 right-0 z-50 border-b border-border/40 glass-liquid overflow-hidden"
-      >
+      <header className="fixed top-0 left-0 right-0 z-50 border-b border-border/40 backdrop-blur-lg overflow-hidden">
         <div
           className="absolute inset-0 -z-10 opacity-60"
           style={{
@@ -84,12 +70,7 @@ export function Header() {
         <nav className="container flex items-center justify-between py-4 px-6">
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-3">
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.5 }}
-              className="relative h-16 md:h-20 w-auto"
-            >
+            <div className="relative h-16 md:h-20 w-auto">
               {/* Light Mode Logo (white background) - visible on light backgrounds */}
               <Image
                 src="/etd logo.jpeg"
@@ -118,37 +99,27 @@ export function Header() {
                 )}
                 priority
               />
-            </motion.div>
+            </div>
           </Link>
 
           {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center space-x-8">
-            {navigation.map((item, index) => (
-              <motion.div
+            {navigation.map((item) => (
+              <Link
                 key={item.name}
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
+                href={item.href}
+                className={cn(
+                  'text-sm font-medium transition-colors hover:text-primary relative py-2',
+                  pathname === item.href
+                    ? 'text-primary'
+                    : 'text-muted-foreground'
+                )}
               >
-                <Link
-                  href={item.href}
-                  className={cn(
-                    'text-sm font-medium transition-colors hover:text-primary relative py-2',
-                    pathname === item.href
-                      ? 'text-primary'
-                      : 'text-muted-foreground'
-                  )}
-                >
-                  {item.name}
-                  {pathname === item.href && (
-                    <motion.div
-                      layoutId="activeNav"
-                      className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary"
-                      transition={{ type: 'spring', stiffness: 380, damping: 30 }}
-                    />
-                  )}
-                </Link>
-              </motion.div>
+                {item.name}
+                {pathname === item.href && (
+                  <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary" />
+                )}
+              </Link>
             ))}
           </div>
 
@@ -198,17 +169,14 @@ export function Header() {
             </Button>
           </div>
         </nav>
-      </motion.header>
+      </header>
 
       {/* Mobile Menu */}
-      <motion.div
-        initial={false}
-        animate={{
-          x: mobileMenuOpen ? 0 : '100%',
-          opacity: mobileMenuOpen ? 1 : 0,
-        }}
-        transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-        className="fixed top-[73px] right-0 bottom-0 z-40 w-full max-w-sm bg-background border-l border-border shadow-luxury-lg lg:hidden"
+      <div
+        className={cn(
+          "fixed top-[73px] right-0 bottom-0 z-40 w-full max-w-sm bg-background border-l border-border shadow-luxury-lg lg:hidden transition-transform duration-300",
+          mobileMenuOpen ? "translate-x-0" : "translate-x-full"
+        )}
       >
         <nav className="flex flex-col space-y-4 p-6">
           {navigation.map((item) => (
@@ -252,14 +220,11 @@ export function Header() {
             </Button>
           </div>
         </nav>
-      </motion.div>
+      </div>
 
       {/* Mobile Menu Overlay */}
       {mobileMenuOpen && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
+        <div
           onClick={() => setMobileMenuOpen(false)}
           className="fixed inset-0 z-30 bg-background/80 backdrop-blur-sm lg:hidden"
         />

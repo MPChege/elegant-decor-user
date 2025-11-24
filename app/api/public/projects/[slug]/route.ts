@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { projectsAPI } from '@elegant/shared/lib/api';
+import { supabase } from '@/lib/supabase';
 import { getPublicMediaUrl } from '@/lib/s3/getPublicUrl';
 import type { PublicProject } from '@/lib/public-api';
 
@@ -13,32 +13,49 @@ export async function GET(
 ) {
   try {
     const { slug } = await context.params;
-    const project = await projectsAPI.getBySlug(slug);
+    
+    // Query project by ID (slug is actually the project ID)
+    const { data, error } = await supabase
+      .from('projects')
+      .select('*')
+      .eq('id', slug)
+      .single();
+
+    if (error || !data) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Project not found',
+        },
+        { status: 404 }
+      );
+    }
+
+    const project = data as Record<string, unknown>;
 
     // Convert image keys to full URLs
-    const images = (project.images || []).map((img) => getPublicMediaUrl(img));
-    const featuredImage = project.featured_image 
-      ? getPublicMediaUrl(project.featured_image)
-      : images[0] || null;
+    const imagesArray = Array.isArray(project.images) ? (project.images as string[]) : [];
+    const images = imagesArray.map((img: string) => getPublicMediaUrl(img));
+    const featuredImage = images[0] || null;
 
     // Map database format to public API format with full image URLs
     const publicProject: PublicProject = {
-      id: project.id,
-      title: project.title,
-      slug: project.slug,
-      description: project.description || null,
-      short_description: project.short_description || null,
-      client_name: project.client_name || null,
-      location: project.location || null,
-      year: project.year || null,
-      completion_date: project.completion_date || null,
+      id: project.id as string,
+      title: project.title as string,
+      slug: project.id as string, // Use ID as slug if no slug field exists
+      description: (project.description as string) || null,
+      short_description: null, // Not in database schema
+      client_name: (project.client_name as string) || (project.client as string) || null,
+      location: (project.location as string) || null,
+      year: (project.year as number) || null,
+      completion_date: (project.completion_date as string) || null,
       featured_image: featuredImage,
-      featured_image_key: project.featured_image || null,
+      featured_image_key: images[0] || null,
       images: images,
-      tags: project.tags || [],
-      featured: project.featured || false,
-      seo_title: null, // Projects table doesn't have seo_title field
-      seo_description: null, // Projects table doesn't have seo_description field
+      tags: (project.tags as string[]) || [],
+      featured: Boolean(project.featured),
+      seo_title: (project.seo_title as string) || null,
+      seo_description: (project.seo_description as string) || null,
     };
 
     return NextResponse.json({

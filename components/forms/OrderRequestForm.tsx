@@ -3,15 +3,25 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { orderSchema } from '@elegant/shared/utils/validators';
-import type { Product } from '@elegant/shared/types/database.types';
-import { formatCurrency } from '@elegant/shared/utils/formatters';
+import { orderSchema } from '@/lib/validators';
+import type { PublicProduct } from '@/lib/public-api';
+
+// Simple currency formatter
+function formatCurrency(amount: number | null, currency: string = 'KES'): string {
+  if (amount === null) return 'Pricing on request';
+  return new Intl.NumberFormat('en-KE', {
+    style: 'currency',
+    currency: currency,
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(amount);
+}
 import { z } from 'zod';
 
 type OrderFormData = z.infer<typeof orderSchema>;
 
 interface OrderRequestFormProps {
-  product?: Product;
+  product?: PublicProduct;
   onSuccess?: () => void;
   onCancel?: () => void;
 }

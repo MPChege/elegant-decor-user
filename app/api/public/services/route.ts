@@ -1,130 +1,100 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { supabase } from '@/lib/supabase';
+import { getPublicMediaUrl } from '@/lib/s3/getPublicUrl';
+
+// Shape returned to the frontend (kept compatible with existing UI expectations)
+type PublicService = {
+  id: string;
+  title: string;
+  slug: string;
+  description: string | null;
+  category: string | null;
+  icon: string | null;
+  featured_image: string | null;
+  images: string[];
+  featured: boolean;
+  created_at: string;
+  updated_at: string;
+};
 
 /**
  * GET /api/public/services
  * Get all published services with pagination and filters
- * 
+ *
  * Query parameters:
  * - limit (number, default: 50)
  * - offset (number, default: 0)
  * - category (string, optional)
  * - featured (boolean, optional) - featured=true
- * 
- * NOTE: Currently returns static data. In the future, this should be migrated
- * to a `services` table in the database for dynamic management via the admin dashboard.
  */
 export async function GET(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams;
-    
-    // Parse query parameters
-    const limit = Math.min(parseInt(searchParams.get('limit') || '50', 10), 100); // Max 100
+
+    const limit = Math.min(parseInt(searchParams.get('limit') || '50', 10), 100);
     const offset = Math.max(parseInt(searchParams.get('offset') || '0', 10), 0);
     const category = searchParams.get('category') || undefined;
     const featured = searchParams.get('featured') === 'true' ? true : undefined;
 
-    // Static services data (to be migrated to database)
-    const allServices = [
-      {
-        id: 'interior-design',
-        title: 'Interior Design',
-        slug: 'interior-design',
-        description: 'Bespoke interior design solutions that reflect your personality and lifestyle.',
-        category: 'design',
-        icon: null,
-        featured_image: null,
-        images: [],
-        featured: true,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-      },
-      {
-        id: 'luxury-tiles',
-        title: 'Luxury Tiles',
-        slug: 'luxury-tiles',
-        description: 'Premium tiles sourced from the finest manufacturers around the world.',
-        category: 'products',
-        icon: null,
-        featured_image: null,
-        images: [],
-        featured: true,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-      },
-      {
-        id: 'project-management',
-        title: 'Project Management',
-        slug: 'project-management',
-        description: 'End-to-end project execution with meticulous attention to detail.',
-        category: 'services',
-        icon: null,
-        featured_image: null,
-        images: [],
-        featured: false,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-      },
-      {
-        id: 'custom-fabrication',
-        title: 'Custom Fabrication',
-        slug: 'custom-fabrication',
-        description: 'Tailored solutions for unique design requirements.',
-        category: 'services',
-        icon: null,
-        featured_image: null,
-        images: [],
-        featured: false,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-      },
-      {
-        id: 'design-consultation',
-        title: 'Design Consultation',
-        slug: 'design-consultation',
-        description: 'Expert advice to help you make informed design decisions.',
-        category: 'consultation',
-        icon: null,
-        featured_image: null,
-        images: [],
-        featured: true,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-      },
-      {
-        id: 'installation-warranty',
-        title: 'Installation & Warranty',
-        slug: 'installation-warranty',
-        description: 'Professional installation with comprehensive warranty coverage.',
-        category: 'services',
-        icon: null,
-        featured_image: null,
-        images: [],
-        featured: false,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-      },
-    ];
+    // Build Supabase query against the shared `services` table
+    let queryBuilder = supabase
+      .from('services')
+      .select('*', { count: 'exact' })
+      .eq('status', 'published')
+      .order('created_at', { ascending: false });
 
-    // Apply filters
-    let filteredServices = allServices;
     if (category) {
-      filteredServices = filteredServices.filter((s) => s.category === category);
+      queryBuilder = queryBuilder.eq('category', category);
     }
+
     if (featured !== undefined) {
-      filteredServices = filteredServices.filter((s) => s.featured === featured);
+      queryBuilder = queryBuilder.eq('featured', featured);
     }
 
-    // Calculate total before pagination
-    const total = filteredServices.length;
+    const { data, error, count } = await queryBuilder
+      .range(offset, offset + limit - 1);
 
-    // Apply pagination
-    const paginatedServices = filteredServices.slice(offset, offset + limit);
+    if (error) {
+      console.error('Supabase services query error:', error);
+      return NextResponse.json(
+        {
+          success: false,
+          error: error.message || 'Failed to fetch services',
+        },
+        { status: 500 }
+      );
+    }
+
+    const services: PublicService[] = (data || []).map((service: Record<string, unknown>) => {
+      const imagesArray = Array.isArray(service.images) ? (service.images as string[]) : [];
+      const images = imagesArray.map((img: string) =>
+        getPublicMediaUrl(img)
+      );
+      const featuredImage =
+        service.featured_image
+          ? getPublicMediaUrl(service.featured_image as string)
+          : images[0] || null;
+
+      return {
+        id: service.id as string,
+        title: service.title as string,
+        slug: service.slug as string,
+        description: (service.description as string) ?? null,
+        category: (service.category as string) ?? null,
+        icon: (service.icon as string) ?? null,
+        featured_image: featuredImage,
+        images,
+        featured: Boolean(service.featured),
+        created_at: service.created_at as string,
+        updated_at: service.updated_at as string,
+      };
+    });
 
     return NextResponse.json({
       success: true,
-      data: paginatedServices,
+      data: services,
       meta: {
-        total,
+        total: count ?? services.length,
         limit,
         offset,
       },
@@ -141,4 +111,5 @@ export async function GET(request: NextRequest) {
     );
   }
 }
+
 

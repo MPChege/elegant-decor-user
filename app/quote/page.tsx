@@ -138,9 +138,9 @@ function QuotePageContent() {
           name: formData.name,
           email: formData.email,
           phone: formData.phone,
-          subject: `Quote Request - ${formData.projectType}`,
+          subject: `Quote Request - ${formData.productInterest || formData.projectType}`,
           message: `Project Type: ${formData.projectType}\nBudget: ${formData.budget}\nProduct Interest: ${formData.productInterest}\nQuantity: ${formData.quantity}\nAddress: ${formData.address}\n\nMessage: ${formData.message}`,
-          status: 'new',
+          type: 'quote', // Use 'quote' type for quote requests
         }),
       })
 

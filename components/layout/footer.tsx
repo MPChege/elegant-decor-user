@@ -3,7 +3,6 @@
 import * as React from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { motion } from 'framer-motion'
 import {
   Facebook,
   Instagram,
@@ -12,6 +11,10 @@ import {
   Mail,
   Phone,
   MapPin,
+  Truck,
+  Shield,
+  Headphones,
+  BadgeCheck,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -39,6 +42,13 @@ const footerLinks = {
   ],
 }
 
+const features = [
+  { icon: Truck, title: 'Timely Delivery', description: 'Projects & products' },
+  { icon: Shield, title: 'Safe Payment', description: '100% secure' },
+  { icon: Headphones, title: '24/7 Support', description: 'Dedicated help' },
+  { icon: BadgeCheck, title: 'Value for Money', description: 'Affordable & elegant' },
+]
+
 const socialLinks = [
   { name: 'Facebook', icon: Facebook, href: '#' },
   { name: 'Instagram', icon: Instagram, href: '#' },
@@ -53,12 +63,10 @@ export function Footer() {
   const { toast } = useToast()
 
   React.useEffect(() => {
-    // Get theme from document
     const checkTheme = () => {
       setTheme(document.documentElement.classList.contains('dark') ? 'dark' : 'light')
     }
     checkTheme()
-    // Listen for theme changes
     const observer = new MutationObserver(checkTheme)
     observer.observe(document.documentElement, {
       attributes: true,
@@ -105,19 +113,32 @@ export function Footer() {
 
   return (
     <footer className="bg-card border-t border-border mt-auto">
+      {/* Features Strip */}
+      <div className="border-b border-border">
+        <div className="container px-6 py-6">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {features.map((feature) => (
+              <div key={feature.title} className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
+                  <feature.icon className="h-5 w-5 text-primary" />
+                </div>
+                <div>
+                  <h4 className="font-semibold text-sm">{feature.title}</h4>
+                  <p className="text-xs text-muted-foreground">{feature.description}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
       <div className="container px-6 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 lg:gap-12">
           {/* Brand Section */}
           <div className="lg:col-span-4">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5 }}
-            >
+            <div>
               <Link href="/" className="inline-block mb-4">
                 <div className="relative h-20 md:h-24 w-auto">
-                  {/* Light Mode Logo (white background) - visible on light backgrounds */}
                   <Image
                     src="/etd logo.jpeg"
                     alt="Elegant Tiles & Décor Centre"
@@ -131,7 +152,6 @@ export function Footer() {
                     )}
                     priority
                   />
-                  {/* Dark Mode Logo (transparent background) - visible on dark backgrounds */}
                   <Image
                     src="/etd_logo-removebg-preview.png"
                     alt="Elegant Tiles & Décor Centre"
@@ -147,27 +167,40 @@ export function Footer() {
                   />
                 </div>
               </Link>
-              <p className="text-muted-foreground mb-6">
+              <p className="text-muted-foreground mb-6 text-sm">
                 We specialize in full range of home & Office interiors, Imported fully fitted Kitchens, Bathroom Vanity sets, and much more.
               </p>
-              <div className="space-y-3">
-                <div className="flex items-start space-x-3 text-sm">
+              
+              {/* Call Us CTA */}
+              <div className="bg-primary/5 rounded-xl p-4 mb-6">
+                <p className="text-xs text-muted-foreground mb-1">Got Question? Call us 24/7!</p>
+                <a href="tel:+254710602110" className="flex items-center gap-2 hover:text-primary transition-colors">
+                  <Phone className="h-5 w-5 text-primary" />
+                  <span className="font-bold text-lg">+254 710 602110</span>
+                </a>
+              </div>
+
+              <div className="space-y-3 text-sm">
+                <div className="flex items-start space-x-3">
                   <MapPin className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
                   <div>
-                    <div>Mageta road, Lavington, Nairobi, Kenya</div>
-                    <div className="text-muted-foreground">Giant complex, Thika road, Thika, Kenya</div>
+                    <div className="font-medium">Nairobi</div>
+                    <div className="text-muted-foreground text-xs">Mageta road, Lavington, Kenya</div>
                   </div>
                 </div>
-                <div className="flex items-center space-x-3 text-sm">
-                  <Phone className="h-4 w-4 text-primary flex-shrink-0" />
-                  <a href="tel:+254710602110" className="hover:text-primary">+254 710 602110</a>
+                <div className="flex items-start space-x-3">
+                  <MapPin className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
+                  <div>
+                    <div className="font-medium">Thika</div>
+                    <div className="text-muted-foreground text-xs">Giant complex, Thika road, Kenya</div>
+                  </div>
                 </div>
-                <div className="flex items-center space-x-3 text-sm">
+                <div className="flex items-center space-x-3">
                   <Mail className="h-4 w-4 text-primary flex-shrink-0" />
-                  <a href="mailto:info@elegantdecor.co.ke" className="hover:text-primary">info@elegantdecor.co.ke</a>
+                  <a href="mailto:info@elegantdecor.co.ke" className="hover:text-primary text-xs">info@elegantdecor.co.ke</a>
                 </div>
               </div>
-            </motion.div>
+            </div>
           </div>
 
           {/* Links Sections */}
@@ -273,4 +306,5 @@ export function Footer() {
     </footer>
   )
 }
+
 
