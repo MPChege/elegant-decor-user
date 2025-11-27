@@ -6,7 +6,6 @@ import { motion } from 'framer-motion'
 import { Clock, ArrowLeft } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { getBlogImageUrl } from '@/lib/s3/getPublicUrl'
 import type { PublicBlogPost } from '@/lib/public-api'
 
 interface JournalPostContentProps {
@@ -100,23 +99,28 @@ export function JournalPostContent({ post }: JournalPostContentProps) {
       {galleryImages.length > 0 && (
         <section className="py-16 bg-muted/30">
           <div className="container px-6">
-            <h2 className="font-playfair text-3xl font-bold mb-8 text-center">
-              Project Imagery
+            <h2 className="font-playfair text-3xl md:text-4xl font-bold mb-12 text-center">
+              Gallery
             </h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {galleryImages.map((img, index) => (
-                <div
+                <motion.div
                   key={img + index}
-                  className="relative aspect-[4/3] rounded-2xl overflow-hidden bg-muted"
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                  className="relative aspect-[4/3] rounded-2xl overflow-hidden bg-muted group cursor-pointer"
                 >
                   <Image
-                    src={getBlogImageUrl(img)}
-                    alt={post.title}
+                    src={img} // Images are already full URLs from API
+                    alt={`${post.title} - Image ${index + 1}`}
                     fill
-                    sizes="(min-width: 1024px) 33vw, 100vw"
-                    className="object-cover"
+                    sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
+                    className="object-cover group-hover:scale-110 transition-transform duration-500"
                   />
-                </div>
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                </motion.div>
               ))}
             </div>
           </div>

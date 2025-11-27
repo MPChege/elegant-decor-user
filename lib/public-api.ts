@@ -60,6 +60,8 @@ export interface PublicProject {
 
 function getBaseUrl() {
   // Prefer explicit app URL so we can call our own API in server components.
+  // Defaults to port 3001 (matching user's dev server)
+  // Can be overridden with NEXT_PUBLIC_APP_URL env var
   return (
     process.env.NEXT_PUBLIC_APP_URL ||
     process.env.NEXT_PUBLIC_SITE_URL ||
@@ -209,12 +211,17 @@ export async function fetchPublicBlogPost(
 
 export async function fetchPublicProjects(): Promise<PublicProject[]> {
   try {
-    const res = await fetch(`${getBaseUrl()}/api/public/projects`, {
-      next: { revalidate: 60 },
+    const baseUrl = getBaseUrl()
+    const url = `${baseUrl}/api/public/projects`
+    console.log('[fetchPublicProjects] Fetching from:', url)
+    
+    const res = await fetch(url, {
+      cache: 'no-store', // Always fetch fresh data
     })
 
     if (!res.ok) {
-      console.error('Failed to fetch projects:', res.status, await res.text())
+      const errorText = await res.text()
+      console.error('[fetchPublicProjects] Failed to fetch projects:', res.status, errorText)
       return []
     }
 
@@ -223,10 +230,15 @@ export async function fetchPublicProjects(): Promise<PublicProject[]> {
       data?: PublicProject[]
     }
 
+    console.log('[fetchPublicProjects] Response:', {
+      success: json.success,
+      dataLength: json.data?.length || 0,
+    })
+
     if (!json.success || !json.data) return []
     return json.data
   } catch (error) {
-    console.error('Error fetching projects:', error)
+    console.error('[fetchPublicProjects] Error fetching projects:', error)
     return []
   }
 }

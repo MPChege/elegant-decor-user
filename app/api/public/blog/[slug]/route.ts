@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase';
+import { supabaseAdmin } from '@/lib/supabase'; // Use admin client to bypass RLS
 import { getBlogImageUrl } from '@/lib/s3/getPublicUrl';
 import type { PublicBlogPost } from '@/lib/public-api';
 
@@ -15,21 +15,20 @@ export async function GET(
     const { slug } = await context.params;
     
     // Query blog post by slug from Supabase
-    // Try both status field (admin dashboard) and published boolean (legacy schema)
-    let { data, error } = await supabase
+    // Try with status filter first
+    let { data, error } = await supabaseAdmin
       .from('blog_posts')
       .select('*')
       .eq('slug', slug)
       .eq('status', 'published')
       .single();
 
-    // If status field doesn't exist, try published boolean
+    // If not found with status filter, try without status filter
     if (error || !data) {
-      const result = await supabase
+      const result = await supabaseAdmin
         .from('blog_posts')
         .select('*')
         .eq('slug', slug)
-        .eq('published', true) // Legacy schema uses published boolean
         .single();
       
       data = result.data
@@ -49,15 +48,25 @@ export async function GET(
     const post = data as Record<string, unknown>;
 
     // Map database format to public API format with full image URLs
+    // Schema has both featured_image_key and featured_image fields
+    const featuredImageKey = (post.featured_image_key as string) || (post.featured_image as string) || null
+    const featuredImage = featuredImageKey ? getBlogImageUrl(featuredImageKey) : null
+
+    // Handle images array from database (admin dashboard saves images array)
+    const imagesArray = Array.isArray(post.images) ? (post.images as string[]) : []
+    const images = imagesArray
+      .filter((img): img is string => Boolean(img && typeof img === 'string'))
+      .map((img: string) => getBlogImageUrl(img))
+
     const publicPost: PublicBlogPost = {
       id: post.id as string,
       title: post.title as string,
       slug: post.slug as string,
       excerpt: (post.excerpt as string) || null,
       content: post.content as string,
-      featured_image: post.featured_image ? getBlogImageUrl(post.featured_image as string) : null,
-      featured_image_key: (post.featured_image as string) || null,
-      images: [], // Blog posts don't have images array in DB, but we can extend this later
+      featured_image: featuredImage,
+      featured_image_key: featuredImageKey,
+      images: images, // Map images array from database
       tags: (post.tags as string[]) || [],
       category: (post.category as string) || null,
       published: (post.status as string) === 'published' || (post.published as boolean) === true,

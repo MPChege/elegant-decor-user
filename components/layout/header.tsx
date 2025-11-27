@@ -12,7 +12,7 @@ import { GlobalSearch } from '@/components/search/global-search'
 const navigation = [
   { name: 'Home', href: '/' },
   { name: 'Services', href: '/services' },
-  { name: 'Our Work', href: '/work' },
+  { name: 'Projects', href: '/work' },
   { name: 'Products', href: '/products' },
   { name: 'Journal', href: '/journal' },
   { name: 'About', href: '/about' },
@@ -66,7 +66,7 @@ export function Header() {
             backgroundPosition: 'center',
           }}
         />
-        <div className="absolute inset-0 -z-10 bg-background/80 backdrop-blur-2xl" />
+        <div className="absolute inset-0 -z-10 bg-background/40 backdrop-blur-xl" />
         <nav className="container flex items-center justify-between py-4 px-6">
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-3">

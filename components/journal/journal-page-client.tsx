@@ -40,10 +40,16 @@ export function JournalPageClient({ posts }: JournalPageClientProps) {
     return matchesSearch && matchesCategory
   })
 
+  // Only show featured post if there are multiple posts
+  // If there's only one post, show it in the grid instead
   const featuredPost =
-    filteredPosts.find((p) => p.tags?.includes('featured')) ?? filteredPosts[0]
+    filteredPosts.length > 1
+      ? filteredPosts.find((p) => p.tags?.includes('featured')) ?? filteredPosts[0]
+      : null
 
-  const otherPosts = filteredPosts.filter((p) => p.id !== featuredPost?.id)
+  const otherPosts = featuredPost
+    ? filteredPosts.filter((p) => p.id !== featuredPost.id)
+    : filteredPosts
 
   return (
     <>
@@ -187,9 +193,15 @@ export function JournalPageClient({ posts }: JournalPageClientProps) {
       {/* Articles Grid */}
       <section className="py-20">
         <div className="container px-6">
-          {otherPosts.length === 0 ? (
+          {posts.length === 0 ? (
+            <div className="text-center py-12">
+              <p className="text-muted-foreground text-lg">
+                No articles found. Please check back soon.
+              </p>
+            </div>
+          ) : otherPosts.length === 0 && featuredPost ? (
             <p className="text-muted-foreground">
-              No articles found. Please check back soon.
+              No additional articles found. Please check back soon.
             </p>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">

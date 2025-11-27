@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase';
+import { supabaseAdmin } from '@/lib/supabase'; // Use admin client to bypass RLS
 import { getPublicMediaUrl } from '@/lib/s3/getPublicUrl';
 import type { PublicProject } from '@/lib/public-api';
 
@@ -14,14 +14,45 @@ export async function GET(
   try {
     const { slug } = await context.params;
     
-    // Query project by ID (slug is actually the project ID)
-    const { data, error } = await supabase
+    // Query project by slug first, then by id
+    // Try with status filter first, then without if not found
+    let project: Record<string, unknown> | null = null;
+
+    // Try published first
+    const publishedResult: { data: Record<string, unknown> | null; error: unknown } = await supabaseAdmin
       .from('projects')
       .select('*')
-      .eq('id', slug)
-      .single();
+      .eq('slug', slug)
+      .eq('status', 'published')
+      .single() as { data: Record<string, unknown> | null; error: unknown };
 
-    if (error || !data) {
+    if (publishedResult.data && !publishedResult.error) {
+      project = publishedResult.data;
+    } else {
+      // Try without status filter
+      const allResult: { data: Record<string, unknown> | null; error: unknown } = await supabaseAdmin
+        .from('projects')
+        .select('*')
+        .eq('slug', slug)
+        .single() as { data: Record<string, unknown> | null; error: unknown };
+
+      if (!allResult.error && allResult.data) {
+        project = allResult.data;
+      } else {
+        // Try by id
+        const idResult: { data: Record<string, unknown> | null; error: unknown } = await supabaseAdmin
+          .from('projects')
+          .select('*')
+          .eq('id', slug)
+          .single() as { data: Record<string, unknown> | null; error: unknown };
+
+        if (!idResult.error && idResult.data) {
+          project = idResult.data;
+        }
+      }
+    }
+
+    if (!project) {
       return NextResponse.json(
         {
           success: false,
@@ -31,26 +62,32 @@ export async function GET(
       );
     }
 
-    const project = data as Record<string, unknown>;
-
     // Convert image keys to full URLs
+    // Admin dashboard stores images in 'media' bucket
     const imagesArray = Array.isArray(project.images) ? (project.images as string[]) : [];
-    const images = imagesArray.map((img: string) => getPublicMediaUrl(img));
-    const featuredImage = images[0] || null;
+    const images = imagesArray
+      .filter((img): img is string => Boolean(img && typeof img === 'string'))
+      .map((img: string) => getPublicMediaUrl(img, 'media'));
 
-    // Map database format to public API format with full image URLs
+    // featured_image is stored as a key string in the database
+    const featuredImageKey = (project.featured_image as string) || null;
+    const featuredImage = featuredImageKey
+      ? getPublicMediaUrl(featuredImageKey, 'media')
+      : images[0] || null;
+
+    // Map database format to public API format
     const publicProject: PublicProject = {
       id: project.id as string,
       title: project.title as string,
-      slug: project.id as string, // Use ID as slug if no slug field exists
+      slug: (project.slug as string) || (project.id as string),
       description: (project.description as string) || null,
-      short_description: null, // Not in database schema
-      client_name: (project.client_name as string) || (project.client as string) || null,
+      short_description: null,
+      client_name: (project.client_name as string) || null,
       location: (project.location as string) || null,
-      year: (project.year as number) || null,
+      year: null, // Extract from completion_date if needed
       completion_date: (project.completion_date as string) || null,
       featured_image: featuredImage,
-      featured_image_key: images[0] || null,
+      featured_image_key: featuredImageKey,
       images: images,
       tags: (project.tags as string[]) || [],
       featured: Boolean(project.featured),
@@ -64,26 +101,12 @@ export async function GET(
     });
   } catch (error) {
     console.error('Error fetching project:', error);
-
-    const errorMessage = error instanceof Error ? error.message : '';
-
-    if (errorMessage.includes('not found') || errorMessage.includes('No rows')) {
-      return NextResponse.json(
-        {
-          success: false,
-          error: 'Project not found',
-        },
-        { status: 404 }
-      );
-    }
-
     return NextResponse.json(
       {
         success: false,
-        error: errorMessage || 'Failed to fetch project',
+        error: error instanceof Error ? error.message : 'Failed to fetch project',
       },
       { status: 500 }
     );
   }
 }
-

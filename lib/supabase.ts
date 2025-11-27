@@ -6,8 +6,18 @@
 import { createClient } from '@supabase/supabase-js'
 import type { Database } from './database.types'
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co'
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'placeholder-key'
+// IMPORTANT:
+// Do NOT fall back to placeholder credentials in production.
+// Both the main site and the admin dashboard MUST point to the same Supabase project.
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+
+if (!supabaseUrl || !supabaseAnonKey) {
+  // Fail fast with a clear error instead of silently using a placeholder project
+  throw new Error(
+    'Missing Supabase env vars. Please set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY in .env.local (use the SAME values as the admin dashboard).'
+  )
+}
 
 /**
  * Client-side Supabase client
@@ -21,10 +31,19 @@ export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey, {
 
 /**
  * Server-side Supabase client for admin operations
+ * Uses service role key to bypass RLS for public form submissions
  */
+const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+
+if (!serviceRoleKey) {
+  console.warn(
+    '⚠️  SUPABASE_SERVICE_ROLE_KEY not set. Public form submissions (inquiries, orders) may fail due to RLS policies.'
+  )
+}
+
 export const supabaseAdmin = createClient<Database>(
   supabaseUrl,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
+  serviceRoleKey || supabaseAnonKey // Fallback to anon key if service role not set (may fail with RLS)
 )
 
 /**

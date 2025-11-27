@@ -26,10 +26,11 @@ export function getPublicMediaUrl(key?: string | null, bucket: string = 'media')
 
 /**
  * Build a public URL specifically for blog/journal images.
- * Uses the 'blog' bucket by default.
+ * Admin dashboard currently uploads blog images to the shared `media` bucket,
+ * so we point there to ensure public journal images render correctly.
  */
 export function getBlogImageUrl(key?: string | null): string {
-  return getPublicMediaUrl(key, 'blog')
+  return getPublicMediaUrl(key, 'media')
 }
 
 

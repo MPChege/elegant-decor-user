@@ -64,7 +64,7 @@ export function WorkPageClient({ projects }: WorkPageClientProps) {
             className="max-w-3xl mx-auto text-center"
           >
             <h1 className="font-playfair text-5xl md:text-6xl lg:text-7xl font-bold mb-6">
-              Our <span className="text-luxury-gradient">Work</span>
+              Our <span className="text-luxury-gradient">Projects</span>
             </h1>
             <p className="text-lg md:text-xl text-white/85">
               A portfolio of exceptional design projects that showcase our
@@ -103,9 +103,15 @@ export function WorkPageClient({ projects }: WorkPageClientProps) {
       {/* Projects Grid */}
       <section className="py-20">
         <div className="container px-6">
-          {filteredProjects.length === 0 ? (
+          {projects.length === 0 ? (
+            <div className="text-center py-12">
+              <p className="text-muted-foreground text-lg">
+                No projects found. Please check back soon.
+              </p>
+            </div>
+          ) : filteredProjects.length === 0 ? (
             <p className="text-muted-foreground">
-              No projects found. Please check back soon.
+              No projects match the selected filter. Please try a different category.
             </p>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">

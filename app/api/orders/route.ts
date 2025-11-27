@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase';
+import { supabaseAdmin } from '@/lib/supabase'; // Use admin client to bypass RLS
 import { orderSchema } from '@/lib/validators';
 
 /**
@@ -16,18 +16,19 @@ export async function POST(request: NextRequest) {
     // Generate order number
     const orderNumber = `ORD-${Date.now()}`;
 
-    // For now, store orders as inquiries with type 'order'
-    // TODO: Create an orders table in Supabase
+    // Store orders as inquiries with type 'quote' (for product inquiries/orders)
     const insertData: Record<string, unknown> = {
       name: validatedData.customer_name,
       email: validatedData.customer_email,
-      phone: validatedData.customer_phone || '',
+      phone: validatedData.customer_phone || null,
+      subject: `Order Request: ${validatedData.product_title}`, // Add subject field
       message: `Order Request: ${validatedData.product_title}\nQuantity: ${validatedData.quantity}\nUnit Price: ${validatedData.currency} ${validatedData.unit_price}\nTotal: ${validatedData.currency} ${validatedData.total_price}\nOrder Number: ${orderNumber}\n\n${validatedData.notes || ''}`,
       type: 'quote', // Use quote type for order requests
       status: 'new',
+      priority: 'high', // Order requests are high priority
     };
     
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from('inquiries')
       .insert(insertData as never)
       .select()
@@ -110,7 +111,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Query inquiries with type 'quote' (used for orders) by email
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from('inquiries')
       .select('*')
       .eq('email', email)

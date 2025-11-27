@@ -139,25 +139,20 @@ export function ProductsPageClient({ products }: ProductsPageClientProps) {
             <div
               className={
                 viewMode === 'grid'
-                  ? 'grid grid-cols-1 xs:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8'
+                  ? 'grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4 md:gap-5'
                   : 'space-y-4 sm:space-y-6'
               }
             >
               {filteredProducts.map((product) => {
-                const specs =
-                  (product.specifications as Record<string, unknown> | null) ?? {}
-                const size = (specs.size as string) || ''
-                const finish = (specs.finish as string) || ''
-
                 return (
                   <div key={product.id}>
-                    <Card className="group overflow-hidden hover:shadow-luxury-lg transition-all duration-300 border-luxury h-full">
-                      <Link href={`/products/${product.slug || product.id}`}>
+                    <Card className="group overflow-hidden hover:shadow-lg transition-all duration-300 border h-full flex flex-col">
+                      <Link href={`/products/${product.slug || product.id}`} className="flex-1 flex flex-col">
                         <div className="aspect-square relative overflow-hidden bg-muted">
                           {product.featured && (
                             <Badge
                               variant="luxury"
-                              className="absolute top-2 left-2 sm:top-4 sm:left-4 z-10 text-xs"
+                              className="absolute top-1 left-1 z-10 text-[10px] px-1.5 py-0.5"
                             >
                               Featured
                             </Badge>
@@ -165,9 +160,9 @@ export function ProductsPageClient({ products }: ProductsPageClientProps) {
                           {!product.in_stock && (
                             <Badge
                               variant="secondary"
-                              className="absolute top-2 right-2 sm:top-4 sm:right-4 z-10 text-xs"
+                              className="absolute top-1 right-1 z-10 text-[10px] px-1.5 py-0.5"
                             >
-                              Out of Stock
+                              Out
                             </Badge>
                           )}
                           {product.featured_image ? (
@@ -175,46 +170,43 @@ export function ProductsPageClient({ products }: ProductsPageClientProps) {
                               src={product.featured_image}
                               alt={product.title}
                               fill
-                              sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                              sizes="(min-width: 1280px) 16vw, (min-width: 1024px) 20vw, (min-width: 768px) 25vw, (min-width: 640px) 33vw, 50vw"
                               className="object-cover group-hover:scale-110 transition-transform duration-500"
                             />
                           ) : (
                             <div className="absolute inset-0 bg-gradient-to-br from-primary/30 to-accent/30 group-hover:scale-110 transition-transform duration-500 flex items-center justify-center">
-                              <span className="text-muted-foreground text-xs sm:text-sm">No Image</span>
+                              <span className="text-muted-foreground text-[10px]">No Image</span>
                             </div>
                           )}
                         </div>
+                        <CardContent className="p-2 sm:p-3 flex-1 flex flex-col">
+                          <Badge variant="outline" className="mb-1.5 text-[10px] px-1.5 py-0 w-fit">
+                            {product.category}
+                          </Badge>
+                          <h3 className="font-playfair text-xs sm:text-sm font-semibold mb-1.5 line-clamp-2 flex-1">
+                            {product.title}
+                          </h3>
+                          <div className="font-semibold text-xs sm:text-sm text-primary mb-2">
+                            {product.price != null
+                              ? `KSh ${product.price.toLocaleString()}`
+                              : 'Price on request'}
+                          </div>
+                        </CardContent>
                       </Link>
-                      <CardContent className="p-3 sm:p-4 md:p-6">
-                        <Badge variant="outline" className="mb-2 text-xs">
-                          {product.category}
-                        </Badge>
-                        <h3 className="font-playfair text-base sm:text-lg md:text-xl font-semibold mb-2 line-clamp-2">
-                          {product.title}
-                        </h3>
-                        <div className="flex items-center justify-between text-xs sm:text-sm text-muted-foreground mb-2">
-                          <span className="truncate">{size}</span>
-                          <span className="truncate">{finish}</span>
-                        </div>
-                        <div className="font-semibold text-base sm:text-lg text-primary">
-                          {product.price != null
-                            ? `KSh ${product.price.toLocaleString()}/sqm`
-                            : 'Pricing on request'}
-                        </div>
-                      </CardContent>
-                      <CardFooter className="p-3 sm:p-4 md:p-6 pt-0">
+                      <CardFooter className="p-2 sm:p-3 pt-0">
                         <Button
                           variant={product.in_stock ? 'luxury' : 'secondary'}
-                          className={`w-full font-bold tracking-wide h-10 sm:h-11 md:h-12 text-sm touch-target ${
+                          size="sm"
+                          className={`w-full text-[10px] sm:text-xs h-7 sm:h-8 font-semibold ${
                             product.in_stock
-                              ? 'bg-primary text-white shadow-xl hover:shadow-2xl hover:scale-105 border-2 border-primary'
+                              ? 'bg-primary text-white hover:scale-105'
                               : 'bg-muted text-muted-foreground cursor-not-allowed'
                           }`}
                           disabled={!product.in_stock}
                           asChild
                         >
-                          <Link href={`/products/${product.slug}`}>
-                            {product.in_stock ? 'View Details' : 'Out of Stock'}
+                          <Link href={`/products/${product.slug || product.id}`}>
+                            {product.in_stock ? 'View' : 'Out'}
                           </Link>
                         </Button>
                       </CardFooter>

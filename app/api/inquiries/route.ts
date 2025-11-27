@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase';
+import { supabaseAdmin } from '@/lib/supabase'; // Use admin client to bypass RLS
 import { inquirySchema } from '@/lib/validators';
 import { ZodError } from 'zod';
 import type { Database } from '@/lib/database.types';
@@ -20,18 +20,19 @@ export async function POST(request: NextRequest) {
     // Determine priority based on type
     const priority = validatedData.type === 'quote' || validatedData.type === 'project' ? 'high' : 'medium';
 
-    // Insert inquiry directly into Supabase
-    // Phone can be null, but database expects string | null
+    // Insert inquiry using admin client (bypasses RLS for public submissions)
     const insertData: InquiryInsert = {
       name: validatedData.name,
       email: validatedData.email,
-      phone: validatedData.phone || null, // Use null instead of empty string
-      message: `${validatedData.subject || ''}\n\n${validatedData.message}`, // Combine subject and message
+      phone: validatedData.phone || null,
+      subject: validatedData.subject,
+      message: validatedData.message,
       type: validatedData.type,
       status: 'new',
+      priority: priority,
     };
-    
-    const { data, error } = await supabase
+
+    const { data, error } = await supabaseAdmin
       .from('inquiries')
       .insert(insertData as never)
       .select()

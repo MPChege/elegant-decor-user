@@ -3,7 +3,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { notFound } from 'next/navigation'
 import { ArrowLeft } from 'lucide-react'
-import { supabase } from '@/lib/supabase'
+import { supabaseAdmin } from '@/lib/supabase' // Use admin client to bypass RLS
 import { getPublicMediaUrl } from '@/lib/s3/getPublicUrl'
 import { LuxuryLayout } from '@/components/layout/luxury-layout'
 import { Button } from '@/components/ui/button'
@@ -50,26 +50,51 @@ function mapProductToPublic(product: Record<string, unknown>): PublicProduct {
 
 async function getProductById(id: string): Promise<PublicProduct | null> {
   try {
+    // Clean the id/slug (trim whitespace)
+    const cleanId = id.trim()
+    
     // Query product by ID or slug (try both)
-    // First try by slug, then by id
-    let { data, error } = await supabase
+    let data: Record<string, unknown> | null = null
+    let error: unknown = null
+    
+    // First try by slug
+    const slugResult: { data: Record<string, unknown> | null; error: unknown } = await supabaseAdmin
       .from('products')
       .select('*')
-      .eq('slug', id)
-      .eq('status', 'published') // Only show published products
-      .single()
+      .eq('slug', cleanId)
+      .eq('status', 'published')
+      .single() as { data: Record<string, unknown> | null; error: unknown }
     
-    // If not found by slug, try by id
-    if (error || !data) {
-      const result = await supabase
+    if (!slugResult.error && slugResult.data) {
+      data = slugResult.data
+      error = null
+    } else {
+      // If not found by slug, try by id
+      const idResult: { data: Record<string, unknown> | null; error: unknown } = await supabaseAdmin
         .from('products')
         .select('*')
-        .eq('id', id)
+        .eq('id', cleanId)
         .eq('status', 'published')
-        .single()
+        .single() as { data: Record<string, unknown> | null; error: unknown }
       
-      data = result.data
-      error = result.error
+      if (!idResult.error && idResult.data) {
+        data = idResult.data
+        error = null
+      } else {
+        // Try without status filter as fallback
+        const allResult: { data: Record<string, unknown> | null; error: unknown } = await supabaseAdmin
+          .from('products')
+          .select('*')
+          .or(`slug.eq.${cleanId},id.eq.${cleanId}`)
+          .single() as { data: Record<string, unknown> | null; error: unknown }
+        
+        if (!allResult.error && allResult.data) {
+          data = allResult.data
+          error = null
+        } else {
+          error = allResult.error
+        }
+      }
     }
     
     if (error || !data) {
@@ -87,7 +112,7 @@ async function getProductById(id: string): Promise<PublicProduct | null> {
 async function getProductsByCategory(category: string): Promise<PublicProduct[]> {
   try {
     // Query products by category directly from Supabase
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from('products')
       .select('*')
       .eq('category', category)

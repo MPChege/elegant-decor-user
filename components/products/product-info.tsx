@@ -86,8 +86,13 @@ export function ProductInfo({ product, specifications }: ProductInfoProps) {
         category={product.category}
         price={product.price}
         inStock={product.in_stock}
+        product={product}
       />
     </motion.div>
   )
 }
+
+
+
+
 

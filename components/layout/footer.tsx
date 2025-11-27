@@ -25,7 +25,7 @@ import { useToast } from '@/hooks/use-toast'
 const footerLinks = {
   company: [
     { name: 'About Us', href: '/about' },
-    { name: 'Our Work', href: '/work' },
+    { name: 'Projects', href: '/work' },
     { name: 'Services', href: '/services' },
     { name: 'Our Approach', href: '/approach' },
   ],
@@ -306,5 +306,9 @@ export function Footer() {
     </footer>
   )
 }
+
+
+
+
 
 

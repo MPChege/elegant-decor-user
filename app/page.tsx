@@ -9,6 +9,8 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { ProductsCarousel } from '@/components/products/products-carousel'
+import { ProjectsCarousel } from '@/components/projects/projects-carousel'
+import type { PublicProject } from '@/lib/public-api'
 
 const services = [
   {
@@ -117,25 +119,38 @@ const collageImages = {
 
 export default function HomePage() {
   const [currentHeroIndex, setCurrentHeroIndex] = React.useState(0)
+  const [projects, setProjects] = React.useState<PublicProject[]>([])
 
   React.useEffect(() => {
     const interval = window.setInterval(() => {
       setCurrentHeroIndex((prev) => (prev + 1) % heroImages.length)
-    }, 7000)
+    }, 5000) // Switch every 5 seconds
 
     return () => window.clearInterval(interval)
   }, [])
 
+  React.useEffect(() => {
+    // Fetch real projects from database via API
+    fetch('/api/public/projects?limit=10')
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success && data.data) {
+          setProjects(data.data)
+        }
+      })
+      .catch(console.error)
+  }, [])
+
   return (
     <LuxuryLayout>
-      {/* Hero Section - Simplified without heavy animations */}
+      {/* Hero Section - Auto-switching images */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 -z-10">
           {heroImages.map((image, index) => (
             <div
               key={image}
-              className={`absolute inset-0 transition-opacity duration-1000 ${
-                index === currentHeroIndex ? 'opacity-100' : 'opacity-0'
+              className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
+                index === currentHeroIndex ? 'opacity-100 z-10' : 'opacity-0 z-0'
               }`}
             >
               <Image
@@ -148,7 +163,7 @@ export default function HomePage() {
               />
             </div>
           ))}
-          <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/45 to-background/95" />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/30 to-black/60 z-20" />
         </div>
         <div className="container px-6 py-20 text-center relative z-10 text-white">
           <div>
@@ -187,49 +202,51 @@ export default function HomePage() {
               className="bg-white text-primary border-2 border-primary font-bold shadow-xl hover:bg-primary hover:text-white hover:shadow-2xl hover:scale-105"
               asChild
             >
-              <Link href="/work">View Our Work</Link>
+              <Link href="/work">View Projects</Link>
             </Button>
           </div>
         </div>
       </section>
 
-      {/* Signature Spaces Section */}
-      <section className="py-20 bg-muted/20">
+      {/* Signature Spaces Section - Horizontal Scroll */}
+      <section className="py-12 bg-muted/20">
         <div className="container px-6">
-          <div className="text-center mb-16">
-            <h2 className="font-playfair text-4xl md:text-5xl font-bold mb-4">
+          <div className="text-center mb-8">
+            <h2 className="font-playfair text-3xl md:text-4xl font-bold mb-3">
               Spaces We Curate
             </h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            <p className="text-base text-muted-foreground max-w-2xl mx-auto">
               A glimpse into the bathrooms, bedrooms, foyers, kitchens, and beyond that define Elegant Tiles & Décor.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
-            {signatureSpaces.map((space) => (
-              <div key={space.title}>
-                <Card className="border-0 shadow-lg hover:shadow-luxury-lg transition-all duration-500 group h-full flex flex-col overflow-hidden rounded-3xl">
-                  <div className="relative aspect-[4/3]">
-                    <Image
-                      src={space.image}
-                      alt={space.title}
-                      fill
-                      sizes="(min-width: 1280px) 30vw, (min-width: 768px) 45vw, 100vw"
-                      className="object-cover group-hover:scale-105 transition-transform duration-700"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-black/60" />
-                    <div className="absolute bottom-4 left-4 text-white font-playfair text-2xl">
-                      {space.title}
+          <div className="overflow-x-auto pb-4 hide-scrollbar">
+            <div className="flex gap-4 min-w-max px-2">
+              {signatureSpaces.map((space) => (
+                <div key={space.title} className="flex-shrink-0 w-64 md:w-72">
+                  <Card className="border-0 shadow-lg hover:shadow-luxury-lg transition-all duration-500 group h-full flex flex-col overflow-hidden rounded-2xl">
+                    <div className="relative aspect-[4/3]">
+                      <Image
+                        src={space.image}
+                        alt={space.title}
+                        fill
+                        sizes="(min-width: 768px) 288px, 256px"
+                        className="object-cover group-hover:scale-105 transition-transform duration-700"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-black/60" />
+                      <div className="absolute bottom-3 left-3 text-white font-playfair text-lg md:text-xl">
+                        {space.title}
+                      </div>
                     </div>
-                  </div>
-                  <CardContent className="flex-1 flex items-center justify-center px-6 py-8 text-center">
-                    <p className="text-sm text-muted-foreground leading-relaxed text-balance">
-                      {space.description}
-                    </p>
-                  </CardContent>
-                </Card>
-              </div>
-            ))}
+                    <CardContent className="flex-1 flex items-center justify-center px-4 py-4 text-center">
+                      <p className="text-xs md:text-sm text-muted-foreground leading-relaxed text-balance">
+                        {space.description}
+                      </p>
+                    </CardContent>
+                  </Card>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
@@ -304,7 +321,7 @@ export default function HomePage() {
       {/* Featured Projects Preview */}
       <section className="py-20 bg-muted/30">
         <div className="container px-6">
-          <div className="text-center mb-16">
+          <div className="text-center mb-12">
             <h2 className="font-playfair text-4xl md:text-5xl font-bold mb-4">
               Featured Projects
             </h2>
@@ -313,7 +330,7 @@ export default function HomePage() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
             {featuredProjects.map((project) => (
               <div key={project.title}>
                 <Link href="/work" className="group block">
@@ -341,6 +358,16 @@ export default function HomePage() {
               </div>
             ))}
           </div>
+
+          {/* Real Projects Carousel - Horizontal Scroll */}
+          {projects.length > 0 && (
+            <div className="mb-8">
+              <h3 className="font-playfair text-2xl md:text-3xl font-bold mb-6 text-center">
+                Our Latest Projects
+              </h3>
+              <ProjectsCarousel projects={projects.slice(0, 10)} />
+            </div>
+          )}
 
           <div className="text-center mt-12">
             <Button variant="outline" size="lg" asChild>

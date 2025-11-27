@@ -72,16 +72,41 @@ export interface Database {
       inquiries: {
         Row: {
           id: string
-          created_at: string
           name: string
           email: string
           phone: string | null
+          subject: string
           message: string
-          type: string
-          status: 'new' | 'in_progress' | 'completed'
+          type: 'general' | 'quote' | 'support' | 'project'
+          status: 'new' | 'in_progress' | 'resolved' | 'closed'
+          priority: 'low' | 'medium' | 'high' | 'urgent'
+          assigned_to: string | null
+          notes: string | null
+          created_at: string
+          updated_at: string
         }
-        Insert: Omit<Database['public']['Tables']['inquiries']['Row'], 'id' | 'created_at'>
-        Update: Partial<Database['public']['Tables']['inquiries']['Insert']>
+        Insert: {
+          id?: string
+          name: string
+          email: string
+          phone?: string | null
+          subject: string
+          message: string
+          type?: 'general' | 'quote' | 'support' | 'project'
+          status?: 'new' | 'in_progress' | 'resolved' | 'closed'
+          priority?: 'low' | 'medium' | 'high' | 'urgent'
+          assigned_to?: string | null
+          notes?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          status?: 'new' | 'in_progress' | 'resolved' | 'closed'
+          priority?: 'low' | 'medium' | 'high' | 'urgent'
+          assigned_to?: string | null
+          notes?: string | null
+          updated_at?: string
+        }
       }
       newsletter_subscribers: {
         Row: {

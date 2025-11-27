@@ -210,13 +210,13 @@ export default function AboutPage() {
           </motion.div>
 
           <div className="max-w-3xl mx-auto">
-            <motion.div
+              <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
+                viewport={{ once: true }}
               transition={{ duration: 0.6 }}
               className="text-center"
-            >
+              >
               <div className="mb-6">
                 <div className="w-32 h-32 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
                   <Users className="h-16 w-16 text-primary" />
@@ -234,8 +234,8 @@ export default function AboutPage() {
                   <p>Over 20 years experience in administration, procurement and logistics</p>
                   <p>Deep passion in construction, home design, décor and landscaping</p>
                 </div>
-              </div>
-            </motion.div>
+                </div>
+              </motion.div>
           </div>
         </div>
       </section>

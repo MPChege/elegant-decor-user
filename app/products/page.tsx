@@ -1,4 +1,4 @@
-import { supabase } from '@/lib/supabase'
+import { supabaseAdmin } from '@/lib/supabase' // Use admin client to bypass RLS
 import { getPublicMediaUrl } from '@/lib/s3/getPublicUrl'
 import { LuxuryLayout } from '@/components/layout/luxury-layout'
 import { ProductsPageClient } from '@/components/products/products-page-client'
@@ -10,7 +10,7 @@ async function getProducts(): Promise<PublicProduct[]> {
   try {
     // Query products directly from Supabase
     // Filter by status = 'published' (admin dashboard uses this field)
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from('products')
       .select('*')
       .eq('status', 'published') // Only show published products
