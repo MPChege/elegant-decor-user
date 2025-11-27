@@ -152,6 +152,7 @@ function AutoScrollSpaces({ spaces }: { spaces: typeof signatureSpaces }) {
     if (!scrollRef.current || isPaused) return
 
     const scrollContainer = scrollRef.current
+    let animationFrameId: number
     let scrollPosition = 0
     const scrollSpeed = 0.5 // pixels per frame
 
@@ -160,16 +161,25 @@ function AutoScrollSpaces({ spaces }: { spaces: typeof signatureSpaces }) {
         scrollPosition += scrollSpeed
         scrollContainer.scrollLeft = scrollPosition
 
-        // Reset scroll position when reaching the end
-        if (scrollPosition >= scrollContainer.scrollWidth - scrollContainer.clientWidth) {
+        // Reset scroll position when reaching halfway (since we duplicate the content)
+        const maxScroll = scrollContainer.scrollWidth / 2
+        if (scrollPosition >= maxScroll) {
           scrollPosition = 0
+          scrollContainer.scrollLeft = 0
         }
+
+        animationFrameId = requestAnimationFrame(scroll)
       }
     }
 
-    const intervalId = window.setInterval(scroll, 16) // ~60fps
+    // Start the animation
+    animationFrameId = requestAnimationFrame(scroll)
 
-    return () => window.clearInterval(intervalId)
+    return () => {
+      if (animationFrameId) {
+        cancelAnimationFrame(animationFrameId)
+      }
+    }
   }, [isPaused])
 
   return (
@@ -180,8 +190,8 @@ function AutoScrollSpaces({ spaces }: { spaces: typeof signatureSpaces }) {
     >
       <div
         ref={scrollRef}
-        className="flex gap-4 pb-4 hide-scrollbar"
-        style={{ scrollBehavior: 'auto' }}
+        className="flex gap-4 pb-4 hide-scrollbar overflow-x-auto"
+        style={{ scrollBehavior: 'auto', WebkitOverflowScrolling: 'touch' }}
       >
         {/* Render spaces twice for seamless loop */}
         {[...spaces, ...spaces].map((space, index) => (
