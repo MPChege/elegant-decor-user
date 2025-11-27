@@ -5,6 +5,86 @@ import { ZodError } from 'zod';
 import type { Database } from '@/lib/database.types';
 
 type InquiryInsert = Database['public']['Tables']['inquiries']['Insert'];
+type InquiryRow = Database['public']['Tables']['inquiries']['Row'];
+
+/**
+ * GET /api/inquiries
+ * Fetch all inquiries (for admin dashboard)
+ * Query params: status, priority, type, limit, offset
+ */
+export async function GET(request: NextRequest) {
+  try {
+    // Check if Supabase is configured
+    if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+      return NextResponse.json(
+        { 
+          success: false, 
+          error: 'Server configuration error. Please contact support.' 
+        },
+        { status: 500 }
+      );
+    }
+
+    // Get query parameters
+    const searchParams = request.nextUrl.searchParams;
+    const status = searchParams.get('status');
+    const priority = searchParams.get('priority');
+    const type = searchParams.get('type');
+    const limit = parseInt(searchParams.get('limit') || '50', 10);
+    const offset = parseInt(searchParams.get('offset') || '0', 10);
+
+    // Build query
+    let query = supabaseAdmin
+      .from('inquiries')
+      .select('*', { count: 'exact' })
+      .order('created_at', { ascending: false })
+      .range(offset, offset + limit - 1);
+
+    // Apply filters
+    if (status) {
+      query = query.eq('status', status);
+    }
+    if (priority) {
+      query = query.eq('priority', priority);
+    }
+    if (type) {
+      query = query.eq('type', type);
+    }
+
+    const { data, error, count } = await query;
+
+    if (error) {
+      console.error('Supabase error fetching inquiries:', error);
+      return NextResponse.json(
+        {
+          success: false,
+          error: error.message || 'Failed to fetch inquiries',
+        },
+        { status: 500 }
+      );
+    }
+
+    return NextResponse.json(
+      {
+        success: true,
+        data: data || [],
+        count: count || 0,
+        limit,
+        offset,
+      },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.error('Error fetching inquiries:', error);
+    return NextResponse.json(
+      {
+        success: false,
+        error: error instanceof Error ? error.message : 'Failed to fetch inquiries',
+      },
+      { status: 500 }
+    );
+  }
+}
 
 /**
  * POST /api/inquiries
