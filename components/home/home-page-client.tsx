@@ -213,6 +213,69 @@ function AutoScrollSpaces({ spaces }: { spaces: typeof signatureSpaces }) {
   )
 }
 
+// Auto-scrolling services component
+function AutoScrollServices({ servicesList }: { servicesList: typeof services }) {
+  const scrollRef = React.useRef<HTMLDivElement>(null)
+  const [isPaused, setIsPaused] = React.useState(false)
+
+  React.useEffect(() => {
+    if (!scrollRef.current || isPaused) return
+
+    const scrollContainer = scrollRef.current
+    let scrollPosition = 0
+    const scrollSpeed = 0.4 // pixels per frame
+
+    const scroll = () => {
+      if (scrollContainer && !isPaused) {
+        scrollPosition += scrollSpeed
+        scrollContainer.scrollLeft = scrollPosition
+
+        // Reset scroll position when reaching the end
+        if (scrollPosition >= scrollContainer.scrollWidth - scrollContainer.clientWidth) {
+          scrollPosition = 0
+        }
+      }
+    }
+
+    const intervalId = window.setInterval(scroll, 16) // ~60fps
+
+    return () => window.clearInterval(intervalId)
+  }, [isPaused])
+
+  return (
+    <div
+      className="relative overflow-hidden"
+      onMouseEnter={() => setIsPaused(true)}
+      onMouseLeave={() => setIsPaused(false)}
+    >
+      <div
+        ref={scrollRef}
+        className="flex gap-6 pb-4 hide-scrollbar"
+        style={{ scrollBehavior: 'auto' }}
+      >
+        {/* Render services twice for seamless loop */}
+        {[...servicesList, ...servicesList].map((service, index) => (
+          <div key={`${service.title}-${index}`} className="flex-shrink-0 w-72 md:w-80">
+            <Card className="h-full hover:shadow-luxury-lg transition-all duration-300 border-luxury group cursor-pointer">
+              <CardContent className="p-6 text-center">
+                <div className="text-5xl mb-4 group-hover:scale-110 transition-transform duration-300">
+                  {service.icon}
+                </div>
+                <h3 className="font-playfair text-xl font-semibold mb-2">
+                  {service.title}
+                </h3>
+                <p className="text-sm text-muted-foreground">
+                  {service.description}
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 interface HomePageClientProps {
   projects: PublicProject[]
 }
@@ -297,8 +360,8 @@ export function HomePageClient({ projects }: HomePageClientProps) {
                 className="bg-primary text-white font-bold tracking-wide shadow-2xl hover:shadow-3xl hover:scale-105 border-2 border-primary"
                 asChild
               >
-                <Link href="/consultation">
-                  Book a Design Consultation
+                <Link href="/products">
+                  Buy a Product
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>
               </Button>
@@ -308,34 +371,15 @@ export function HomePageClient({ projects }: HomePageClientProps) {
                 className="bg-white text-primary border-2 border-primary font-bold shadow-xl hover:bg-primary hover:text-white hover:shadow-2xl hover:scale-105"
                 asChild
               >
-                <Link href="/contact">Request a Site Visit</Link>
+                <Link href="/consultation">Book a Design Consultation</Link>
               </Button>
             </div>
           </ScrollAnimate>
         </div>
       </section>
 
-      {/* Who We Are Section */}
-      <ScrollAnimate>
-        <section className="py-20 bg-card">
-          <div className="container px-6">
-            <div className="max-w-4xl mx-auto text-center">
-              <h2 className="font-playfair text-4xl md:text-5xl font-bold mb-6">
-                Who We Are
-              </h2>
-              <p className="text-lg text-muted-foreground leading-relaxed mb-4">
-                <strong>Elegant Tiles & Décor Centre Ltd</strong> is a leading interior design, construction and landscaping company in Kenya committed to helping clients bring their vision to life.
-              </p>
-              <p className="text-lg text-muted-foreground leading-relaxed">
-                From concept design to full implementation, we ensure every project is beautifully planned, expertly executed and delivered on time.
-              </p>
-              <p className="text-xl font-semibold text-primary mt-6">
-                We listen – We Create – You Enjoy.
-              </p>
-            </div>
-          </div>
-        </section>
-      </ScrollAnimate>
+      {/* Products Carousel Section - Immediately after hero */}
+      <ProductsCarousel />
 
       {/* Signature Spaces Section - Auto-scrolling */}
       <section className="py-12 bg-muted/20">
@@ -371,14 +415,11 @@ export function HomePageClient({ projects }: HomePageClientProps) {
         </div>
       </section>
 
-      {/* Products Carousel Section */}
-      <ProductsCarousel />
-
-      {/* What We Do Section */}
+      {/* What We Do Section - Animated/Moving */}
       <section className="py-20">
         <div className="container px-6">
           <ScrollAnimate>
-            <div className="text-center mb-16">
+            <div className="text-center mb-12">
               <h2 className="font-playfair text-4xl md:text-5xl font-bold mb-4">
                 What We Do
               </h2>
@@ -388,25 +429,7 @@ export function HomePageClient({ projects }: HomePageClientProps) {
             </div>
           </ScrollAnimate>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {services.map((service, index) => (
-              <ScrollAnimate key={service.title} delay={index * 0.1} direction="up">
-                <Card className="h-full hover:shadow-luxury-lg transition-all duration-300 border-luxury group cursor-pointer">
-                  <CardContent className="p-6 text-center">
-                    <div className="text-5xl mb-4 group-hover:scale-110 transition-transform duration-300">
-                      {service.icon}
-                    </div>
-                    <h3 className="font-playfair text-xl font-semibold mb-2">
-                      {service.title}
-                    </h3>
-                    <p className="text-sm text-muted-foreground">
-                      {service.description}
-                    </p>
-                  </CardContent>
-                </Card>
-              </ScrollAnimate>
-            ))}
-          </div>
+          <AutoScrollServices servicesList={services} />
 
           <div className="text-center mt-12">
             <Button 
@@ -605,6 +628,28 @@ export function HomePageClient({ projects }: HomePageClientProps) {
           </div>
         </div>
       </section>
+
+      {/* Who We Are Section - Moved to bottom */}
+      <ScrollAnimate>
+        <section className="py-20 bg-card">
+          <div className="container px-6">
+            <div className="max-w-4xl mx-auto text-center">
+              <h2 className="font-playfair text-4xl md:text-5xl font-bold mb-6">
+                Who We Are
+              </h2>
+              <p className="text-lg text-muted-foreground leading-relaxed mb-4">
+                <strong>Elegant Tiles & Décor Centre Ltd</strong> is a leading interior design, construction and landscaping company in Kenya committed to helping clients bring their vision to life.
+              </p>
+              <p className="text-lg text-muted-foreground leading-relaxed">
+                From concept design to full implementation, we ensure every project is beautifully planned, expertly executed and delivered on time.
+              </p>
+              <p className="text-xl font-semibold text-primary mt-6">
+                We listen – We Create – You Enjoy.
+              </p>
+            </div>
+          </div>
+        </section>
+      </ScrollAnimate>
     </>
   )
 }
