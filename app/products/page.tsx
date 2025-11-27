@@ -25,7 +25,7 @@ async function getProducts(): Promise<PublicProduct[]> {
 
     // Query products directly from Supabase
     // Try with status filter first, fallback to all products if column doesn't exist
-    let query = supabaseAdmin
+    const query = supabaseAdmin
       .from('products')
       .select('*')
       .order('created_at', { ascending: false })

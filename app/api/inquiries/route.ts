@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { supabaseAdmin } from '@/lib/supabase'; // Use admin client to bypass RLS
+import { supabaseAdmin, isSupabaseAdminConfigured } from '@/lib/supabase'; // Use admin client to bypass RLS
 import { inquirySchema } from '@/lib/validators';
 import { ZodError } from 'zod';
 import type { Database } from '@/lib/database.types'
@@ -147,6 +147,38 @@ export async function POST(request: NextRequest) {
         { 
           success: false, 
           error: 'Server configuration error. Please contact support.' 
+        },
+        { status: 500 }
+      );
+    }
+
+    // Check if service role key is set (required for bypassing RLS)
+    const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+    if (!serviceRoleKey) {
+      console.error('[Inquiries API POST] ❌ SUPABASE_SERVICE_ROLE_KEY is not set!')
+      console.error('[Inquiries API POST] Form submissions will fail due to RLS policies.')
+      return NextResponse.json(
+        { 
+          success: false, 
+          error: 'Server configuration error. Please contact support.',
+          details: process.env.NODE_ENV === 'development' 
+            ? 'SUPABASE_SERVICE_ROLE_KEY is not set. This is required to bypass RLS policies for form submissions.'
+            : undefined
+        },
+        { status: 500 }
+      );
+    }
+
+    // Verify admin client is properly configured
+    if (!isSupabaseAdminConfigured()) {
+      console.error('[Inquiries API POST] ❌ Supabase admin client is not properly configured!')
+      return NextResponse.json(
+        { 
+          success: false, 
+          error: 'Server configuration error. Please contact support.',
+          details: process.env.NODE_ENV === 'development' 
+            ? 'Supabase admin client configuration check failed. Service role key may be missing or invalid.'
+            : undefined
         },
         { status: 500 }
       );

@@ -120,9 +120,37 @@ export const supabaseAdmin = createClient<Database>(
   }
 )
 
+/**
+ * Check if supabaseAdmin is properly configured with service role key
+ * This is critical for operations that need to bypass RLS (form submissions, etc.)
+ */
+export function isSupabaseAdminConfigured(): boolean {
+  if (typeof window !== 'undefined') return false // Client-side, use regular supabase
+  
+  const hasServiceRole = !!process.env.SUPABASE_SERVICE_ROLE_KEY
+  const hasValidUrl = !!(supabaseUrl && supabaseUrl !== 'https://placeholder.supabase.co' && !supabaseUrl.includes('localhost'))
+  const isDevelopment = process.env.NODE_ENV === 'development'
+  
+  if (!hasServiceRole && !isDevelopment) {
+    console.error('❌ CRITICAL: SUPABASE_SERVICE_ROLE_KEY is not set in production!')
+    console.error('❌ Form submissions and admin operations will fail due to RLS policies.')
+    console.error('❌ Please set SUPABASE_SERVICE_ROLE_KEY in your Vercel environment variables.')
+    return false
+  }
+  
+  return hasValidUrl && (hasServiceRole || isDevelopment)
+}
+
 // Validate on module load (server-side only)
 if (typeof window === 'undefined') {
   validateSupabaseConfig()
+  
+  // Warn in production if service role key is missing
+  if (isProduction && !serviceRoleKey) {
+    console.error('❌ CRITICAL: SUPABASE_SERVICE_ROLE_KEY is not set in production!')
+    console.error('❌ This will cause form submissions and admin operations to fail.')
+    console.error('❌ Please add SUPABASE_SERVICE_ROLE_KEY to your Vercel environment variables.')
+  }
 }
 
 /**

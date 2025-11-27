@@ -36,7 +36,7 @@ const footerLinks = {
     // { name: 'Careers', href: '/careers' }, // TODO: Create careers page
   ],
   legal: [
-    // { name: 'Privacy Policy', href: '/privacy' }, // TODO: Create privacy page
+    { name: 'Privacy Policy', href: '/privacy' },
     // { name: 'Terms of Service', href: '/terms' }, // TODO: Create terms page
     // { name: 'Cookie Policy', href: '/cookies' }, // TODO: Create cookies page
   ],
