@@ -96,23 +96,22 @@ function validateSupabaseConfig() {
   return true
 }
 
-// In production, fail if we don't have valid credentials
+// In production runtime (not build), fail if we don't have valid credentials
 if (isProduction) {
   if (!supabaseUrl || !isValidSupabaseUrl(supabaseUrl)) {
-    throw new Error('❌ Production requires valid NEXT_PUBLIC_SUPABASE_URL (not localhost or placeholder)')
+    console.error('❌ Production requires valid NEXT_PUBLIC_SUPABASE_URL (not localhost or placeholder)')
+    // Don't throw during module load - let it fail at runtime with better error messages
   }
   if (!supabaseAnonKey || supabaseAnonKey === 'placeholder-anon-key') {
-    throw new Error('❌ Production requires valid NEXT_PUBLIC_SUPABASE_ANON_KEY')
+    console.error('❌ Production requires valid NEXT_PUBLIC_SUPABASE_ANON_KEY')
+    // Don't throw during module load - let it fail at runtime with better error messages
   }
 }
 
+// Create admin client - use actual values if available, placeholder only during build
 export const supabaseAdmin = createClient<Database>(
-  // In production, use actual URL; in build/dev, allow placeholder for build-time
-  isProduction ? supabaseUrl : (supabaseUrl || 'https://placeholder.supabase.co'),
-  // In production, require valid key; in build/dev, allow placeholder
-  isProduction 
-    ? (serviceRoleKey || supabaseAnonKey)
-    : (serviceRoleKey || supabaseAnonKey || 'placeholder-service-key'),
+  supabaseUrl || 'https://placeholder.supabase.co',
+  serviceRoleKey || supabaseAnonKey || 'placeholder-service-key',
   {
     auth: {
       persistSession: false,

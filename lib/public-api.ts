@@ -59,14 +59,34 @@ export interface PublicProject {
 }
 
 function getBaseUrl() {
-  // Prefer explicit app URL so we can call our own API in server components.
-  // Defaults to port 3001 (matching user's dev server)
-  // Can be overridden with NEXT_PUBLIC_APP_URL env var
-  return (
-    process.env.NEXT_PUBLIC_APP_URL ||
-    process.env.NEXT_PUBLIC_SITE_URL ||
-    'http://localhost:3001'
-  )
+  // In production (Vercel), use the deployment URL
+  // In development, use localhost
+  // Prefer explicit app URL env var, then site URL, then auto-detect
+  
+  // For server-side fetch calls, use relative URLs when possible
+  // This works in both development and production
+  if (typeof window === 'undefined') {
+    // Server-side: Use environment variable or construct from Vercel URL
+    const vercelUrl = process.env.VERCEL_URL
+    if (vercelUrl) {
+      return `https://${vercelUrl}`
+    }
+    
+    if (process.env.NEXT_PUBLIC_APP_URL) {
+      return process.env.NEXT_PUBLIC_APP_URL
+    }
+    
+    if (process.env.NEXT_PUBLIC_SITE_URL) {
+      return process.env.NEXT_PUBLIC_SITE_URL
+    }
+    
+    // Fallback: Use relative URL (works in Next.js server components)
+    // When calling from server components, relative URLs work automatically
+    return ''
+  }
+  
+  // Client-side: Use current origin
+  return window.location.origin
 }
 
 export interface ProductsResponse {
@@ -99,7 +119,9 @@ export async function fetchPublicProducts(filters?: {
     if (filters?.featured) params.set('featured', 'true')
     if (filters?.in_stock) params.set('in_stock', 'true')
 
-    const res = await fetch(`${getBaseUrl()}/api/public/products?${params}`, {
+    const baseUrl = getBaseUrl()
+    const url = baseUrl ? `${baseUrl}/api/public/products?${params}` : `/api/public/products?${params}`
+    const res = await fetch(url, {
       next: { revalidate: 60 },
     })
 
@@ -132,7 +154,9 @@ export async function fetchPublicProduct(
   slug: string
 ): Promise<PublicProduct | null> {
   try {
-    const res = await fetch(`${getBaseUrl()}/api/public/products/${slug}`, {
+    const baseUrl = getBaseUrl()
+    const url = baseUrl ? `${baseUrl}/api/public/products/${slug}` : `/api/public/products/${slug}`
+    const res = await fetch(url, {
       next: { revalidate: 60 },
     })
 
@@ -157,7 +181,9 @@ export async function fetchPublicProduct(
 
 export async function fetchPublicBlogPosts(): Promise<PublicBlogPost[]> {
   try {
-    const res = await fetch(`${getBaseUrl()}/api/public/blog`, {
+    const baseUrl = getBaseUrl()
+    const url = baseUrl ? `${baseUrl}/api/public/blog` : `/api/public/blog`
+    const res = await fetch(url, {
       next: { revalidate: 60 },
     })
 
@@ -183,7 +209,9 @@ export async function fetchPublicBlogPost(
   slug: string
 ): Promise<PublicBlogPost | null> {
   try {
-    const res = await fetch(`${getBaseUrl()}/api/public/blog/${slug}`, {
+    const baseUrl = getBaseUrl()
+    const url = baseUrl ? `${baseUrl}/api/public/blog/${slug}` : `/api/public/blog/${slug}`
+    const res = await fetch(url, {
       next: { revalidate: 60 },
     })
 
@@ -212,7 +240,7 @@ export async function fetchPublicBlogPost(
 export async function fetchPublicProjects(): Promise<PublicProject[]> {
   try {
     const baseUrl = getBaseUrl()
-    const url = `${baseUrl}/api/public/projects`
+    const url = baseUrl ? `${baseUrl}/api/public/projects` : `/api/public/projects`
     console.log('[fetchPublicProjects] Fetching from:', url)
     
     const res = await fetch(url, {
@@ -247,7 +275,9 @@ export async function fetchPublicProject(
   slug: string
 ): Promise<PublicProject | null> {
   try {
-    const res = await fetch(`${getBaseUrl()}/api/public/projects/${slug}`, {
+    const baseUrl = getBaseUrl()
+    const url = baseUrl ? `${baseUrl}/api/public/projects/${slug}` : `/api/public/projects/${slug}`
+    const res = await fetch(url, {
       next: { revalidate: 60 },
     })
 
