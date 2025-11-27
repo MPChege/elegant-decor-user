@@ -29,6 +29,10 @@ export const metadata: Metadata = {
   keywords:
     'interior design, luxury tiles, décor, custom design, elegant interiors, Kenya',
   authors: [{ name: 'Elegant Tiles & Décor Centre Ltd' }],
+  icons: {
+    icon: '/etd_logo-removebg-preview.png',
+    apple: '/etd_logo-removebg-preview.png',
+  },
   openGraph: {
     type: 'website',
     locale: 'en_US',
@@ -76,6 +80,8 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning className="light">
       <head>
+        <link rel="icon" href="/etd_logo-removebg-preview.png" type="image/png" sizes="any" />
+        <link rel="apple-touch-icon" href="/etd_logo-removebg-preview.png" />
         <link rel="manifest" href="/manifest.json" />
         <meta name="theme-color" content="#ffffff" />
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, viewport-fit=cover" />
@@ -83,6 +89,10 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
         <meta name="format-detection" content="telephone=no" />
         <meta name="mobile-web-app-capable" content="yes" />
+        {/* Preconnect to external domains for faster loading */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://gqbdjkflempypooplval.supabase.co" />
         <script
           dangerouslySetInnerHTML={{
             __html: `

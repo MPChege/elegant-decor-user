@@ -10,7 +10,7 @@ import { ScrollAnimate } from '@/components/scroll-animate'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 
-const heroBackground = '/BEDROOMS/Bedroom%2002_3%20-%20Photo.png'
+const heroBackground = '/LEHIGH/RECEPTION%20FINAL_7%20-%20Photo.png'
 
 const values = [
   {

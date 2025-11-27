@@ -24,8 +24,8 @@ const headerBackgrounds: Record<string, string> = {
   '/services': '/KITCHEN%20and%20DINING/KITCHEN_6%20-%20Photo.png',
   '/work': '/OUTDOOR/updated_4%20-%20Photo.png',
   '/products': '/FOYERS/FOYER%20REV_3%20-%20Photo.png',
-  '/journal': '/LEHIGH/RECEPTION%20FINAL_9%20-%20Photo.png',
-  '/about': '/OFFICE/office%20and%20bbq_2%20-%20Photo.png',
+  '/journal': '/KITCHEN%20and%20DINING/KITCHEN_8%20-%20Photo.png',
+  '/about': '/LEHIGH/RECEPTION%20FINAL_7%20-%20Photo.png',
   '/contact': '/PRAYER%20ROOM/prayer%20room_3%20-%20Photo.png',
 }
 

@@ -9,12 +9,27 @@ export function LoadingScreen() {
   const [isLoading, setIsLoading] = React.useState(true)
 
   React.useEffect(() => {
-    // Hide loading screen after page loads
+    // Hide loading screen faster - check if page is already loaded
+    if (document.readyState === 'complete') {
+      setIsLoading(false)
+      return
+    }
+
+    const handleLoad = () => {
+      setIsLoading(false)
+    }
+
+    // Hide after page loads or max 800ms
     const timer = setTimeout(() => {
       setIsLoading(false)
-    }, 2000) // 2 second loading animation
+    }, 800) // Faster loading - 800ms max
 
-    return () => clearTimeout(timer)
+    window.addEventListener('load', handleLoad)
+    
+    return () => {
+      clearTimeout(timer)
+      window.removeEventListener('load', handleLoad)
+    }
   }, [])
 
   return (

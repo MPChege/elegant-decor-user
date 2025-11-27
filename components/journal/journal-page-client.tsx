@@ -12,7 +12,7 @@ import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardFooter } from '@/components/ui/card'
 import { getBlogImageUrl } from '@/lib/s3/getPublicUrl'
 
-const heroBackground = '/LEHIGH/RECEPTION%20FINAL_5%20-%20Photo.png'
+const heroBackground = '/KITCHEN%20and%20DINING/KITCHEN_8%20-%20Photo.png'
 
 interface JournalPageClientProps {
   posts: PublicBlogPost[]
