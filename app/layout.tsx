@@ -74,15 +74,30 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning className="light">
       <head>
         <link rel="manifest" href="/manifest.json" />
-        <meta name="theme-color" content="#dc2626" />
+        <meta name="theme-color" content="#ffffff" />
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, viewport-fit=cover" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
-        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
         <meta name="format-detection" content="telephone=no" />
         <meta name="mobile-web-app-capable" content="yes" />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                // Force light mode on initial load
+                document.documentElement.classList.remove('dark');
+                document.documentElement.classList.add('light');
+                // Set theme in localStorage if not already set
+                if (!localStorage.getItem('theme')) {
+                  localStorage.setItem('theme', 'light');
+                }
+              })();
+            `,
+          }}
+        />
       </head>
       <body
         className={`${inter.variable} ${playfair.variable} font-inter antialiased smooth-scroll`}
@@ -91,7 +106,7 @@ export default function RootLayout({
         <ScrollProgress />
         <div className="flex flex-col min-h-screen">
           <Header />
-          <main className="flex-1 pt-[73px]">{children}</main>
+          <main className="flex-1 pt-[57px] md:pt-[61px]">{children}</main>
           <Footer />
           <StickyCTABar />
           <ScrollToTop />

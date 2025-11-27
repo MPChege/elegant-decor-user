@@ -41,10 +41,18 @@ export function Header() {
     const initialTheme = savedTheme ?? 'light'
 
     setTheme(initialTheme)
-    document.documentElement.classList.toggle('dark', initialTheme === 'dark')
+    // Ensure light mode is default - remove dark class, add light class
+    document.documentElement.classList.remove('dark')
+    document.documentElement.classList.add('light')
+    
+    // Only apply dark mode if explicitly set
+    if (initialTheme === 'dark') {
+      document.documentElement.classList.remove('light')
+      document.documentElement.classList.add('dark')
+    }
 
     if (!savedTheme) {
-      localStorage.setItem('theme', initialTheme)
+      localStorage.setItem('theme', 'light')
     }
   }, [])
 
@@ -52,7 +60,15 @@ export function Header() {
     const newTheme = theme === 'light' ? 'dark' : 'light'
     setTheme(newTheme)
     localStorage.setItem('theme', newTheme)
-    document.documentElement.classList.toggle('dark', newTheme === 'dark')
+    
+    // Properly toggle classes
+    if (newTheme === 'dark') {
+      document.documentElement.classList.remove('light')
+      document.documentElement.classList.add('dark')
+    } else {
+      document.documentElement.classList.remove('dark')
+      document.documentElement.classList.add('light')
+    }
   }
 
   return (
