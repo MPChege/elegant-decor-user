@@ -133,7 +133,7 @@ Open [http://localhost:3000](http://localhost:3000) to view the site.
 
 ## 🗄️ Supabase Setup
 
-1. Create a new Supabase project
+1. Create a new Supabase project at [supabase.com](https://supabase.com)
 2. Run the schema from `lib/supabase-schema.sql`
 3. Set up storage buckets:
    - `products`
@@ -143,10 +143,19 @@ Open [http://localhost:3000](http://localhost:3000) to view the site.
 5. Add environment variables to `.env.local`:
 
 ```env
-NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key
-SUPABASE_SERVICE_ROLE_KEY=your_service_key
+# ⚠️ IMPORTANT: Never commit actual API keys to version control!
+# Get these values from your Supabase project settings (Settings → API)
+
+NEXT_PUBLIC_SUPABASE_URL=https://your-project-id.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_public_key_here
+SUPABASE_SERVICE_ROLE_KEY=your_service_role_key_here
 ```
+
+**Security Note**: 
+- The `NEXT_PUBLIC_*` variables are safe to expose in client-side code
+- The `SUPABASE_SERVICE_ROLE_KEY` is **SECRET** and must never be exposed publicly
+- Always use `.env.local` (which is gitignored) for local development
+- For production (Vercel), add these as environment variables in your deployment settings
 
 ---
 
