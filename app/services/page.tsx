@@ -15,6 +15,7 @@ import {
   ArrowRight,
 } from 'lucide-react'
 import { LuxuryLayout } from '@/components/layout/luxury-layout'
+import { ScrollAnimate } from '@/components/scroll-animate'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
@@ -23,104 +24,109 @@ const heroBackground = '/KITCHEN%20and%20DINING/KITCHEN_10%20-%20Photo.png'
 const services = [
   {
     icon: Palette,
-    title: 'Interior Design Consultancy',
+    title: 'Interior Design & 3D Rendering',
     description:
-      'Professional interior design consultancy services to bring your vision to life.',
+      'We create beautiful, functional and timeless interior designs for homes, offices, hotels, showrooms and commercial spaces.',
     features: [
-      'Concept Designs',
-      'Space planning',
-      '3D visualization',
-      'Material selection',
+      'Living rooms & lounges',
+      'Kitchens & Bathrooms',
+      'Bedrooms & Wardrobes',
+      'Office interiors & Showrooms',
+      '3D visualization & Mood boards',
     ],
+    tagline: 'Design your dream space with confidence.',
   },
   {
     icon: Package,
-    title: 'Supply of Project Materials',
+    title: 'Construction & Building Solutions',
     description:
-      'Comprehensive supply of all project materials from trusted suppliers.',
+      'Reliable construction services for residential and commercial projects in Kenya. From foundations to finishes, we deliver quality construction rooted in integrity.',
     features: [
-      'Quality materials',
-      'Competitive pricing',
-      'Timely delivery',
-      'Wide selection',
+      'New builds & Extensions',
+      'Structural works',
+      'Interior & Exterior finishing',
+      'Site management',
     ],
   },
   {
     icon: Sparkles,
-    title: 'Kitchens & Wardrobes',
+    title: 'Renovations & Home Makeovers',
     description:
-      'Modern complete fully fitted Kitchens & Wardrobes designed to perfection.',
+      'Transform your home or office with elegant renovation solutions using premium materials such as hardwood floors, designer tiles, lighting upgrades and custom cabinetry.',
     features: [
-      'Custom designs',
+      'Complete home transformations',
       'Premium materials',
-      'Professional installation',
-      'Modern finishes',
+      'Custom cabinetry',
+      'Lighting upgrades',
+    ],
+    tagline: 'Defining Spaces, Flawlessly.',
+  },
+  {
+    icon: Palette,
+    title: 'Landscaping & Garden Design',
+    description: 'We design, plant and maintain stunning landscapes that elevate outdoor living spaces. Our landscaping integrates lush lawns, vibrant flowers and strategic plant placement.',
+    features: [
+      'Garden design & planning',
+      'Plant selection & placement',
+      'Garden maintenance',
+      'Outdoor living spaces',
+    ],
+    tagline: 'We Don\'t Just Plant. We Plan, Execute & Maintain.',
+  },
+  {
+    icon: Users,
+    title: 'Project Supervision',
+    description: 'Professional end-to-end project supervision for seamless execution. Our supervisors coordinate every stage ensuring quality, safety and timely delivery.',
+    features: [
+      'End-to-end coordination',
+      'Quality assurance',
+      'Timeline management',
+      'Problem anticipation',
     ],
   },
   {
     icon: Ruler,
-    title: 'Gypsum Ceilings',
-    description: 'Expert gypsum ceiling design and fitting services.',
+    title: 'Architectural Drawings & Consultancy',
+    description: 'Expert architectural design services including building plans, floor layouts, technical drawings and submission-ready plans.',
     features: [
-      'Custom designs',
-      'Professional installation',
-      'Modern patterns',
-      'Quality finishes',
+      'Building plans',
+      'Floor layouts',
+      'Technical drawings',
+      'Submission-ready plans',
     ],
+  },
+  {
+    icon: Package,
+    title: 'Imported Furniture (On Order)',
+    description: 'We supply premium-quality imported furniture including office furniture, lounge sets, dining sets, outdoor furniture and office partitions.',
+    features: [
+      'Office furniture',
+      'Lounge & Dining sets',
+      'Outdoor furniture',
+      'Office partitions',
+    ],
+    tagline: 'Modern, durable and available on confirmed order.',
   },
   {
     icon: Sparkles,
-    title: 'Tiles & Flooring',
-    description: 'Ceramic and wooden tiles, Laminated Wood, Engineered wood, Bamboo Floors selection, supply, and fitting.',
+    title: 'Home Décor & Accessories',
+    description: 'We curate elegant décor pieces that add warmth, personality and style. From textiles to accessories, we complete your space with the perfect finishing touches.',
     features: [
-      'Ceramic & porcelain tiles',
-      'Wooden tiles',
-      'Laminated wood',
-      'Engineered wood & Bamboo floors',
+      'Curated décor pieces',
+      'Textiles & accessories',
+      'Finishing touches',
+      'Style consultation',
     ],
   },
   {
     icon: Shield,
-    title: 'Sanitary Ware & Lighting',
-    description: 'Modern sanitary ware and unique lighting selection, supply, and fitting.',
+    title: 'Property Management & Rentals',
+    description: 'We help property owners maintain, market and manage their rentals with professionalism and transparency.',
     features: [
-      'Modern sanitary ware',
-      'Unique lighting solutions',
-      'Professional installation',
-      'Quality products',
-    ],
-  },
-  {
-    icon: Users,
-    title: 'M&E Works',
-    description: 'Mechanical and Electrical works for your construction projects.',
-    features: [
-      'Electrical installations',
-      'Mechanical systems',
-      'Professional service',
-      'Quality assurance',
-    ],
-  },
-  {
-    icon: Palette,
-    title: 'Landscaping Services',
-    description: 'Complete landscaping services to enhance your outdoor spaces.',
-    features: [
-      'Garden design',
-      'Outdoor installations',
-      'Maintenance services',
-      'Expert consultation',
-    ],
-  },
-  {
-    icon: Shield,
-    title: 'Full Renovation Services',
-    description: 'End-to-end renovation services for complete home transformations.',
-    features: [
-      'Complete renovations',
-      'Project management',
-      'Quality craftsmanship',
-      'Timely completion',
+      'Property maintenance',
+      'Marketing & leasing',
+      'Tenant management',
+      'Transparent reporting',
     ],
   },
 ]
@@ -173,8 +179,7 @@ export default function ServicesPage() {
               Our <span className="text-luxury-gradient">Services</span>
             </h1>
             <p className="text-lg md:text-xl text-white/85">
-              Comprehensive design solutions that transform spaces into timeless
-              works of art.
+              Explore our full range of professional services including interior design, architectural drawings, construction, renovations, landscaping and imported furniture solutions.
             </p>
           </motion.div>
         </div>
@@ -185,13 +190,7 @@ export default function ServicesPage() {
         <div className="container px-6">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {services.map((service, index) => (
-              <motion.div
-                key={service.title}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-              >
+              <ScrollAnimate key={service.title} delay={index * 0.1} direction="up">
                 <Card className="h-full hover:shadow-luxury-lg transition-all duration-300 border-luxury">
                   <CardHeader>
                     <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
@@ -205,7 +204,7 @@ export default function ServicesPage() {
                     <p className="text-muted-foreground mb-4">
                       {service.description}
                     </p>
-                    <ul className="space-y-2">
+                    <ul className="space-y-2 mb-4">
                       {service.features.map((feature) => (
                         <li
                           key={feature}
@@ -216,9 +215,14 @@ export default function ServicesPage() {
                         </li>
                       ))}
                     </ul>
+                    {service.tagline && (
+                      <p className="text-sm font-semibold text-primary italic mt-4">
+                        {service.tagline}
+                      </p>
+                    )}
                   </CardContent>
                 </Card>
-              </motion.div>
+              </ScrollAnimate>
             ))}
           </div>
         </div>
@@ -227,30 +231,18 @@ export default function ServicesPage() {
       {/* Our Process */}
       <section className="py-20">
         <div className="container px-6">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-16"
-          >
+          <ScrollAnimate className="text-center mb-16">
             <h2 className="font-playfair text-4xl md:text-5xl font-bold mb-4">
               Our Process
             </h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
               A seamless journey from concept to completion
             </p>
-          </motion.div>
+          </ScrollAnimate>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {process.map((item, index) => (
-              <motion.div
-                key={item.step}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                className="relative"
-              >
+              <ScrollAnimate key={item.step} delay={index * 0.1} direction="up" className="relative">
                 <div className="text-6xl font-playfair font-bold text-primary/10 mb-4">
                   {item.step}
                 </div>
@@ -261,7 +253,7 @@ export default function ServicesPage() {
                 {index < process.length - 1 && (
                   <div className="hidden lg:block absolute top-12 -right-4 w-8 h-0.5 bg-primary/20" />
                 )}
-              </motion.div>
+              </ScrollAnimate>
             ))}
           </div>
         </div>
@@ -270,12 +262,7 @@ export default function ServicesPage() {
       {/* CTA Section */}
       <section className="py-20 bg-card">
         <div className="container px-6">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="max-w-3xl mx-auto text-center"
-          >
+          <ScrollAnimate className="max-w-3xl mx-auto text-center">
             <Clock className="h-12 w-12 text-primary mx-auto mb-6" />
             <h2 className="font-playfair text-4xl md:text-5xl font-bold mb-6">
               Let&apos;s Start Your Project
@@ -294,7 +281,7 @@ export default function ServicesPage() {
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Link>
             </Button>
-          </motion.div>
+          </ScrollAnimate>
         </div>
       </section>
     </LuxuryLayout>

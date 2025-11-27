@@ -86,7 +86,7 @@ export function ProjectsCarousel({ projects }: ProjectsCarouselProps) {
               className="group flex-shrink-0 w-80 md:w-96"
             >
               <Card className="overflow-hidden border-luxury hover:shadow-luxury-lg transition-all duration-300 h-full">
-                <div className="aspect-[4/3] relative overflow-hidden bg-muted">
+                <div className="aspect-[4/3] relative overflow-hidden">
                   <Image
                     src={
                       getPublicMediaUrl(
@@ -97,6 +97,7 @@ export function ProjectsCarousel({ projects }: ProjectsCarouselProps) {
                     fill
                     sizes="(min-width: 768px) 384px, 320px"
                     className="object-cover group-hover:scale-110 transition-transform duration-700"
+                    quality={95}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent z-10" />
                   <div className="absolute bottom-0 left-0 right-0 p-6 z-20">

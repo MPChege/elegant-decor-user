@@ -6,6 +6,7 @@ import Image from 'next/image'
 import { motion } from 'framer-motion'
 import { Award, Users, Target, Heart, ArrowRight, MapPin, Phone, Mail } from 'lucide-react'
 import { LuxuryLayout } from '@/components/layout/luxury-layout'
+import { ScrollAnimate } from '@/components/scroll-animate'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 
@@ -83,7 +84,7 @@ export default function AboutPage() {
               About <span className="text-luxury-gradient">Us</span>
             </h1>
             <p className="text-lg md:text-xl text-white/85">
-              Design, Supply & Fix - Elegant Solutions for all your construction needs.
+              Elegant Tiles & Décor Centre Ltd - Full-service interior design and construction company in Kenya
             </p>
           </motion.div>
         </div>
@@ -93,48 +94,24 @@ export default function AboutPage() {
       <section className="py-20 bg-muted/30">
         <div className="container px-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <motion.div
-              initial={{ opacity: 0, x: -30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-            >
+            <ScrollAnimate direction="right">
               <h2 className="font-playfair text-4xl md:text-5xl font-bold mb-6">
-                About Us
+                Our Story
               </h2>
               <div className="space-y-4 text-muted-foreground">
-                <p className="text-lg font-semibold text-foreground mb-4">
-                  Design, Supply & Fix
+                <p className="text-lg leading-relaxed">
+                  <strong>Elegant Tiles & Décor Centre Ltd</strong> is a full-service interior design and construction company based in Nairobi, delivering stylish, functional and timeless spaces. With decades of combined experience, we specialize in interior design, renovations, construction, landscaping and project supervision for residential and commercial properties.
                 </p>
-                <p>
-                  We offer carefully designed, Elegant Solutions for all your construction needs.
+                <p className="text-lg leading-relaxed">
+                  We began with a simple mission — to help clients visualize their dream spaces before building. Over the years, we expanded from supplying premium interior finishes to offering complete design, construction and turnkey project solutions.
                 </p>
-                <p>
-                  At Elegant Tiles & Décor, we deal with the following:
+                <p className="text-lg leading-relaxed font-semibold text-foreground">
+                  Today, ETD is known for excellence, integrity and detail-oriented craftsmanship.
                 </p>
-                <ul className="list-disc list-inside space-y-2 ml-4">
-                  <li>Interior Design Consultancy</li>
-                  <li>Concept Designs</li>
-                  <li>Supply of Project materials</li>
-                  <li>Importation of specific unique interior finishes items</li>
-                  <li>Modern Complete fully fitted Kitchens & Wardrobes</li>
-                  <li>Gypsum Ceilings design and fitting</li>
-                  <li>Ceramic and wooden tiles, Laminated Wood, Engineered wood, Bamboo Floors, etc selection, supply, and fitting</li>
-                  <li>Modern Sanitary ware</li>
-                  <li>Mechanical and Electrical works</li>
-                  <li>Unique lighting - selection, supply, and fitting</li>
-                  <li>Landscaping Services</li>
-                  <li>Full renovation Services</li>
-                </ul>
               </div>
-            </motion.div>
+            </ScrollAnimate>
 
-            <motion.div
-              initial={{ opacity: 0, x: 30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-            >
+            <ScrollAnimate direction="left">
               <div className="aspect-square rounded-2xl overflow-hidden shadow-luxury-lg relative">
                 <Image
                   src="/KITCHEN%20and%20DINING/pano_2%20-%20Photo.png"
@@ -142,10 +119,11 @@ export default function AboutPage() {
                   fill
                   sizes="(min-width: 1024px) 45vw, 100vw"
                   className="object-cover"
+                  quality={95}
                 />
                 <div className="absolute inset-0 bg-gradient-to-b from-black/10 to-transparent" />
               </div>
-            </motion.div>
+            </ScrollAnimate>
           </div>
         </div>
       </section>
@@ -153,29 +131,18 @@ export default function AboutPage() {
       {/* Values Section */}
       <section className="py-20">
         <div className="container px-6">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-16"
-          >
+          <ScrollAnimate className="text-center mb-16">
             <h2 className="font-playfair text-4xl md:text-5xl font-bold mb-4">
               Our Values
             </h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
               The principles that guide everything we do
             </p>
-          </motion.div>
+          </ScrollAnimate>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {values.map((value, index) => (
-              <motion.div
-                key={value.title}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-              >
+              <ScrollAnimate key={value.title} delay={index * 0.1} direction="up">
                 <Card className="text-center h-full hover:shadow-luxury-lg transition-all duration-300 border-luxury">
                   <CardContent className="p-6">
                     <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
@@ -189,7 +156,7 @@ export default function AboutPage() {
                     </p>
                   </CardContent>
                 </Card>
-              </motion.div>
+              </ScrollAnimate>
             ))}
           </div>
         </div>
@@ -198,44 +165,29 @@ export default function AboutPage() {
       {/* CEO Section */}
       <section className="py-20 bg-card">
         <div className="container px-6">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-16"
-          >
+          <ScrollAnimate className="text-center mb-16">
             <h2 className="font-playfair text-4xl md:text-5xl font-bold mb-4">
               Leadership
             </h2>
-          </motion.div>
+          </ScrollAnimate>
 
           <div className="max-w-3xl mx-auto">
-              <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-              className="text-center"
-              >
+              <ScrollAnimate className="text-center">
               <div className="mb-6">
                 <div className="w-32 h-32 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
                   <Users className="h-16 w-16 text-primary" />
                 </div>
                 <h3 className="font-playfair text-3xl font-bold mb-2">
-                  Mrs. Agnes Irungu
+                  Dr. Vivian Shabaan
                 </h3>
                 <p className="text-xl text-primary font-semibold mb-4">
-                  MD & Founder
+                  Director – Elegant Tiles & Décor Centre Ltd
                 </p>
-                <p className="text-muted-foreground max-w-2xl mx-auto">
-                  Managing Director of Elegant tile and Décor Centre Limited.
-                </p>
-                <div className="mt-6 space-y-2 text-muted-foreground">
-                  <p>Over 20 years experience in administration, procurement and logistics</p>
-                  <p>Deep passion in construction, home design, décor and landscaping</p>
-                </div>
-                </div>
-              </motion.div>
+                <blockquote className="text-lg text-muted-foreground max-w-2xl mx-auto italic border-l-4 border-primary pl-6 my-6">
+                  &ldquo;My passion is transforming homes through creative, resourceful and personalized projects. Stunning interior design is always possible with the right vision — even when you Do It Yourself!&rdquo;
+                </blockquote>
+              </div>
+            </ScrollAnimate>
           </div>
         </div>
       </section>
@@ -244,38 +196,28 @@ export default function AboutPage() {
       <section className="py-20 bg-muted/30">
         <div className="container px-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 max-w-4xl mx-auto">
-            <motion.div
-              initial={{ opacity: 0, x: -30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-            >
+            <ScrollAnimate direction="right">
               <Card className="h-full border-luxury">
                 <CardContent className="p-8">
                   <Target className="h-12 w-12 text-primary mb-4" />
                   <h3 className="font-playfair text-3xl font-bold mb-4">Mission</h3>
                   <p className="text-muted-foreground">
-                    To leave every project we work on with the speckle of detail and quality.
+                    To create elegant, functional and inspiring spaces through thoughtful design, superior customer experience and quality workmanship.
                   </p>
                 </CardContent>
               </Card>
-            </motion.div>
-            <motion.div
-              initial={{ opacity: 0, x: 30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-            >
+            </ScrollAnimate>
+            <ScrollAnimate direction="left">
               <Card className="h-full border-luxury">
                 <CardContent className="p-8">
                   <Award className="h-12 w-12 text-primary mb-4" />
                   <h3 className="font-playfair text-3xl font-bold mb-4">Vision</h3>
                   <p className="text-muted-foreground">
-                    To leave every project we work on with the speckle of detail and quality.
+                    To be Kenya&apos;s most trusted brand for interior design, construction and premium home solutions.
                   </p>
                 </CardContent>
               </Card>
-            </motion.div>
+            </ScrollAnimate>
           </div>
         </div>
       </section>

@@ -125,7 +125,7 @@ export function WorkPageClient({ projects }: WorkPageClientProps) {
                 >
                   <Link href={`/work/${project.slug}`}>
                     <Card className="group overflow-hidden border-luxury hover:shadow-luxury-lg transition-all duration-300 cursor-pointer">
-                      <div className="aspect-[4/3] relative overflow-hidden bg-muted">
+                      <div className="aspect-[4/3] relative overflow-hidden">
                         <Image
                           src={getPublicMediaUrl(
                             project.featured_image_key ||
@@ -136,8 +136,9 @@ export function WorkPageClient({ projects }: WorkPageClientProps) {
                           fill
                           sizes="(min-width: 1024px) 33vw, 100vw"
                           className="object-cover group-hover:scale-105 transition-transform duration-500"
+                          quality={95}
                         />
-                        <div className="absolute inset-0 bg-gradient-to-t from-background/95 to-transparent z-10" />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent z-10" />
                         <div className="absolute bottom-0 left-0 right-0 p-6 z-20">
                           <Badge variant="luxury" className="mb-3">
                             {project.client_name || 'Project'}

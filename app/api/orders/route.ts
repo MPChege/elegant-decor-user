@@ -8,6 +8,17 @@ import { orderSchema } from '@/lib/validators';
  */
 export async function POST(request: NextRequest) {
   try {
+    // Check if Supabase is configured
+    if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+      return NextResponse.json(
+        { 
+          success: false, 
+          error: 'Server configuration error. Please contact support.' 
+        },
+        { status: 500 }
+      );
+    }
+
     const body = await request.json();
 
     // Validate request body
