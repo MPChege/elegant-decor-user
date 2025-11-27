@@ -110,3 +110,4 @@ If data still doesn't show:
    - Should be: `https://xxxxx.supabase.co`
    - Should NOT be: `http://localhost:...` or `https://placeholder.supabase.co`
 
+

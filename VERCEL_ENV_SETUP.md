@@ -47,3 +47,4 @@ After adding the variables and redeploying, check:
 
 If still not working, check Vercel logs for error messages.
 
+

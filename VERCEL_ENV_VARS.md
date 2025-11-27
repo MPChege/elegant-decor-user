@@ -44,3 +44,4 @@ After setting environment variables:
 3. Redeploy the project
 4. Check Vercel Function Logs to see if Supabase connection is working
 
+

@@ -609,3 +609,4 @@ export function HomePageClient({ projects }: HomePageClientProps) {
   )
 }
 
+

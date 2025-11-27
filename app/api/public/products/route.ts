@@ -76,11 +76,10 @@ export async function GET(request: NextRequest) {
     const inStock = searchParams.get('in_stock') === 'true' ? true : undefined;
 
     // Build Supabase query using admin client
-    // Filter by status = 'published' (admin dashboard uses this field)
+    // Start with base query
     let query = supabaseAdmin
       .from('products')
-      .select('*', { count: 'exact' })
-      .eq('status', 'published'); // Only show published products
+      .select('*', { count: 'exact' });
 
     // Apply filters
     if (category) {
@@ -101,8 +100,85 @@ export async function GET(request: NextRequest) {
     const { data, error, count } = await query;
 
     if (error) {
-      console.error('Supabase query error:', error);
+      console.error('[Products API] Supabase query error:', error);
+      console.error('[Products API] Error code:', error.code);
+      console.error('[Products API] Error message:', error.message);
+      console.error('[Products API] Error details:', JSON.stringify(error, null, 2));
+      
       const errorMessage = error instanceof Error ? error.message : String(error);
+      const errorCode = (error as { code?: string })?.code || '';
+      
+      // Handle specific Supabase errors
+      if (errorCode === 'PGRST116' || errorMessage.includes('column') || errorMessage.includes('does not exist')) {
+        // Column doesn't exist - try querying without status filter
+        console.warn('[Products API] Retrying without status filter...');
+        let retryQuery = supabaseAdmin
+          .from('products')
+          .select('*', { count: 'exact' });
+        
+        if (category) {
+          retryQuery = retryQuery.eq('category', category);
+        }
+        if (featured !== undefined) {
+          retryQuery = retryQuery.eq('featured', featured);
+        }
+        if (inStock !== undefined) {
+          retryQuery = retryQuery.eq('in_stock', inStock);
+        }
+        
+        retryQuery = retryQuery
+          .order('created_at', { ascending: false })
+          .range(offset, offset + limit - 1);
+        
+        const retryResult = await retryQuery;
+        if (retryResult.error) {
+          console.error('[Products API] Retry also failed:', retryResult.error);
+          throw retryResult.error;
+        }
+        
+        // Use retry result
+        const products: ProductData[] = (retryResult.data || []) as ProductData[];
+        const total = retryResult.count || products.length;
+        
+        const publicProducts = products.map((product: ProductData) => {
+          const images = (product.images || []).map((img: string) => getPublicMediaUrl(img));
+          const featuredImage = product.featured_image 
+            ? getPublicMediaUrl(product.featured_image)
+            : images[0] || null;
+
+          return {
+            id: product.id,
+            title: product.title || product.name || product.id,
+            slug: product.slug || product.id,
+            description: product.description || null,
+            category: product.category || 'Uncategorized',
+            subcategory: product.subcategory || null,
+            price: product.price ? Number(product.price) : null,
+            currency: product.currency || 'KES',
+            featured_image: featuredImage,
+            images: images,
+            tags: product.tags || [],
+            featured: product.featured || false,
+            in_stock: product.in_stock !== undefined ? product.in_stock : true,
+            specifications: product.specifications as Record<string, unknown> | null || null,
+            seo_title: product.seo_title || null,
+            seo_description: product.seo_description || null,
+            created_at: product.created_at,
+            updated_at: product.updated_at,
+          };
+        });
+
+        return NextResponse.json({
+          success: true,
+          data: publicProducts,
+          meta: {
+            total,
+            limit,
+            offset,
+          },
+        });
+      }
+      
       if (errorMessage.includes('supabaseUrl') || errorMessage.includes('required')) {
         console.error('⚠️ Supabase configuration missing. Please create .env.local with NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY');
         return NextResponse.json(
