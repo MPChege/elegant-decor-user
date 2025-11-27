@@ -8,6 +8,12 @@ export const dynamic = 'force-dynamic'
 
 async function getProducts(): Promise<PublicProduct[]> {
   try {
+    // Validate Supabase config
+    if (!process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL === 'https://placeholder.supabase.co') {
+      console.error('[Products Page] ❌ NEXT_PUBLIC_SUPABASE_URL is not configured!')
+      return []
+    }
+
     // Query products directly from Supabase
     // Filter by status = 'published' (admin dashboard uses this field)
     const { data, error } = await supabaseAdmin

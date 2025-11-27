@@ -52,10 +52,40 @@ if (!serviceRoleKey) {
   )
 }
 
+// Validate Supabase credentials at runtime
+function validateSupabaseConfig() {
+  if (typeof window === 'undefined') {
+    // Server-side validation
+    if (!supabaseUrl || supabaseUrl === 'https://placeholder.supabase.co') {
+      console.error('❌ NEXT_PUBLIC_SUPABASE_URL is not set or is placeholder!')
+      return false
+    }
+    if (!supabaseAnonKey || supabaseAnonKey === 'placeholder-anon-key') {
+      console.error('❌ NEXT_PUBLIC_SUPABASE_ANON_KEY is not set or is placeholder!')
+      return false
+    }
+    if (!serviceRoleKey) {
+      console.warn('⚠️  SUPABASE_SERVICE_ROLE_KEY not set. Using anon key (may fail with RLS).')
+    }
+  }
+  return true
+}
+
 export const supabaseAdmin = createClient<Database>(
   supabaseUrl || 'https://placeholder.supabase.co',
-  serviceRoleKey || supabaseAnonKey || 'placeholder-service-key' // Fallback to anon key if service role not set (may fail with RLS)
+  serviceRoleKey || supabaseAnonKey || 'placeholder-service-key', // Fallback to anon key if service role not set (may fail with RLS)
+  {
+    auth: {
+      persistSession: false,
+      autoRefreshToken: false,
+    },
+  }
 )
+
+// Validate on module load (server-side only)
+if (typeof window === 'undefined') {
+  validateSupabaseConfig()
+}
 
 /**
  * Upload image to Supabase Storage

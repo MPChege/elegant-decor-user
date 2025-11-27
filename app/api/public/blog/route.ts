@@ -14,6 +14,31 @@ import type { PublicBlogPost } from '@/lib/public-api';
  */
 export async function GET(request: NextRequest) {
   try {
+    // Validate Supabase configuration
+    if (!process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL === 'https://placeholder.supabase.co') {
+      console.error('[Blog API] ❌ NEXT_PUBLIC_SUPABASE_URL is not configured!')
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Server configuration error: Supabase URL not set',
+          data: [],
+        },
+        { status: 500 }
+      )
+    }
+
+    if (!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY === 'placeholder-anon-key') {
+      console.error('[Blog API] ❌ NEXT_PUBLIC_SUPABASE_ANON_KEY is not configured!')
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Server configuration error: Supabase key not set',
+          data: [],
+        },
+        { status: 500 }
+      )
+    }
+
     const searchParams = request.nextUrl.searchParams;
     
     // Parse query parameters
