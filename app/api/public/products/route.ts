@@ -108,23 +108,20 @@ export async function GET(request: NextRequest) {
       const errorMessage = error instanceof Error ? error.message : String(error);
       const errorCode = (error as { code?: string })?.code || '';
       
-      // Handle specific Supabase errors
-      if (errorCode === 'PGRST116' || errorMessage.includes('column') || errorMessage.includes('does not exist')) {
-        // Column doesn't exist - try querying without status filter
-        console.warn('[Products API] Retrying without status filter...');
+      // Handle specific Supabase errors - column doesn't exist
+      if (errorCode === '42703' || errorCode === 'PGRST116' || errorMessage.includes('column') || errorMessage.includes('does not exist')) {
+        // Column doesn't exist - try querying without problematic filters
+        console.warn('[Products API] Column error detected, retrying without problematic filters...');
         let retryQuery = supabaseAdmin
           .from('products')
           .select('*', { count: 'exact' });
         
+        // Only apply filters for columns that likely exist
         if (category) {
           retryQuery = retryQuery.eq('category', category);
         }
-        if (featured !== undefined) {
-          retryQuery = retryQuery.eq('featured', featured);
-        }
-        if (inStock !== undefined) {
-          retryQuery = retryQuery.eq('in_stock', inStock);
-        }
+        // Skip featured filter if column doesn't exist
+        // Skip in_stock filter if it might not exist either
         
         retryQuery = retryQuery
           .order('created_at', { ascending: false })
@@ -136,11 +133,39 @@ export async function GET(request: NextRequest) {
           throw retryResult.error;
         }
         
-        // Use retry result
-        const products: ProductData[] = (retryResult.data || []) as ProductData[];
-        const total = retryResult.count || products.length;
+        // Use retry result and filter in memory if needed
+        let products: ProductData[] = (retryResult.data || []) as ProductData[];
         
-        const publicProducts = products.map((product: ProductData) => {
+        // Apply featured filter in memory if requested and column exists in data
+        if (featured !== undefined) {
+          products = products.filter((p) => {
+            // Check if featured property exists and matches
+            if (p.featured !== undefined) {
+              return p.featured === featured;
+            }
+            // If featured column doesn't exist, treat all as not featured
+            // So if filtering for featured=true, return false (no products match)
+            // Since featured can only be true here (not undefined due to the if check above)
+            return false;
+          });
+        }
+        
+        // Apply in_stock filter in memory if requested
+        if (inStock !== undefined) {
+          products = products.filter((p) => {
+            if (p.in_stock !== undefined) {
+              return p.in_stock === inStock;
+            }
+            // Default to true if column doesn't exist
+            return inStock === true;
+          });
+        }
+        
+        const total = products.length;
+        // Apply pagination in memory
+        const paginatedProducts = products.slice(offset, offset + limit);
+        
+        const publicProducts = paginatedProducts.map((product: ProductData) => {
           const images = (product.images || []).map((img: string) => getPublicMediaUrl(img));
           const featuredImage = product.featured_image 
             ? getPublicMediaUrl(product.featured_image)
