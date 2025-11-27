@@ -23,19 +23,38 @@ async function fetchBlogPosts(): Promise<PublicBlogPost[]> {
 
     console.log('[Journal Page] ✅ Fetching blog posts from Supabase:', supabaseUrl.substring(0, 40) + '...')
 
-    const { data, error } = await supabaseAdmin
+    // Try to fetch published blog posts first
+    let { data, error } = await supabaseAdmin
       .from('blog_posts')
       .select('*')
+      .eq('status', 'published')
       .order('published_at', { ascending: false })
       .order('created_at', { ascending: false })
 
-    if (error) {
-      console.error('[Journal Page] Supabase error:', error)
-      return []
-    }
-
-    if (!data || data.length === 0) {
-      return []
+    // If no published posts found, try fetching all posts (for debugging)
+    if (error || !data || data.length === 0) {
+      console.log('[Journal Page] No published blog posts found, trying to fetch all posts...')
+      const allResult = await supabaseAdmin
+        .from('blog_posts')
+        .select('*')
+        .order('published_at', { ascending: false })
+        .order('created_at', { ascending: false })
+      
+      if (allResult.error) {
+        console.error('[Journal Page] Supabase error:', allResult.error)
+        return []
+      }
+      
+      data = allResult.data
+      
+      if (!data || data.length === 0) {
+        console.log('[Journal Page] No blog posts found in database at all')
+        return []
+      }
+      
+      console.log(`[Journal Page] Found ${data.length} total blog posts (including drafts)`)
+    } else {
+      console.log(`[Journal Page] Found ${data.length} published blog posts`)
     }
 
     // Map to PublicBlogPost format

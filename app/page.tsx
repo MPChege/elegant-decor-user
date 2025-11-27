@@ -22,24 +22,39 @@ async function getProjectsForHome(): Promise<PublicProject[]> {
 
     console.log('[Home Page] ✅ Fetching projects from Supabase:', supabaseUrl.substring(0, 40) + '...')
 
-    const { data, error } = await supabaseAdmin
+    // Try to fetch published projects first
+    let { data, error } = await supabaseAdmin
       .from('projects')
       .select('*')
       .eq('status', 'published')
       .order('created_at', { ascending: false })
       .limit(10)
 
-    if (error) {
-      console.error('[Home Page] Supabase error:', error)
-      return []
+    // If no published projects found, try fetching all projects (for debugging)
+    if (error || !data || data.length === 0) {
+      console.log('[Home Page] No published projects found, trying to fetch all projects...')
+      const allResult = await supabaseAdmin
+        .from('projects')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(10)
+      
+      if (allResult.error) {
+        console.error('[Home Page] Supabase error:', allResult.error)
+        return []
+      }
+      
+      data = allResult.data
+      
+      if (!data || data.length === 0) {
+        console.log('[Home Page] No projects found in database at all')
+        return []
+      }
+      
+      console.log(`[Home Page] Found ${data.length} total projects (including drafts)`)
+    } else {
+      console.log(`[Home Page] Found ${data.length} published projects`)
     }
-
-    if (!data || data.length === 0) {
-      console.log('[Home Page] No projects found in database')
-      return []
-    }
-
-    console.log(`[Home Page] Found ${data.length} projects`)
 
     // Map to PublicProject format
     return data.map((project: Record<string, unknown>) => {

@@ -29,18 +29,36 @@ async function fetchProjects(): Promise<PublicProject[]> {
 
     console.log('[Work Page] ✅ Fetching projects from Supabase:', supabaseUrl.substring(0, 40) + '...')
 
-    const { data, error } = await supabaseAdmin
+    // Try to fetch published projects first
+    let { data, error } = await supabaseAdmin
       .from('projects')
       .select('*')
+      .eq('status', 'published')
       .order('created_at', { ascending: false })
 
-    if (error) {
-      console.error('[Work Page] Supabase error:', error)
-      return []
-    }
-
-    if (!data || data.length === 0) {
-      return []
+    // If no published projects found, try fetching all projects (for debugging)
+    if (error || !data || data.length === 0) {
+      console.log('[Work Page] No published projects found, trying to fetch all projects...')
+      const allResult = await supabaseAdmin
+        .from('projects')
+        .select('*')
+        .order('created_at', { ascending: false })
+      
+      if (allResult.error) {
+        console.error('[Work Page] Supabase error:', allResult.error)
+        return []
+      }
+      
+      data = allResult.data
+      
+      if (!data || data.length === 0) {
+        console.log('[Work Page] No projects found in database at all')
+        return []
+      }
+      
+      console.log(`[Work Page] Found ${data.length} total projects (including drafts)`)
+    } else {
+      console.log(`[Work Page] Found ${data.length} published projects`)
     }
 
     // Map to PublicProject format
