@@ -6,6 +6,7 @@ import { StickyCTABar } from '@/components/mobile/sticky-cta-bar'
 import { LoadingScreen } from '@/components/loading-screen'
 import { ScrollToTop } from '@/components/scroll-to-top'
 import { ScrollProgress } from '@/components/scroll-progress'
+import { CookieConsent } from '@/components/cookie-consent'
 import { Toaster } from '@/components/ui/toaster'
 import './globals.css'
 
@@ -119,6 +120,7 @@ export default function RootLayout({
           <Footer />
           <StickyCTABar />
           <ScrollToTop />
+          <CookieConsent />
           <Toaster />
         </div>
       </body>
