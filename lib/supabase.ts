@@ -27,15 +27,24 @@ function isValidSupabaseUrl(url: string): boolean {
   return url.startsWith('https://') && url.includes('.supabase.co')
 }
 
+// In production, we MUST have valid production URLs
+const isProduction = process.env.NODE_ENV === 'production' && !isBuildTime
+
 if (!isBuildTime) {
   if (!supabaseUrl || !supabaseAnonKey) {
-    console.error(
-      '❌ Missing Supabase env vars. Please set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY in your environment variables (use the SAME values as the admin dashboard).'
-    )
+    const errorMsg = '❌ Missing Supabase env vars. Please set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY in your environment variables (use the SAME values as the admin dashboard).'
+    console.error(errorMsg)
+    if (isProduction) {
+      throw new Error(errorMsg)
+    }
   } else if (!isValidSupabaseUrl(supabaseUrl)) {
-    console.warn(
-      `⚠️  NEXT_PUBLIC_SUPABASE_URL appears to be invalid or localhost: ${supabaseUrl}. This may cause issues in production.`
-    )
+    const errorMsg = `❌ NEXT_PUBLIC_SUPABASE_URL is invalid or localhost: ${supabaseUrl}. Production requires a valid Supabase URL (https://xxxxx.supabase.co).`
+    console.error(errorMsg)
+    if (isProduction) {
+      throw new Error(errorMsg)
+    } else {
+      console.warn('⚠️  Using invalid URL in development. This will fail in production.')
+    }
   } else {
     console.log(`✅ Supabase configured: ${supabaseUrl.substring(0, 30)}...`)
   }
@@ -87,9 +96,23 @@ function validateSupabaseConfig() {
   return true
 }
 
+// In production, fail if we don't have valid credentials
+if (isProduction) {
+  if (!supabaseUrl || !isValidSupabaseUrl(supabaseUrl)) {
+    throw new Error('❌ Production requires valid NEXT_PUBLIC_SUPABASE_URL (not localhost or placeholder)')
+  }
+  if (!supabaseAnonKey || supabaseAnonKey === 'placeholder-anon-key') {
+    throw new Error('❌ Production requires valid NEXT_PUBLIC_SUPABASE_ANON_KEY')
+  }
+}
+
 export const supabaseAdmin = createClient<Database>(
-  supabaseUrl || 'https://placeholder.supabase.co',
-  serviceRoleKey || supabaseAnonKey || 'placeholder-service-key', // Fallback to anon key if service role not set (may fail with RLS)
+  // In production, use actual URL; in build/dev, allow placeholder for build-time
+  isProduction ? supabaseUrl : (supabaseUrl || 'https://placeholder.supabase.co'),
+  // In production, require valid key; in build/dev, allow placeholder
+  isProduction 
+    ? (serviceRoleKey || supabaseAnonKey)
+    : (serviceRoleKey || supabaseAnonKey || 'placeholder-service-key'),
   {
     auth: {
       persistSession: false,

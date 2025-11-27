@@ -92,8 +92,33 @@ export async function GET(request: NextRequest) {
  */
 export async function POST(request: NextRequest) {
   try {
-    // Check if Supabase is configured
-    if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+    // Check if Supabase is configured with production URL
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+    if (!supabaseUrl || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+      console.error('[Inquiries API POST] ❌ Supabase environment variables are not set!')
+      return NextResponse.json(
+        { 
+          success: false, 
+          error: 'Server configuration error. Please contact support.' 
+        },
+        { status: 500 }
+      );
+    }
+
+    // Validate production URL
+    if (supabaseUrl === 'https://placeholder.supabase.co' || supabaseUrl.includes('localhost') || supabaseUrl.includes('127.0.0.1')) {
+      console.error('[Inquiries API POST] ❌ NEXT_PUBLIC_SUPABASE_URL is not a production URL! Current value:', supabaseUrl)
+      return NextResponse.json(
+        { 
+          success: false, 
+          error: 'Server configuration error. Please contact support.' 
+        },
+        { status: 500 }
+      );
+    }
+
+    if (!supabaseUrl.startsWith('https://') || !supabaseUrl.includes('.supabase.co')) {
+      console.error('[Inquiries API POST] ❌ NEXT_PUBLIC_SUPABASE_URL is not a valid Supabase URL:', supabaseUrl)
       return NextResponse.json(
         { 
           success: false, 
