@@ -24,7 +24,7 @@ export function LoadingScreen() {
           initial={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.5 }}
-          className="fixed inset-0 z-[9999] flex items-center justify-center bg-gradient-to-br from-background via-background to-muted/20"
+          className="fixed inset-0 z-[9999] flex items-center justify-center bg-white"
         >
           <div className="text-center">
             <motion.div

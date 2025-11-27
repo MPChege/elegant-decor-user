@@ -14,9 +14,9 @@ import { ScrollAnimate } from '@/components/scroll-animate'
 import type { PublicProject } from '@/lib/public-api'
 
 const heroTitles = [
-  'Transform Your Space With Elegant Interior Design, Premium Finishes & Professional Construction Services in Kenya',
-  'We Design, Build and Elevate Homes, Offices and Outdoor Spaces',
-  'From Concept Design to Full Implementation - We Bring Your Vision to Life',
+  { main: 'Transform Your Space', accent: 'With Elegant Design' },
+  { main: 'We Design & Build', accent: 'Homes & Offices' },
+  { main: 'From Concept to Reality', accent: 'We Bring Your Vision to Life' },
 ]
 
 const services = [
@@ -216,7 +216,9 @@ export default function HomePage() {
                   index === currentTitleIndex ? 'opacity-100' : 'opacity-0'
                 }`}
               >
-                {title}
+                {title.main}
+                <br />
+                <span className="text-luxury-gradient">{title.accent}</span>
               </h1>
             ))}
           </div>
