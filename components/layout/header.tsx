@@ -67,10 +67,10 @@ export function Header() {
           }}
         />
         <div className="absolute inset-0 -z-10 bg-background/40 backdrop-blur-xl" />
-        <nav className="container flex items-center justify-between py-4 px-6">
+        <nav className="container flex items-center justify-between py-2 md:py-3 px-6">
           {/* Logo */}
-          <Link href="/" className="flex items-center space-x-3">
-            <div className="relative h-16 md:h-20 w-auto">
+          <Link href="/" className="flex items-center space-x-2">
+            <div className="relative h-12 md:h-14 w-auto">
               {/* Light Mode Logo (white background) - visible on light backgrounds */}
               <Image
                 src="/etd logo.jpeg"
@@ -78,7 +78,7 @@ export function Header() {
                 width={240}
                 height={80}
                 className={cn(
-                  "h-16 md:h-20 w-auto object-contain transition-all duration-300",
+                  "h-12 md:h-14 w-auto object-contain transition-all duration-300",
                   theme === 'light' 
                     ? 'opacity-100 relative' 
                     : 'opacity-0 absolute inset-0 pointer-events-none'
@@ -92,7 +92,7 @@ export function Header() {
                 width={240}
                 height={80}
                 className={cn(
-                  "h-16 md:h-20 w-auto object-contain transition-all duration-300",
+                  "h-12 md:h-14 w-auto object-contain transition-all duration-300",
                   theme === 'dark' 
                     ? 'opacity-100 relative' 
                     : 'opacity-0 absolute inset-0 pointer-events-none'
@@ -103,13 +103,13 @@ export function Header() {
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center space-x-8">
+          <div className="hidden lg:flex items-center space-x-6">
             {navigation.map((item) => (
               <Link
                 key={item.name}
                 href={item.href}
                 className={cn(
-                  'text-sm font-medium transition-colors hover:text-primary relative py-2',
+                  'text-xs md:text-sm font-medium transition-colors hover:text-primary relative py-1.5',
                   pathname === item.href
                     ? 'text-primary'
                     : 'text-muted-foreground'
@@ -174,7 +174,7 @@ export function Header() {
       {/* Mobile Menu */}
       <div
         className={cn(
-          "fixed top-[73px] right-0 bottom-0 z-40 w-full max-w-sm bg-background border-l border-border shadow-luxury-lg lg:hidden transition-transform duration-300",
+          "fixed top-[57px] md:top-[61px] right-0 bottom-0 z-40 w-full max-w-sm bg-background border-l border-border shadow-luxury-lg lg:hidden transition-transform duration-300",
           mobileMenuOpen ? "translate-x-0" : "translate-x-full"
         )}
       >

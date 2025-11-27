@@ -144,6 +144,76 @@ const collageImages = {
   accent: '/OUTDOOR/jacuzzi%20rev_2%20-%20Photo.png',
 }
 
+// Auto-scrolling spaces component
+function AutoScrollSpaces({ spaces }: { spaces: typeof signatureSpaces }) {
+  const scrollRef = React.useRef<HTMLDivElement>(null)
+  const [isPaused, setIsPaused] = React.useState(false)
+
+  React.useEffect(() => {
+    if (!scrollRef.current || isPaused) return
+
+    const scrollContainer = scrollRef.current
+    let scrollPosition = 0
+    const scrollSpeed = 0.5 // pixels per frame
+
+    const scroll = () => {
+      if (scrollContainer && !isPaused) {
+        scrollPosition += scrollSpeed
+        scrollContainer.scrollLeft = scrollPosition
+
+        // Reset scroll position when reaching the end
+        if (scrollPosition >= scrollContainer.scrollWidth - scrollContainer.clientWidth) {
+          scrollPosition = 0
+        }
+      }
+    }
+
+    const intervalId = window.setInterval(scroll, 16) // ~60fps
+
+    return () => window.clearInterval(intervalId)
+  }, [isPaused])
+
+  return (
+    <div
+      className="relative overflow-hidden"
+      onMouseEnter={() => setIsPaused(true)}
+      onMouseLeave={() => setIsPaused(false)}
+    >
+      <div
+        ref={scrollRef}
+        className="flex gap-4 pb-4 hide-scrollbar"
+        style={{ scrollBehavior: 'auto' }}
+      >
+        {/* Render spaces twice for seamless loop */}
+        {[...spaces, ...spaces].map((space, index) => (
+          <div key={`${space.title}-${index}`} className="flex-shrink-0 w-64 md:w-72">
+            <Card className="border-0 shadow-lg hover:shadow-luxury-lg transition-all duration-500 group h-full flex flex-col overflow-hidden rounded-2xl">
+              <div className="relative aspect-[4/3]">
+                <Image
+                  src={space.image}
+                  alt={space.title}
+                  fill
+                  sizes="(min-width: 768px) 288px, 256px"
+                  className="object-cover group-hover:scale-105 transition-transform duration-700"
+                />
+                <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-black/60" />
+                <div className="absolute bottom-3 left-3 text-white font-playfair text-lg md:text-xl">
+                  {space.title}
+                </div>
+              </div>
+              <CardContent className="flex-1 flex items-center justify-center px-4 py-4 text-center">
+                <p className="text-xs md:text-sm text-muted-foreground leading-relaxed text-balance">
+                  {space.description}
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 export default function HomePage() {
   const [currentHeroIndex, setCurrentHeroIndex] = React.useState(0)
   const [currentTitleIndex, setCurrentTitleIndex] = React.useState(0)
@@ -277,7 +347,7 @@ export default function HomePage() {
         </section>
       </ScrollAnimate>
 
-      {/* Signature Spaces Section - Horizontal Scroll */}
+      {/* Signature Spaces Section - Auto-scrolling */}
       <section className="py-12 bg-muted/20">
         <div className="container px-6">
           <ScrollAnimate>
@@ -291,34 +361,7 @@ export default function HomePage() {
             </div>
           </ScrollAnimate>
 
-          <div className="overflow-x-auto pb-4 hide-scrollbar">
-            <div className="flex gap-4 min-w-max px-2">
-              {signatureSpaces.map((space) => (
-                <div key={space.title} className="flex-shrink-0 w-64 md:w-72">
-                  <Card className="border-0 shadow-lg hover:shadow-luxury-lg transition-all duration-500 group h-full flex flex-col overflow-hidden rounded-2xl">
-                    <div className="relative aspect-[4/3]">
-                      <Image
-                        src={space.image}
-                        alt={space.title}
-                        fill
-                        sizes="(min-width: 768px) 288px, 256px"
-                        className="object-cover group-hover:scale-105 transition-transform duration-700"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-black/60" />
-                      <div className="absolute bottom-3 left-3 text-white font-playfair text-lg md:text-xl">
-                        {space.title}
-                      </div>
-                    </div>
-                    <CardContent className="flex-1 flex items-center justify-center px-4 py-4 text-center">
-                      <p className="text-xs md:text-sm text-muted-foreground leading-relaxed text-balance">
-                        {space.description}
-                      </p>
-                    </CardContent>
-                  </Card>
-                </div>
-              ))}
-            </div>
-          </div>
+          <AutoScrollSpaces spaces={signatureSpaces} />
         </div>
       </section>
 

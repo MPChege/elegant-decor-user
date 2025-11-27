@@ -124,7 +124,7 @@ export function WorkPageClient({ projects }: WorkPageClientProps) {
                   layout
                 >
                   <Link href={`/work/${project.slug}`}>
-                    <Card className="group overflow-hidden border-luxury hover:shadow-luxury-lg transition-all duration-300 cursor-pointer">
+                    <Card className="group overflow-hidden border-luxury hover:shadow-luxury-lg transition-all duration-300 cursor-pointer h-full flex flex-col">
                       <div className="aspect-[4/3] relative overflow-hidden">
                         <Image
                           src={getPublicMediaUrl(
@@ -138,31 +138,30 @@ export function WorkPageClient({ projects }: WorkPageClientProps) {
                           className="object-cover group-hover:scale-105 transition-transform duration-500"
                           quality={95}
                         />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent z-10" />
-                        <div className="absolute bottom-0 left-0 right-0 p-6 z-20">
-                          <Badge variant="luxury" className="mb-3">
-                            {project.client_name || 'Project'}
-                          </Badge>
-                          <h3 className="font-playfair text-2xl font-bold mb-2">
-                            {project.title}
-                          </h3>
-                          <p className="text-sm text-muted-foreground mb-2">
-                            {project.location && `${project.location} • `}
-                            {project.year ?? ''}
-                          </p>
-                          {project.tags && project.tags.length > 0 && (
-                            <div className="flex flex-wrap gap-2">
-                              {project.tags.map((tag) => (
-                                <span
-                                  key={tag}
-                                  className="text-xs px-2 py-1 rounded-full bg-background/50 backdrop-blur-sm"
-                                >
-                                  {tag}
-                                </span>
-                              ))}
-                            </div>
-                          )}
-                        </div>
+                      </div>
+                      <div className="p-6 flex-1 flex flex-col">
+                        <Badge variant="luxury" className="mb-3 w-fit">
+                          {project.client_name || 'Project'}
+                        </Badge>
+                        <h3 className="font-playfair text-xl md:text-2xl font-bold mb-2 text-foreground">
+                          {project.title}
+                        </h3>
+                        <p className="text-sm text-muted-foreground mb-3">
+                          {project.location && `${project.location} • `}
+                          {project.year ?? ''}
+                        </p>
+                        {project.tags && project.tags.length > 0 && (
+                          <div className="flex flex-wrap gap-2 mt-auto">
+                            {project.tags.map((tag) => (
+                              <span
+                                key={tag}
+                                className="text-xs px-2 py-1 rounded-full bg-muted text-muted-foreground"
+                              >
+                                {tag}
+                              </span>
+                            ))}
+                          </div>
+                        )}
                       </div>
                     </Card>
                   </Link>
