@@ -14,13 +14,27 @@ import type { PublicProject } from '@/lib/public-api';
  */
 export async function GET(request: NextRequest) {
   try {
-    // Validate Supabase configuration
-    if (!process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL === 'https://placeholder.supabase.co') {
-      console.error('[Projects API] ❌ NEXT_PUBLIC_SUPABASE_URL is not configured!')
+    // Check if Supabase is configured with production URL
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+    if (!supabaseUrl || supabaseUrl === 'https://placeholder.supabase.co' || supabaseUrl.includes('localhost') || supabaseUrl.includes('127.0.0.1')) {
+      console.error('[Projects API] ❌ NEXT_PUBLIC_SUPABASE_URL is not configured properly! Current value:', supabaseUrl)
+      console.error('[Projects API] Production requires a valid Supabase URL (https://xxxxx.supabase.co)')
       return NextResponse.json(
         {
           success: false,
           error: 'Server configuration error: Supabase URL not set',
+          data: [],
+        },
+        { status: 500 }
+      )
+    }
+
+    if (!supabaseUrl.startsWith('https://') || !supabaseUrl.includes('.supabase.co')) {
+      console.error('[Projects API] ❌ NEXT_PUBLIC_SUPABASE_URL does not appear to be a valid Supabase URL:', supabaseUrl)
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Server configuration error: Invalid Supabase URL',
           data: [],
         },
         { status: 500 }

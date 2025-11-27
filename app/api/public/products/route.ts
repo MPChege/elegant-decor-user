@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase';
+import { supabaseAdmin } from '@/lib/supabase'; // Use admin client to bypass RLS
 import { getPublicMediaUrl } from '@/lib/s3/getPublicUrl';
 
 // Type for product data from database (may have different schema than expected)
@@ -39,6 +39,33 @@ type ProductData = {
  */
 export async function GET(request: NextRequest) {
   try {
+    // Check if Supabase is configured with production URL
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+    if (!supabaseUrl || supabaseUrl === 'https://placeholder.supabase.co' || supabaseUrl.includes('localhost') || supabaseUrl.includes('127.0.0.1')) {
+      console.error('[Products API] ❌ NEXT_PUBLIC_SUPABASE_URL is not configured properly! Current value:', supabaseUrl)
+      console.error('[Products API] Production requires a valid Supabase URL (https://xxxxx.supabase.co)')
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Server configuration error. Please contact support.',
+          data: [],
+        },
+        { status: 500 }
+      );
+    }
+
+    if (!supabaseUrl.startsWith('https://') || !supabaseUrl.includes('.supabase.co')) {
+      console.error('[Products API] ❌ NEXT_PUBLIC_SUPABASE_URL does not appear to be a valid Supabase URL:', supabaseUrl)
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Server configuration error. Please contact support.',
+          data: [],
+        },
+        { status: 500 }
+      );
+    }
+
     const searchParams = request.nextUrl.searchParams;
     
     // Parse query parameters
@@ -48,9 +75,9 @@ export async function GET(request: NextRequest) {
     const featured = searchParams.get('featured') === 'true' ? true : undefined;
     const inStock = searchParams.get('in_stock') === 'true' ? true : undefined;
 
-    // Build Supabase query
+    // Build Supabase query using admin client
     // Filter by status = 'published' (admin dashboard uses this field)
-    let query = supabase
+    let query = supabaseAdmin
       .from('products')
       .select('*', { count: 'exact' })
       .eq('status', 'published'); // Only show published products

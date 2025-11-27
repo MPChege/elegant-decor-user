@@ -33,12 +33,12 @@ const footerLinks = {
     { name: 'Journal', href: '/journal' },
     { name: 'Products', href: '/products' },
     { name: 'Contact', href: '/contact' },
-    { name: 'Careers', href: '/careers' },
+    // { name: 'Careers', href: '/careers' }, // TODO: Create careers page
   ],
   legal: [
     { name: 'Privacy Policy', href: '/privacy' },
-    { name: 'Terms of Service', href: '/terms' },
-    { name: 'Cookie Policy', href: '/cookies' },
+    // { name: 'Terms of Service', href: '/terms' }, // TODO: Create terms page
+    // { name: 'Cookie Policy', href: '/cookies' }, // TODO: Create cookies page
   ],
 }
 
