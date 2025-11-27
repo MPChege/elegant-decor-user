@@ -18,11 +18,27 @@ const isBuildTime = process.env.NEXT_PHASE === 'phase-production-build' ||
                     process.env.NEXT_PHASE === 'phase-development-build' ||
                     (!process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NODE_ENV === 'production')
 
-if (!isBuildTime && (!supabaseUrl || !supabaseAnonKey)) {
-  // Fail fast with a clear error at runtime if env vars are missing
-  console.error(
-    '❌ Missing Supabase env vars. Please set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY in your environment variables (use the SAME values as the admin dashboard).'
-  )
+// Validate Supabase URL is production (not localhost or placeholder)
+function isValidSupabaseUrl(url: string): boolean {
+  if (!url) return false
+  if (url === 'https://placeholder.supabase.co') return false
+  if (url.includes('localhost')) return false
+  if (url.includes('127.0.0.1')) return false
+  return url.startsWith('https://') && url.includes('.supabase.co')
+}
+
+if (!isBuildTime) {
+  if (!supabaseUrl || !supabaseAnonKey) {
+    console.error(
+      '❌ Missing Supabase env vars. Please set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY in your environment variables (use the SAME values as the admin dashboard).'
+    )
+  } else if (!isValidSupabaseUrl(supabaseUrl)) {
+    console.warn(
+      `⚠️  NEXT_PUBLIC_SUPABASE_URL appears to be invalid or localhost: ${supabaseUrl}. This may cause issues in production.`
+    )
+  } else {
+    console.log(`✅ Supabase configured: ${supabaseUrl.substring(0, 30)}...`)
+  }
 }
 
 /**

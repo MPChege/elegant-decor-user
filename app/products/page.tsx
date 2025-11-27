@@ -8,11 +8,20 @@ export const dynamic = 'force-dynamic'
 
 async function getProducts(): Promise<PublicProduct[]> {
   try {
-    // Validate Supabase config
-    if (!process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL === 'https://placeholder.supabase.co') {
-      console.error('[Products Page] ❌ NEXT_PUBLIC_SUPABASE_URL is not configured!')
+    // Validate Supabase config - check for production URL
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+    if (!supabaseUrl || supabaseUrl === 'https://placeholder.supabase.co' || supabaseUrl.includes('localhost') || supabaseUrl.includes('127.0.0.1')) {
+      console.error('[Products Page] ❌ NEXT_PUBLIC_SUPABASE_URL is not configured properly! Current value:', supabaseUrl)
+      console.error('[Products Page] Make sure NEXT_PUBLIC_SUPABASE_URL is set to your production Supabase URL (e.g., https://xxxxx.supabase.co)')
       return []
     }
+
+    if (!supabaseUrl.startsWith('https://') || !supabaseUrl.includes('.supabase.co')) {
+      console.error('[Products Page] ❌ NEXT_PUBLIC_SUPABASE_URL does not appear to be a valid Supabase URL:', supabaseUrl)
+      return []
+    }
+
+    console.log('[Products Page] ✅ Fetching products from Supabase:', supabaseUrl.substring(0, 40) + '...')
 
     // Query products directly from Supabase
     // Filter by status = 'published' (admin dashboard uses this field)
