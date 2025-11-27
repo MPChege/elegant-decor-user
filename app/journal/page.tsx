@@ -24,7 +24,7 @@ async function fetchBlogPosts(): Promise<PublicBlogPost[]> {
     console.log('[Journal Page] ✅ Fetching blog posts from Supabase:', supabaseUrl.substring(0, 40) + '...')
 
     // Fetch ALL blog posts (don't filter by status - show everything)
-    let { data, error } = await supabaseAdmin
+    const { data, error } = await supabaseAdmin
       .from('blog_posts')
       .select('*')
       .order('created_at', { ascending: false })

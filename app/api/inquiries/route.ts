@@ -2,10 +2,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase'; // Use admin client to bypass RLS
 import { inquirySchema } from '@/lib/validators';
 import { ZodError } from 'zod';
-import type { Database } from '@/lib/database.types';
+import type { Database } from '@/lib/database.types'
 
-type InquiryInsert = Database['public']['Tables']['inquiries']['Insert'];
-type InquiryRow = Database['public']['Tables']['inquiries']['Row'];
+type InquiryInsert = Database['public']['Tables']['inquiries']['Insert']
 
 /**
  * GET /api/inquiries

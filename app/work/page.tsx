@@ -30,7 +30,7 @@ async function fetchProjects(): Promise<PublicProject[]> {
     console.log('[Work Page] ✅ Fetching projects from Supabase:', supabaseUrl.substring(0, 40) + '...')
 
     // Fetch ALL projects (don't filter by status - show everything)
-    let { data, error } = await supabaseAdmin
+    const { data, error } = await supabaseAdmin
       .from('projects')
       .select('*')
       .order('created_at', { ascending: false })
