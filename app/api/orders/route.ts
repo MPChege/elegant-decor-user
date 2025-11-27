@@ -45,9 +45,25 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
+    console.log('[Orders API] Received request body:', JSON.stringify(body, null, 2))
+
+    // Clean up product_id - convert empty string to null
+    if (body.product_id === '' || body.product_id === undefined) {
+      body.product_id = null
+    }
 
     // Validate request body
-    const validatedData = orderSchema.parse(body);
+    let validatedData
+    try {
+      validatedData = orderSchema.parse(body)
+      console.log('[Orders API] ✅ Validation passed')
+    } catch (validationError) {
+      console.error('[Orders API] ❌ Validation error:', validationError)
+      if (validationError && typeof validationError === 'object' && 'errors' in validationError) {
+        console.error('[Orders API] Validation details:', JSON.stringify(validationError.errors, null, 2))
+      }
+      throw validationError
+    }
 
     // Generate order number
     const orderNumber = `ORD-${Date.now()}`;
@@ -64,15 +80,26 @@ export async function POST(request: NextRequest) {
       priority: 'high', // Order requests are high priority
     };
     
+    console.log('[Orders API] Inserting order data:', JSON.stringify(insertData, null, 2))
+    
     const { data, error } = await supabaseAdmin
       .from('inquiries')
       .insert(insertData as never)
       .select()
       .single();
 
-    if (error || !data) {
-      console.error('Supabase error:', error);
-      throw error || new Error('Failed to create order');
+    if (error) {
+      console.error('[Orders API] ❌ Supabase insert error:', error)
+      console.error('[Orders API] Error code:', error.code)
+      console.error('[Orders API] Error message:', error.message)
+      console.error('[Orders API] Error details:', JSON.stringify(error, null, 2))
+      console.error('[Orders API] Insert data that failed:', JSON.stringify(insertData, null, 2))
+      throw new Error(`Database error: ${error.message || 'Failed to create order'}`)
+    }
+
+    if (!data) {
+      console.error('[Orders API] ❌ No data returned from insert')
+      throw new Error('Failed to create order - no data returned')
     }
 
     const order = {
@@ -104,8 +131,16 @@ export async function POST(request: NextRequest) {
       { status: 201 }
     );
   } catch (error) {
-    console.error('Error creating order:', error);
+    console.error('[Orders API] ❌ Error creating order:', error)
+    
+    if (error instanceof Error) {
+      console.error('[Orders API] Error message:', error.message)
+      console.error('[Orders API] Error stack:', error.stack)
+    }
+    
+    console.error('[Orders API] Full error object:', JSON.stringify(error, null, 2))
 
+    // Handle Zod validation errors
     if (error && typeof error === 'object' && 'name' in error && error.name === 'ZodError') {
       return NextResponse.json(
         {
@@ -117,10 +152,21 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Return detailed error message for debugging
+    const errorMessage = error instanceof Error 
+      ? error.message 
+      : typeof error === 'object' && error !== null && 'message' in error
+        ? String(error.message)
+        : 'Failed to create order'
+
     return NextResponse.json(
       {
         success: false,
-        error: error instanceof Error ? error.message : 'Failed to create order',
+        error: errorMessage,
+        // Include more details in development
+        ...(process.env.NODE_ENV === 'development' && {
+          details: error instanceof Error ? error.stack : String(error)
+        })
       },
       { status: 500 }
     );

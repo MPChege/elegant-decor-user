@@ -31,9 +31,34 @@ async function fetchBlogPosts(): Promise<PublicBlogPost[]> {
       .order('published_at', { ascending: false })
       .order('created_at', { ascending: false })
 
-    // If no published posts found, try fetching all posts (for debugging)
-    if (error || !data || data.length === 0) {
-      console.log('[Journal Page] No published blog posts found, trying to fetch all posts...')
+    // If error or no published posts found, try fetching all posts (for debugging)
+    if (error) {
+      console.error('[Journal Page] Error fetching published posts:', error)
+      console.log('[Journal Page] Trying to fetch all posts (including drafts)...')
+      
+      const allResult = await supabaseAdmin
+        .from('blog_posts')
+        .select('*')
+        .order('published_at', { ascending: false })
+        .order('created_at', { ascending: false })
+      
+      if (allResult.error) {
+        console.error('[Journal Page] Supabase error fetching all posts:', allResult.error)
+        console.error('[Journal Page] Error details:', JSON.stringify(allResult.error, null, 2))
+        return []
+      }
+      
+      data = allResult.data
+      
+      if (!data || data.length === 0) {
+        console.log('[Journal Page] ⚠️ No blog posts found in database at all')
+        return []
+      }
+      
+      console.log(`[Journal Page] ✅ Found ${data.length} total blog posts (including drafts)`)
+    } else if (!data || data.length === 0) {
+      console.log('[Journal Page] No published posts found, trying to fetch all posts...')
+      
       const allResult = await supabaseAdmin
         .from('blog_posts')
         .select('*')
@@ -48,13 +73,13 @@ async function fetchBlogPosts(): Promise<PublicBlogPost[]> {
       data = allResult.data
       
       if (!data || data.length === 0) {
-        console.log('[Journal Page] No blog posts found in database at all')
+        console.log('[Journal Page] ⚠️ No blog posts found in database at all')
         return []
       }
       
-      console.log(`[Journal Page] Found ${data.length} total blog posts (including drafts)`)
+      console.log(`[Journal Page] ✅ Found ${data.length} total blog posts (including drafts)`)
     } else {
-      console.log(`[Journal Page] Found ${data.length} published blog posts`)
+      console.log(`[Journal Page] ✅ Found ${data.length} published blog posts`)
     }
 
     // Map to PublicBlogPost format
@@ -86,7 +111,12 @@ async function fetchBlogPosts(): Promise<PublicBlogPost[]> {
       }
     })
   } catch (error) {
-    console.error('[Journal Page] Error fetching blog posts:', error)
+    console.error('[Journal Page] ❌ Unexpected error fetching blog posts:', error)
+    if (error instanceof Error) {
+      console.error('[Journal Page] Error message:', error.message)
+      console.error('[Journal Page] Error stack:', error.stack)
+    }
+    console.error('[Journal Page] Full error:', JSON.stringify(error, null, 2))
     return []
   }
 }

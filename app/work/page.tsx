@@ -36,9 +36,34 @@ async function fetchProjects(): Promise<PublicProject[]> {
       .eq('status', 'published')
       .order('created_at', { ascending: false })
 
-    // If no published projects found, try fetching all projects (for debugging)
-    if (error || !data || data.length === 0) {
+    // If error or no published projects found, try fetching all projects (for debugging)
+    if (error) {
+      console.error('[Work Page] Error fetching published projects:', error)
+      console.error('[Work Page] Error details:', JSON.stringify(error, null, 2))
+      console.log('[Work Page] Trying to fetch all projects (including drafts)...')
+      
+      const allResult = await supabaseAdmin
+        .from('projects')
+        .select('*')
+        .order('created_at', { ascending: false })
+      
+      if (allResult.error) {
+        console.error('[Work Page] Supabase error fetching all projects:', allResult.error)
+        console.error('[Work Page] Error details:', JSON.stringify(allResult.error, null, 2))
+        return []
+      }
+      
+      data = allResult.data
+      
+      if (!data || data.length === 0) {
+        console.log('[Work Page] ⚠️ No projects found in database at all')
+        return []
+      }
+      
+      console.log(`[Work Page] ✅ Found ${data.length} total projects (including drafts)`)
+    } else if (!data || data.length === 0) {
       console.log('[Work Page] No published projects found, trying to fetch all projects...')
+      
       const allResult = await supabaseAdmin
         .from('projects')
         .select('*')
@@ -52,13 +77,13 @@ async function fetchProjects(): Promise<PublicProject[]> {
       data = allResult.data
       
       if (!data || data.length === 0) {
-        console.log('[Work Page] No projects found in database at all')
+        console.log('[Work Page] ⚠️ No projects found in database at all')
         return []
       }
       
-      console.log(`[Work Page] Found ${data.length} total projects (including drafts)`)
+      console.log(`[Work Page] ✅ Found ${data.length} total projects (including drafts)`)
     } else {
-      console.log(`[Work Page] Found ${data.length} published projects`)
+      console.log(`[Work Page] ✅ Found ${data.length} published projects`)
     }
 
     // Map to PublicProject format
@@ -93,7 +118,12 @@ async function fetchProjects(): Promise<PublicProject[]> {
       }
     })
   } catch (error) {
-    console.error('[Work Page] Error fetching projects:', error)
+    console.error('[Work Page] ❌ Unexpected error fetching projects:', error)
+    if (error instanceof Error) {
+      console.error('[Work Page] Error message:', error.message)
+      console.error('[Work Page] Error stack:', error.stack)
+    }
+    console.error('[Work Page] Full error:', JSON.stringify(error, null, 2))
     return []
   }
 }
