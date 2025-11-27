@@ -162,7 +162,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* CEO Section */}
+      {/* Leadership Section */}
       <section className="py-20 bg-card">
         <div className="container px-6">
           <ScrollAnimate className="text-center mb-16">
@@ -171,23 +171,52 @@ export default function AboutPage() {
             </h2>
           </ScrollAnimate>
 
-          <div className="max-w-3xl mx-auto">
-              <ScrollAnimate className="text-center">
-              <div className="mb-6">
-                <div className="w-32 h-32 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
-                  <Users className="h-16 w-16 text-primary" />
+          <div className="max-w-5xl mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+              {/* Dr. Vivian Shabaan */}
+              <ScrollAnimate direction="right" className="text-center">
+                <div className="mb-6">
+                  <div className="w-32 h-32 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
+                    <Users className="h-16 w-16 text-primary" />
+                  </div>
+                  <h3 className="font-playfair text-3xl font-bold mb-2">
+                    Dr. Vivian Shabaan
+                  </h3>
+                  <p className="text-xl text-primary font-semibold mb-4">
+                    Director – Elegant Tiles & Décor Centre Ltd
+                  </p>
+                  <blockquote className="text-lg text-muted-foreground max-w-xl mx-auto italic border-l-4 border-primary pl-6 my-6 text-left">
+                    &ldquo;My passion is transforming homes through creative, resourceful and personalized projects. Stunning interior design is always possible with the right vision — even when you Do It Yourself!&rdquo;
+                  </blockquote>
                 </div>
-                <h3 className="font-playfair text-3xl font-bold mb-2">
-                  Dr. Vivian Shabaan
-                </h3>
-                <p className="text-xl text-primary font-semibold mb-4">
-                  Director – Elegant Tiles & Décor Centre Ltd
-                </p>
-                <blockquote className="text-lg text-muted-foreground max-w-2xl mx-auto italic border-l-4 border-primary pl-6 my-6">
-                  &ldquo;My passion is transforming homes through creative, resourceful and personalized projects. Stunning interior design is always possible with the right vision — even when you Do It Yourself!&rdquo;
-                </blockquote>
-              </div>
-            </ScrollAnimate>
+              </ScrollAnimate>
+
+              {/* Mrs. Agnes Irungu */}
+              <ScrollAnimate direction="left" className="text-center">
+                <div className="mb-6">
+                  <div className="w-32 h-32 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
+                    <Users className="h-16 w-16 text-primary" />
+                  </div>
+                  <h3 className="font-playfair text-3xl font-bold mb-2">
+                    Mrs. Agnes Irungu
+                  </h3>
+                  <p className="text-xl text-primary font-semibold mb-4">
+                    MD & Founder
+                  </p>
+                  <p className="text-lg text-muted-foreground mb-6">
+                    Managing Director of Elegant Tiles & Décor Centre Limited.
+                  </p>
+                  <div className="space-y-3 text-left max-w-xl mx-auto">
+                    <p className="text-muted-foreground">
+                      Over 20 years experience in administration, procurement and logistics
+                    </p>
+                    <p className="text-muted-foreground">
+                      Deep passion in construction, home design, décor and landscaping
+                    </p>
+                  </div>
+                </div>
+              </ScrollAnimate>
+            </div>
           </div>
         </div>
       </section>
