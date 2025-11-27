@@ -27,38 +27,7 @@ export function GlobalSearch() {
   const [query, setQuery] = React.useState('')
   const [results, setResults] = React.useState<SearchResult[]>([])
   const [recentSearches, setRecentSearches] = React.useState<string[]>([])
-
-  // Mock search data - memoized to prevent re-renders
-  const mockData: SearchResult[] = React.useMemo(() => [
-    {
-      id: '1',
-      title: 'Italian Carrara Marble',
-      description: 'Premium white marble tiles',
-      type: 'product',
-      url: '/products/1',
-    },
-    {
-      id: '2',
-      title: 'Modern Villa Retreat',
-      description: 'Luxury residential project',
-      type: 'project',
-      url: '/work',
-    },
-    {
-      id: '3',
-      title: '2025 Tile Trends',
-      description: 'Latest design trends',
-      type: 'article',
-      url: '/journal',
-    },
-    {
-      id: '4',
-      title: 'Interior Design Services',
-      description: 'Bespoke design solutions',
-      type: 'page',
-      url: '/services',
-    },
-  ], [])
+  const [isLoading, setIsLoading] = React.useState(false)
 
   // Keyboard shortcut
   React.useEffect(() => {
@@ -76,19 +45,34 @@ export function GlobalSearch() {
     return () => window.removeEventListener('keydown', handleKeyDown)
   }, [])
 
-  // Search logic
+  // Search logic - fetch from API
   React.useEffect(() => {
-    if (query.trim()) {
-      const filtered = mockData.filter(
-        (item) =>
-          item.title.toLowerCase().includes(query.toLowerCase()) ||
-          item.description.toLowerCase().includes(query.toLowerCase())
-      )
-      setResults(filtered)
-    } else {
-      setResults([])
-    }
-  }, [query, mockData])
+    const searchTimeout = setTimeout(async () => {
+      if (query.trim()) {
+        setIsLoading(true)
+        try {
+          const response = await fetch(`/api/search?q=${encodeURIComponent(query)}&limit=20`)
+          const data = await response.json()
+          
+          if (data.success && data.data) {
+            setResults(data.data)
+          } else {
+            setResults([])
+          }
+        } catch (error) {
+          console.error('Search error:', error)
+          setResults([])
+        } finally {
+          setIsLoading(false)
+        }
+      } else {
+        setResults([])
+        setIsLoading(false)
+      }
+    }, 300) // Debounce search by 300ms
+
+    return () => clearTimeout(searchTimeout)
+  }, [query])
 
   const handleSelect = (result: SearchResult) => {
     // Save to recent searches
@@ -158,7 +142,15 @@ export function GlobalSearch() {
           {/* Results */}
           <div className="max-h-96 overflow-y-auto">
             <AnimatePresence mode="wait">
-              {query && results.length > 0 ? (
+              {isLoading ? (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="p-8 text-center text-muted-foreground"
+                >
+                  Searching...
+                </motion.div>
+              ) : query && results.length > 0 ? (
                 <motion.div
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
