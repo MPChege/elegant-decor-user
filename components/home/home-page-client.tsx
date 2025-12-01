@@ -20,44 +20,54 @@ const heroTitles = [
 
 const services = [
   {
-    title: 'Interior Design & 3D Rendering',
+    title: 'Building Design Consultancy',
+    description: 'Expert building design consultancy services to help you plan and design your dream space',
+    icon: '🏛️',
+  },
+  {
+    title: 'Architectural Drawings',
+    description: 'Professional architectural drawings and technical documentation for your construction projects',
+    icon: '📐',
+  },
+  {
+    title: 'Landscape Architecture',
+    description: 'Comprehensive landscape architecture services to transform your outdoor spaces',
+    icon: '🌳',
+  },
+  {
+    title: 'Interior Designs',
     description: 'Beautiful, functional and timeless interior designs for homes, offices, hotels and commercial spaces',
     icon: '✨',
   },
   {
-    title: 'Building & Construction',
+    title: '3D Rendering',
+    description: 'Photorealistic 3D visualizations that bring your design concepts to life',
+    icon: '🎨',
+  },
+  {
+    title: 'Construction',
     description: 'Reliable construction services for residential and commercial projects in Kenya',
     icon: '🏗️',
   },
   {
-    title: 'Renovations & Makeovers',
+    title: 'Renovations',
     description: 'Transform your home or office with elegant renovation solutions using premium materials',
     icon: '🔨',
   },
   {
-    title: 'Landscaping & Garden Care',
-    description: 'Design, plant and maintain stunning landscapes that elevate outdoor living spaces',
-    icon: '🌳',
-  },
-  {
-    title: 'Project Supervision',
-    description: 'Professional end-to-end project supervision for seamless execution',
-    icon: '👷',
-  },
-  {
-    title: 'Architectural Drawings',
-    description: 'Expert architectural design services including building plans and technical drawings',
-    icon: '📐',
-  },
-  {
-    title: 'Home Maintenance',
-    description: 'Comprehensive home maintenance services to keep your space in perfect condition',
+    title: 'Home Maintenance and Repairs',
+    description: 'Comprehensive home maintenance and repair services to keep your property in perfect condition',
     icon: '🔧',
   },
   {
-    title: 'Custom Millwork & Carpentry',
-    description: 'Bespoke carpentry solutions tailored to your unique design requirements',
-    icon: '🪚',
+    title: 'Landscaping',
+    description: 'Design, plant and maintain stunning landscapes that elevate outdoor living spaces',
+    icon: '🌿',
+  },
+  {
+    title: 'Rental Sales and Property Management',
+    description: 'Complete property management services including rental sales, tenant management and property maintenance',
+    icon: '🔑',
   },
 ]
 
@@ -223,65 +233,131 @@ function AutoScrollSpaces({ spaces }: { spaces: typeof signatureSpaces }) {
   )
 }
 
-// Auto-scrolling services component
+// Auto-scrolling services component with mobile support
 function AutoScrollServices({ servicesList }: { servicesList: typeof services }) {
   const scrollRef = React.useRef<HTMLDivElement>(null)
   const [isPaused, setIsPaused] = React.useState(false)
+  const [isMobile, setIsMobile] = React.useState(false)
 
   React.useEffect(() => {
-    if (!scrollRef.current || isPaused) return
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768)
+    }
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
+
+  React.useEffect(() => {
+    // On mobile, allow manual scrolling only
+    if (isMobile || !scrollRef.current || isPaused) return
 
     const scrollContainer = scrollRef.current
     let scrollPosition = 0
     const scrollSpeed = 0.4 // pixels per frame
+    let animationFrameId: number
 
     const scroll = () => {
-      if (scrollContainer && !isPaused) {
+      if (scrollContainer && !isPaused && !isMobile) {
         scrollPosition += scrollSpeed
         scrollContainer.scrollLeft = scrollPosition
 
-        // Reset scroll position when reaching the end
-        if (scrollPosition >= scrollContainer.scrollWidth - scrollContainer.clientWidth) {
+        // Reset scroll position when reaching halfway (since we duplicate the content)
+        const maxScroll = scrollContainer.scrollWidth / 2
+        if (scrollPosition >= maxScroll) {
           scrollPosition = 0
+          scrollContainer.scrollLeft = 0
         }
+
+        animationFrameId = requestAnimationFrame(scroll)
       }
     }
 
-    const intervalId = window.setInterval(scroll, 16) // ~60fps
+    animationFrameId = requestAnimationFrame(scroll)
 
-    return () => window.clearInterval(intervalId)
-  }, [isPaused])
+    return () => {
+      if (animationFrameId) {
+        cancelAnimationFrame(animationFrameId)
+      }
+    }
+  }, [isPaused, isMobile])
 
   return (
     <div
       className="relative overflow-hidden"
-      onMouseEnter={() => setIsPaused(true)}
-      onMouseLeave={() => setIsPaused(false)}
+      onMouseEnter={() => !isMobile && setIsPaused(true)}
+      onMouseLeave={() => !isMobile && setIsPaused(false)}
+      onTouchStart={() => setIsPaused(true)}
+      onTouchEnd={() => {
+        // Resume after a short delay on mobile
+        setTimeout(() => setIsPaused(false), 2000)
+      }}
     >
       <div
         ref={scrollRef}
-        className="flex gap-6 pb-4 hide-scrollbar"
-        style={{ scrollBehavior: 'auto' }}
+        className={`flex gap-4 md:gap-6 pb-4 overflow-x-auto ${
+          isMobile ? 'snap-x snap-mandatory' : 'hide-scrollbar'
+        }`}
+        style={{ 
+          scrollBehavior: isMobile ? 'smooth' : 'auto',
+          WebkitOverflowScrolling: 'touch',
+        }}
       >
-        {/* Render services twice for seamless loop */}
-        {[...servicesList, ...servicesList].map((service, index) => (
-          <div key={`${service.title}-${index}`} className="flex-shrink-0 w-72 md:w-80">
-            <Card className="h-full hover:shadow-luxury-lg transition-all duration-300 border-luxury group cursor-pointer">
-              <CardContent className="p-6 text-center">
-                <div className="text-5xl mb-4 group-hover:scale-110 transition-transform duration-300">
-                  {service.icon}
-                </div>
-                <h3 className="font-playfair text-xl font-semibold mb-2">
-                  {service.title}
-                </h3>
-                <p className="text-sm text-muted-foreground">
-                  {service.description}
-                </p>
-              </CardContent>
-            </Card>
-          </div>
-        ))}
+        {/* Render services twice for seamless loop on desktop */}
+        {isMobile 
+          ? servicesList.map((service, index) => (
+              <div 
+                key={`${service.title}-${index}`} 
+                className="flex-shrink-0 w-[85vw] sm:w-80 snap-center"
+              >
+                <Card className="h-full hover:shadow-luxury-lg transition-all duration-300 border-luxury group cursor-pointer">
+                  <CardContent className="p-6 text-center">
+                    <div className="text-5xl mb-4 group-hover:scale-110 transition-transform duration-300">
+                      {service.icon}
+                    </div>
+                    <h3 className="font-playfair text-xl font-semibold mb-2">
+                      {service.title}
+                    </h3>
+                    <p className="text-sm text-muted-foreground">
+                      {service.description}
+                    </p>
+                  </CardContent>
+                </Card>
+              </div>
+            ))
+          : [...servicesList, ...servicesList].map((service, index) => (
+              <div 
+                key={`${service.title}-${index}`} 
+                className="flex-shrink-0 w-72 md:w-80"
+              >
+                <Card className="h-full hover:shadow-luxury-lg transition-all duration-300 border-luxury group cursor-pointer">
+                  <CardContent className="p-6 text-center">
+                    <div className="text-5xl mb-4 group-hover:scale-110 transition-transform duration-300">
+                      {service.icon}
+                    </div>
+                    <h3 className="font-playfair text-xl font-semibold mb-2">
+                      {service.title}
+                    </h3>
+                    <p className="text-sm text-muted-foreground">
+                      {service.description}
+                    </p>
+                  </CardContent>
+                </Card>
+              </div>
+            ))
+        }
       </div>
+      {/* Scroll indicator for mobile */}
+      {isMobile && (
+        <div className="flex justify-center mt-4 gap-2">
+          {servicesList.map((_, index) => (
+            <div
+              key={index}
+              className="w-2 h-2 rounded-full bg-primary/30"
+            />
+          ))}
+        </div>
+      )}
     </div>
   )
 }

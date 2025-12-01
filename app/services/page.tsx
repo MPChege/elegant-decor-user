@@ -13,6 +13,11 @@ import {
   Clock,
   Shield,
   ArrowRight,
+  Building2,
+  Home,
+  Wrench,
+  Leaf,
+  Key,
 } from 'lucide-react'
 import { LuxuryLayout } from '@/components/layout/luxury-layout'
 import { ScrollAnimate } from '@/components/scroll-animate'
@@ -23,22 +28,69 @@ const heroBackground = '/KITCHEN%20and%20DINING/KITCHEN_10%20-%20Photo.png'
 
 const services = [
   {
-    icon: Palette,
-    title: 'Interior Design & 3D Rendering',
+    icon: Building2,
+    title: 'Building Design Consultancy',
     description:
-      'We create beautiful, functional and timeless interior designs for homes, offices, hotels, showrooms and commercial spaces.',
+      'Expert building design consultancy services to help you plan and design your dream space. We provide comprehensive design solutions from concept to completion.',
+    features: [
+      'Building design concepts',
+      'Space planning',
+      'Design consultation',
+      'Project feasibility studies',
+    ],
+  },
+  {
+    icon: Ruler,
+    title: 'Architectural Drawings',
+    description:
+      'Professional architectural drawings and technical documentation for your construction projects. We create detailed plans that meet all regulatory requirements.',
+    features: [
+      'Building plans',
+      'Floor layouts',
+      'Technical drawings',
+      'Submission-ready plans',
+    ],
+  },
+  {
+    icon: Leaf,
+    title: 'Landscape Architecture',
+    description:
+      'Comprehensive landscape architecture services to transform your outdoor spaces. We design beautiful, functional landscapes that complement your property.',
+    features: [
+      'Landscape design',
+      'Site planning',
+      'Hardscape design',
+      'Sustainable solutions',
+    ],
+  },
+  {
+    icon: Palette,
+    title: 'Interior Designs',
+    description:
+      'Beautiful, functional and timeless interior designs for homes, offices, hotels, showrooms and commercial spaces. We create spaces that reflect your style and needs.',
     features: [
       'Living rooms & lounges',
       'Kitchens & Bathrooms',
       'Bedrooms & Wardrobes',
       'Office interiors & Showrooms',
-      '3D visualization & Mood boards',
     ],
     tagline: 'Design your dream space with confidence.',
   },
   {
+    icon: Sparkles,
+    title: '3D Rendering',
+    description:
+      'Photorealistic 3D visualizations that bring your design concepts to life. See your space before construction begins with our advanced rendering technology.',
+    features: [
+      '3D visualizations',
+      'Virtual walkthroughs',
+      'Mood boards',
+      'Design presentations',
+    ],
+  },
+  {
     icon: Package,
-    title: 'Construction & Building Solutions',
+    title: 'Construction',
     description:
       'Reliable construction services for residential and commercial projects in Kenya. From foundations to finishes, we deliver quality construction rooted in integrity.',
     features: [
@@ -49,8 +101,8 @@ const services = [
     ],
   },
   {
-    icon: Sparkles,
-    title: 'Renovations & Home Makeovers',
+    icon: Home,
+    title: 'Renovations',
     description:
       'Transform your home or office with elegant renovation solutions using premium materials such as hardwood floors, designer tiles, lighting upgrades and custom cabinetry.',
     features: [
@@ -62,9 +114,22 @@ const services = [
     tagline: 'Defining Spaces, Flawlessly.',
   },
   {
-    icon: Palette,
-    title: 'Landscaping & Garden Design',
-    description: 'We design, plant and maintain stunning landscapes that elevate outdoor living spaces. Our landscaping integrates lush lawns, vibrant flowers and strategic plant placement.',
+    icon: Wrench,
+    title: 'Home Maintenance and Repairs',
+    description:
+      'Comprehensive home maintenance and repair services to keep your property in perfect condition. We handle everything from minor fixes to major repairs.',
+    features: [
+      'Routine maintenance',
+      'Emergency repairs',
+      'Plumbing & electrical',
+      'General repairs',
+    ],
+  },
+  {
+    icon: Leaf,
+    title: 'Landscaping',
+    description:
+      'We design, plant and maintain stunning landscapes that elevate outdoor living spaces. Our landscaping integrates lush lawns, vibrant flowers and strategic plant placement.',
     features: [
       'Garden design & planning',
       'Plant selection & placement',
@@ -74,55 +139,12 @@ const services = [
     tagline: 'We Don\'t Just Plant. We Plan, Execute & Maintain.',
   },
   {
-    icon: Users,
-    title: 'Project Supervision',
-    description: 'Professional end-to-end project supervision for seamless execution. Our supervisors coordinate every stage ensuring quality, safety and timely delivery.',
+    icon: Key,
+    title: 'Rental Sales and Property Management',
+    description:
+      'Complete property management services including rental sales, tenant management, property maintenance, and transparent reporting for property owners.',
     features: [
-      'End-to-end coordination',
-      'Quality assurance',
-      'Timeline management',
-      'Problem anticipation',
-    ],
-  },
-  {
-    icon: Ruler,
-    title: 'Architectural Drawings & Consultancy',
-    description: 'Expert architectural design services including building plans, floor layouts, technical drawings and submission-ready plans.',
-    features: [
-      'Building plans',
-      'Floor layouts',
-      'Technical drawings',
-      'Submission-ready plans',
-    ],
-  },
-  {
-    icon: Package,
-    title: 'Imported Furniture (On Order)',
-    description: 'We supply premium-quality imported furniture including office furniture, lounge sets, dining sets, outdoor furniture and office partitions.',
-    features: [
-      'Office furniture',
-      'Lounge & Dining sets',
-      'Outdoor furniture',
-      'Office partitions',
-    ],
-    tagline: 'Modern, durable and available on confirmed order.',
-  },
-  {
-    icon: Sparkles,
-    title: 'Home Décor & Accessories',
-    description: 'We curate elegant décor pieces that add warmth, personality and style. From textiles to accessories, we complete your space with the perfect finishing touches.',
-    features: [
-      'Curated décor pieces',
-      'Textiles & accessories',
-      'Finishing touches',
-      'Style consultation',
-    ],
-  },
-  {
-    icon: Shield,
-    title: 'Property Management & Rentals',
-    description: 'We help property owners maintain, market and manage their rentals with professionalism and transparency.',
-    features: [
+      'Rental sales',
       'Property maintenance',
       'Marketing & leasing',
       'Tenant management',

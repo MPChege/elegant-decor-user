@@ -167,6 +167,17 @@
     display: none;
   }
 
+  /* Snap scrolling for mobile carousels */
+  .snap-x {
+    scroll-snap-type: x mandatory;
+  }
+  .snap-center {
+    scroll-snap-align: center;
+  }
+  .snap-mandatory {
+    scroll-snap-type: x mandatory;
+  }
+
   /* Ambient Background */
   .ambient-background {
     position: relative;
