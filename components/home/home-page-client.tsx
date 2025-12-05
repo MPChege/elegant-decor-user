@@ -362,11 +362,14 @@ function AutoScrollServices({ servicesList }: { servicesList: typeof services })
   )
 }
 
+import type { PublicProduct } from '@/lib/public-api'
+
 interface HomePageClientProps {
   projects: PublicProject[]
+  products?: PublicProduct[]
 }
 
-export function HomePageClient({ projects }: HomePageClientProps) {
+export function HomePageClient({ projects, products }: HomePageClientProps) {
   const [currentHeroIndex, setCurrentHeroIndex] = React.useState(0)
   const [currentTitleIndex, setCurrentTitleIndex] = React.useState(0)
 
@@ -465,10 +468,10 @@ export function HomePageClient({ projects }: HomePageClientProps) {
       </section>
 
       {/* Products Carousel Section - Immediately after hero */}
-      <ProductsCarousel />
+      <ProductsCarousel products={products} />
 
       {/* Signature Spaces Section - Auto-scrolling */}
-      <section className="py-12 bg-muted/20">
+      <section className="pt-6 md:pt-8 pb-12 bg-muted/20">
         <div className="container px-6">
           <ScrollAnimate>
             <div className="text-center mb-8">

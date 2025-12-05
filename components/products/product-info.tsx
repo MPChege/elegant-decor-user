@@ -1,7 +1,7 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { Check } from 'lucide-react'
+import { Check, Package, Clock, Globe } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
 import { ProductActions } from '@/components/products/product-actions'
@@ -35,6 +35,45 @@ export function ProductInfo({ product, specifications }: ProductInfoProps) {
           {product.in_stock ? 'In Stock' : 'Out of Stock'}
         </Badge>
       </div>
+
+      {/* Imported Product Notice - Creative Design */}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2 }}
+        className="mb-6 p-5 rounded-2xl bg-gradient-to-br from-primary/10 via-accent/5 to-primary/5 border-2 border-primary/20 relative overflow-hidden"
+      >
+        <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+        <div className="relative z-10">
+          <div className="flex items-start gap-4 mb-3">
+            <div className="p-2 rounded-xl bg-primary/10 border border-primary/20">
+              <Globe className="h-5 w-5 text-primary" />
+            </div>
+            <div className="flex-1">
+              <h3 className="font-semibold text-lg mb-1 flex items-center gap-2">
+                <Package className="h-4 w-4 text-primary" />
+                Imported Product
+              </h3>
+              <p className="text-sm text-muted-foreground mb-3">
+                This premium product is sourced from international suppliers to ensure the highest quality standards.
+              </p>
+            </div>
+          </div>
+          <div className="flex items-center gap-3 p-3 rounded-xl bg-background/50 border border-primary/10">
+            <div className="p-2 rounded-lg bg-primary/10">
+              <Clock className="h-4 w-4 text-primary" />
+            </div>
+            <div className="flex-1">
+              <p className="text-sm font-medium">
+                Estimated Delivery: <span className="text-primary font-bold">2 Months</span>
+              </p>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                From order confirmation to ready for installation
+              </p>
+            </div>
+          </div>
+        </div>
+      </motion.div>
 
       {product.description && (
         <p className="text-muted-foreground mb-6">

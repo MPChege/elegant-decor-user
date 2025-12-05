@@ -109,18 +109,60 @@ async function getProductById(id: string): Promise<PublicProduct | null> {
   }
 }
 
-async function getProductsByCategory(category: string): Promise<PublicProduct[]> {
+async function getProductsByCategory(category: string, excludeId?: string): Promise<PublicProduct[]> {
   try {
-    // Query products by category directly from Supabase
-    const { data, error } = await supabaseAdmin
+    // Query products by category - try with status filter first
+    let query = supabaseAdmin
       .from('products')
       .select('*')
       .eq('category', category)
-      .eq('status', 'published') // Only show published products
       .order('created_at', { ascending: false })
     
+    if (excludeId) {
+      query = query.neq('id', excludeId)
+    }
+    
+    // Try with status filter first
+    const { data: dataWithStatus, error: statusError } = await query.eq('status', 'published')
+    
+    let data = dataWithStatus
+    let error = statusError
+    
+    // If status column doesn't exist or no results, try without status filter
+    if (error && (error.code === '42703' || error.message?.includes('column') || error.message?.includes('does not exist'))) {
+      console.warn('[Related Products] Status column not found, fetching all products in category')
+      let queryWithoutStatus = supabaseAdmin
+        .from('products')
+        .select('*')
+        .eq('category', category)
+        .order('created_at', { ascending: false })
+      
+      if (excludeId) {
+        queryWithoutStatus = queryWithoutStatus.neq('id', excludeId)
+      }
+      
+      const { data: allData, error: allError } = await queryWithoutStatus
+      data = allData
+      error = allError
+    } else if (!data || data.length === 0) {
+      // If no results with status filter, try without it
+      let queryWithoutStatus = supabaseAdmin
+        .from('products')
+        .select('*')
+        .eq('category', category)
+        .order('created_at', { ascending: false })
+      
+      if (excludeId) {
+        queryWithoutStatus = queryWithoutStatus.neq('id', excludeId)
+      }
+      
+      const { data: allData, error: allError } = await queryWithoutStatus
+      data = allData
+      error = allError
+    }
+    
     if (error) {
-      console.error('Supabase query error:', error)
+      console.error('[Related Products] Supabase query error:', error)
       return []
     }
     
@@ -130,7 +172,58 @@ async function getProductsByCategory(category: string): Promise<PublicProduct[]>
     
     return data.map(mapProductToPublic)
   } catch (error) {
-    console.error('Error fetching products:', error)
+    console.error('[Related Products] Error fetching products:', error)
+    return []
+  }
+}
+
+async function getAllProducts(excludeId?: string, limit: number = 10): Promise<PublicProduct[]> {
+  try {
+    let query = supabaseAdmin
+      .from('products')
+      .select('*')
+      .order('created_at', { ascending: false })
+      .limit(limit)
+    
+    if (excludeId) {
+      query = query.neq('id', excludeId)
+    }
+    
+    // Try with status filter first
+    const { data: dataWithStatus, error: statusError } = await query.eq('status', 'published')
+    
+    let data = dataWithStatus
+    let error = statusError
+    
+    // If status column doesn't exist, try without it
+    if (error && (error.code === '42703' || error.message?.includes('column') || error.message?.includes('does not exist'))) {
+      let queryWithoutStatus = supabaseAdmin
+        .from('products')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(limit)
+      
+      if (excludeId) {
+        queryWithoutStatus = queryWithoutStatus.neq('id', excludeId)
+      }
+      
+      const { data: allData, error: allError } = await queryWithoutStatus
+      data = allData
+      error = allError
+    }
+    
+    if (error) {
+      console.error('[Related Products] Error fetching all products:', error)
+      return []
+    }
+    
+    if (!data || data.length === 0) {
+      return []
+    }
+    
+    return data.map(mapProductToPublic)
+  } catch (error) {
+    console.error('[Related Products] Error fetching all products:', error)
     return []
   }
 }
@@ -166,15 +259,32 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
   const specifications =
     (product.specifications as Record<string, unknown> | null) ?? {}
 
-  // Fetch a few related products (simple heuristic: same category, different id)
+  // Fetch related products: same category first, then fallback to other products
   let related: PublicProduct[] = []
   try {
-    const all = await getProductsByCategory(product.category)
-    related = all
-      .filter((p) => p.id !== product.id)
-      .slice(0, 3)
-  } catch {
-    related = []
+    // First, try to get products from the same category
+    const sameCategory = await getProductsByCategory(product.category, product.id)
+    related = sameCategory.slice(0, 3)
+    
+    // If we don't have enough products from the same category, fill with other products
+    if (related.length < 3) {
+      const otherProducts = await getAllProducts(product.id, 10)
+      // Filter out products we already have
+      const additionalProducts = otherProducts
+        .filter((p) => !related.some((r) => r.id === p.id))
+        .slice(0, 3 - related.length)
+      related = [...related, ...additionalProducts]
+    }
+    
+    console.log(`[Related Products] Found ${related.length} related products for ${product.title}`)
+  } catch (error) {
+    console.error('[Related Products] Error fetching related products:', error)
+    // Fallback: try to get any products
+    try {
+      related = (await getAllProducts(product.id, 3)).slice(0, 3)
+    } catch {
+      related = []
+    }
   }
 
   return (

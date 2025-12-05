@@ -8,6 +8,7 @@ import { getPublicMediaUrl } from '@/lib/s3/getPublicUrl'
 import { LuxuryLayout } from '@/components/layout/luxury-layout'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
+import { ProjectGallery } from '@/components/projects/project-gallery'
 import type { PublicProject } from '@/lib/public-api'
 
 export const dynamic = 'force-dynamic'
@@ -239,23 +240,7 @@ export default async function WorkDetailPage({ params }: WorkDetailPageProps) {
             <h2 className="font-playfair text-3xl md:text-4xl font-bold mb-12 text-center">
               Project Gallery
             </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {galleryImages.map((img, index) => (
-                <div
-                  key={img + index}
-                  className="relative aspect-[4/3] rounded-2xl overflow-hidden bg-muted group cursor-pointer"
-                >
-                  <Image
-                    src={img}
-                    alt={`${project.title} - Image ${index + 1}`}
-                    fill
-                    sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
-                    className="object-cover group-hover:scale-110 transition-transform duration-500"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                </div>
-              ))}
-            </div>
+            <ProjectGallery images={galleryImages} projectTitle={project.title} />
           </div>
         </section>
       )}

@@ -3,7 +3,7 @@
 import * as React from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react'
+import { ArrowRight, ChevronLeft, ChevronRight, Globe } from 'lucide-react'
 import type { PublicProduct } from '@/lib/public-api'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardFooter } from '@/components/ui/card'
@@ -18,7 +18,10 @@ export function ProductsCarousel({ products: initialProducts }: ProductsCarousel
   const [loading, setLoading] = React.useState(!initialProducts)
 
   React.useEffect(() => {
-    if (!initialProducts) {
+    if (initialProducts && initialProducts.length > 0) {
+      setProducts(initialProducts)
+      setLoading(false)
+    } else if (!initialProducts) {
       // Fetch products on client side if not provided
       fetch('/api/public/products?limit=10&featured=true')
         .then((res) => res.json())
@@ -86,14 +89,14 @@ export function ProductsCarousel({ products: initialProducts }: ProductsCarousel
   }
 
   return (
-    <section className="py-20 bg-muted/20 relative">
+    <section className="pt-12 md:pt-16 pb-6 md:pb-8 bg-muted/20 relative">
       <div className="container px-6">
-        <div className="flex items-center justify-between mb-12">
+        <div className="flex items-center justify-between mb-8">
           <div>
-            <h2 className="font-playfair text-4xl md:text-5xl font-bold mb-4">
+            <h2 className="font-playfair text-3xl md:text-4xl font-bold mb-2">
               Featured Products
             </h2>
-            <p className="text-lg text-muted-foreground">
+            <p className="text-base text-muted-foreground">
               Discover our premium collection of tiles and materials
             </p>
           </div>
@@ -146,7 +149,7 @@ export function ProductsCarousel({ products: initialProducts }: ProductsCarousel
               return (
                 <div
                   key={product.id}
-                  className="flex-shrink-0 w-[260px] xs:w-[280px] sm:w-[300px] md:w-[350px]"
+                  className="flex-shrink-0 w-[180px] xs:w-[200px] sm:w-[220px] md:w-[240px]"
                 >
                   <Card className="group overflow-hidden hover:shadow-luxury-lg transition-all duration-300 border-luxury h-full flex flex-col">
                     <Link href={`/products/${product.slug || product.id}`}>
@@ -154,7 +157,7 @@ export function ProductsCarousel({ products: initialProducts }: ProductsCarousel
                         {product.featured && (
                           <Badge
                             variant="luxury"
-                            className="absolute top-4 left-4 z-10"
+                            className="absolute top-2 left-2 z-10 text-[10px] px-1.5 py-0.5"
                           >
                             Featured
                           </Badge>
@@ -164,36 +167,45 @@ export function ProductsCarousel({ products: initialProducts }: ProductsCarousel
                             src={product.featured_image}
                             alt={product.title}
                             fill
-                            sizes="(min-width: 768px) 350px, 300px"
+                            sizes="(min-width: 768px) 240px, 220px"
                             className="object-cover group-hover:scale-110 transition-transform duration-500"
                           />
                         ) : (
                           <div className="absolute inset-0 bg-gradient-to-br from-primary/30 to-accent/30 group-hover:scale-110 transition-transform duration-500 flex items-center justify-center">
-                            <span className="text-muted-foreground text-sm">No Image</span>
+                            <span className="text-muted-foreground text-xs">No Image</span>
                           </div>
                         )}
                       </div>
                     </Link>
-                    <CardContent className="p-4 sm:p-6 flex-1 flex flex-col">
-                      <Badge variant="outline" className="mb-2 w-fit text-xs">
-                        {product.category}
-                      </Badge>
-                      <h3 className="font-playfair text-lg sm:text-xl font-semibold mb-2 line-clamp-2">
+                    <CardContent className="p-3 sm:p-4 flex-1 flex flex-col">
+                      <div className="flex items-center gap-1.5 mb-1.5 flex-wrap">
+                        <Badge variant="outline" className="w-fit text-[10px] px-1.5 py-0">
+                          {product.category}
+                        </Badge>
+                        <Badge variant="secondary" className="w-fit text-[9px] px-1.5 py-0 flex items-center gap-0.5 bg-primary/10 text-primary border-primary/20">
+                          <Globe className="h-2.5 w-2.5" />
+                          Imported
+                        </Badge>
+                      </div>
+                      <h3 className="font-playfair text-sm sm:text-base font-semibold mb-1.5 line-clamp-2">
                         {product.title}
                       </h3>
                       {size && (
-                        <p className="text-xs sm:text-sm text-muted-foreground mb-2">{size}</p>
+                        <p className="text-xs text-muted-foreground mb-1.5">{size}</p>
                       )}
-                      <div className="font-semibold text-base sm:text-lg text-primary mt-auto">
+                      <div className="font-semibold text-sm sm:text-base text-primary mt-auto mb-1">
                         {product.price != null
                           ? `KSh ${product.price.toLocaleString()}/sqm`
                           : 'Pricing on request'}
                       </div>
+                      <p className="text-[10px] text-muted-foreground">
+                        ⏱️ 2 months delivery
+                      </p>
                     </CardContent>
-                    <CardFooter className="p-4 sm:p-6 pt-0">
+                    <CardFooter className="p-3 sm:p-4 pt-0">
                       <Button
                         variant={product.in_stock ? 'luxury' : 'secondary'}
-                        className={`w-full font-bold tracking-wide h-11 sm:h-12 touch-target ${
+                        className={`w-full font-bold tracking-wide h-9 sm:h-10 text-xs sm:text-sm touch-target ${
                           product.in_stock
                             ? 'bg-primary text-white shadow-xl hover:shadow-2xl hover:scale-105 border-2 border-primary'
                             : 'bg-muted text-muted-foreground cursor-not-allowed'

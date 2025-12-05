@@ -86,19 +86,45 @@ export function ProjectsCarousel({ projects }: ProjectsCarouselProps) {
               className="group flex-shrink-0 w-80 md:w-96"
             >
               <Card className="overflow-hidden border-luxury hover:shadow-luxury-lg transition-all duration-300 h-full">
-                <div className="aspect-[4/3] relative overflow-hidden">
-                  <Image
-                    src={
-                      getPublicMediaUrl(
-                        project.featured_image_key || project.featured_image
-                      ) || project.images?.[0] || '/file.svg'
+                <div className="aspect-[4/3] relative overflow-hidden bg-muted">
+                  {(() => {
+                    // Determine the image source with proper fallback logic
+                    // Priority 1: featured_image (already a URL from server)
+                    let imageSrc: string | null = project.featured_image || null
+                    
+                    // Priority 2: featured_image_key (convert to URL)
+                    if (!imageSrc && project.featured_image_key) {
+                      imageSrc = getPublicMediaUrl(project.featured_image_key, 'media')
                     }
-                    alt={project.title}
-                    fill
-                    sizes="(min-width: 768px) 384px, 320px"
-                    className="object-cover group-hover:scale-110 transition-transform duration-700"
-                    quality={95}
-                  />
+                    
+                    // Priority 3: first image from images array (already URLs from server)
+                    if ((!imageSrc || imageSrc === '/file.svg') && project.images && project.images.length > 0) {
+                      imageSrc = project.images[0]
+                    }
+                    
+                    // Final fallback
+                    if (!imageSrc || imageSrc === '/file.svg') {
+                      imageSrc = '/file.svg'
+                    }
+                    
+                    return (
+                      <Image
+                        src={imageSrc}
+                        alt={project.title}
+                        fill
+                        sizes="(min-width: 768px) 384px, 320px"
+                        className="object-cover group-hover:scale-110 transition-transform duration-700"
+                        quality={95}
+                        onError={(e) => {
+                          // Fallback to placeholder if image fails to load
+                          const target = e.target as HTMLImageElement
+                          if (target.src !== '/file.svg') {
+                            target.src = '/file.svg'
+                          }
+                        }}
+                      />
+                    )
+                  })()}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent z-10" />
                   <div className="absolute bottom-0 left-0 right-0 p-6 z-20">
                     {project.tags && project.tags.length > 0 && (

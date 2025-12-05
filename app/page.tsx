@@ -1,7 +1,7 @@
 import { LuxuryLayout } from '@/components/layout/luxury-layout'
 import { supabaseAdmin } from '@/lib/supabase'
 import { getPublicMediaUrl } from '@/lib/s3/getPublicUrl'
-import type { PublicProject } from '@/lib/public-api'
+import type { PublicProject, PublicProduct } from '@/lib/public-api'
 import { HomePageClient } from '@/components/home/home-page-client'
 
 // Fetch projects on server side
@@ -79,13 +79,103 @@ async function getProjectsForHome(): Promise<PublicProject[]> {
   }
 }
 
+// Fetch products on server side
+async function getProductsForHome(): Promise<PublicProduct[]> {
+  try {
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+    if (!supabaseUrl || supabaseUrl === 'https://placeholder.supabase.co' || supabaseUrl.includes('localhost') || supabaseUrl.includes('127.0.0.1')) {
+      console.error('[Home Page] ❌ NEXT_PUBLIC_SUPABASE_URL is not configured properly!')
+      return []
+    }
+
+    if (!supabaseUrl.startsWith('https://') || !supabaseUrl.includes('.supabase.co')) {
+      console.error('[Home Page] ❌ NEXT_PUBLIC_SUPABASE_URL does not appear to be a valid Supabase URL')
+      return []
+    }
+
+    console.log('[Home Page] ✅ Fetching products from Supabase')
+
+    // Query products - try with status filter first
+    const query = supabaseAdmin
+      .from('products')
+      .select('*')
+      .order('created_at', { ascending: false })
+      .limit(20)
+    
+    const { data: dataWithStatus, error: statusError } = await query.eq('status', 'published')
+    
+    let data = dataWithStatus
+    let error = statusError
+    
+    // If status column doesn't exist, query without it
+    if (error && (error.code === '42703' || error.message?.includes('column') || error.message?.includes('does not exist'))) {
+      console.warn('[Home Page] Status column not found, fetching all products')
+      const { data: allData, error: allError } = await supabaseAdmin
+        .from('products')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(20)
+      data = allData
+      error = allError
+    }
+    
+    if (error) {
+      console.error('[Home Page] ❌ Supabase error fetching products:', error)
+      return []
+    }
+    
+    if (!data || data.length === 0) {
+      console.log('[Home Page] ⚠️ No products found in database')
+      return []
+    }
+    
+    console.log(`[Home Page] ✅ Found ${data.length} products`)
+
+    // Map to PublicProduct format
+    return data.map((product: Record<string, unknown>) => {
+      const imagesArray = Array.isArray(product.images) ? (product.images as string[]) : []
+      const images = imagesArray.map((img: string) => getPublicMediaUrl(img))
+      const featuredImage = product.featured_image 
+        ? getPublicMediaUrl(product.featured_image as string)
+        : images[0] || null
+
+      return {
+        id: product.id as string,
+        title: (product.title as string) || (product.name as string) || (product.id as string),
+        slug: (product.slug as string) || (product.id as string),
+        description: (product.description as string) || null,
+        category: (product.category as string) || 'Uncategorized',
+        subcategory: (product.subcategory as string) || null,
+        price: product.price ? Number(product.price) : null,
+        currency: (product.currency as string) || 'KES',
+        featured_image: featuredImage,
+        images: images,
+        tags: (product.tags as string[]) || [],
+        featured: Boolean(product.featured),
+        in_stock: product.in_stock !== undefined ? Boolean(product.in_stock) : true,
+        specifications: (product.specifications as Record<string, unknown> | null) || null,
+        seo_title: (product.seo_title as string) || null,
+        seo_description: (product.seo_description as string) || null,
+        created_at: product.created_at as string,
+        updated_at: product.updated_at as string,
+      }
+    })
+  } catch (error) {
+    console.error('[Home Page] Error fetching products:', error)
+    return []
+  }
+}
+
 export default async function HomePage() {
-  // Fetch projects on server side using production Supabase URL
-  const projects = await getProjectsForHome()
+  // Fetch projects and products on server side
+  const [projects, products] = await Promise.all([
+    getProjectsForHome(),
+    getProductsForHome()
+  ])
   
   return (
     <LuxuryLayout>
-      <HomePageClient projects={projects} />
+      <HomePageClient projects={projects} products={products} />
     </LuxuryLayout>
   )
 }

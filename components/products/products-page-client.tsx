@@ -3,7 +3,7 @@
 import * as React from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { Search, Filter, Grid3x3, List } from 'lucide-react'
+import { Search, Filter, Grid3x3, List, Globe, Package, Clock } from 'lucide-react'
 import type { PublicProduct } from '@/lib/public-api'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -11,16 +11,6 @@ import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardFooter } from '@/components/ui/card'
 
 const heroBackground = '/BATHROOMS/bathroom_1%20-%20Photo.png'
-
-const categories = [
-  'All',
-  'Ceramic',
-  'Porcelain',
-  'Marble',
-  'Granite',
-  'Natural Stone',
-  'Luxury',
-]
 
 interface ProductsPageClientProps {
   products: PublicProduct[]
@@ -31,14 +21,30 @@ export function ProductsPageClient({ products }: ProductsPageClientProps) {
   const [searchQuery, setSearchQuery] = React.useState('')
   const [viewMode, setViewMode] = React.useState<'grid' | 'list'>('grid')
 
-  const filteredProducts = products.filter((product) => {
-    const matchesCategory =
-      selectedCategory === 'All' || product.category === selectedCategory
-    const matchesSearch =
-      searchQuery === '' ||
-      product.title.toLowerCase().includes(searchQuery.toLowerCase())
-    return matchesCategory && matchesSearch
-  })
+  // Dynamically get categories from products
+  const availableCategories = React.useMemo(() => {
+    const cats = new Set<string>()
+    products.forEach((product) => {
+      if (product.category) {
+        cats.add(product.category)
+      }
+    })
+    return ['All', ...Array.from(cats).sort()]
+  }, [products])
+
+  const filteredProducts = React.useMemo(() => {
+    return products.filter((product) => {
+      const matchesCategory =
+        selectedCategory === 'All' || 
+        product.category?.toLowerCase() === selectedCategory.toLowerCase() ||
+        product.category === selectedCategory
+      const matchesSearch =
+        searchQuery === '' ||
+        product.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        product.description?.toLowerCase().includes(searchQuery.toLowerCase())
+      return matchesCategory && matchesSearch
+    })
+  }, [products, selectedCategory, searchQuery])
 
   return (
     <>
@@ -58,9 +64,49 @@ export function ProductsPageClient({ products }: ProductsPageClientProps) {
             <h1 className="font-playfair text-5xl md:text-6xl lg:text-7xl font-bold mb-6">
               Our <span className="text-luxury-gradient">Products</span>
             </h1>
-            <p className="text-lg md:text-xl text-white/85">
+            <p className="text-lg md:text-xl text-white/85 mb-6">
               Premium tiles and materials from the world&apos;s finest manufacturers.
             </p>
+            {/* Imported Products Notice */}
+            <div className="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-white/10 backdrop-blur-sm border border-white/20">
+              <Globe className="h-5 w-5 text-white" />
+              <span className="text-sm md:text-base font-medium">
+                All products are imported • 2 months delivery time
+              </span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Imported Products Information Section */}
+      <section className="py-12 bg-gradient-to-br from-primary/5 via-accent/5 to-primary/5 border-b border-border">
+        <div className="container px-6">
+          <div className="max-w-4xl mx-auto">
+            <div className="flex flex-col md:flex-row items-center gap-6 p-6 rounded-2xl bg-card border-2 border-primary/20 shadow-lg">
+              <div className="flex-shrink-0">
+                <div className="p-4 rounded-xl bg-primary/10 border border-primary/20">
+                  <Package className="h-8 w-8 text-primary" />
+                </div>
+              </div>
+              <div className="flex-1 text-center md:text-left">
+                <h2 className="font-playfair text-2xl md:text-3xl font-bold mb-3">
+                  All Products Are Imported
+                </h2>
+                <p className="text-muted-foreground mb-4">
+                  We source our premium tiles and materials from the world&apos;s finest manufacturers to ensure the highest quality standards for your projects.
+                </p>
+                <div className="flex flex-col sm:flex-row items-center justify-center md:justify-start gap-4">
+                  <div className="flex items-center gap-2 text-sm">
+                    <Clock className="h-4 w-4 text-primary" />
+                    <span className="font-medium">2 Months Delivery Time</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-sm">
+                    <Globe className="h-4 w-4 text-primary" />
+                    <span className="font-medium">International Sourcing</span>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -110,7 +156,7 @@ export function ProductsPageClient({ products }: ProductsPageClientProps) {
               Category:
             </span>
             <div className="flex gap-2">
-              {categories.map((category) => (
+              {availableCategories.map((category) => (
                 <Button
                   key={category}
                   variant={selectedCategory === category ? 'luxury' : 'outline'}
@@ -180,17 +226,26 @@ export function ProductsPageClient({ products }: ProductsPageClientProps) {
                           )}
                         </div>
                         <CardContent className="p-2 sm:p-3 flex-1 flex flex-col">
-                          <Badge variant="outline" className="mb-1.5 text-[10px] px-1.5 py-0 w-fit">
-                            {product.category}
-                          </Badge>
+                          <div className="flex items-center gap-1.5 mb-1.5 flex-wrap">
+                            <Badge variant="outline" className="text-[10px] px-1.5 py-0 w-fit">
+                              {product.category}
+                            </Badge>
+                            <Badge variant="secondary" className="text-[9px] px-1.5 py-0 w-fit flex items-center gap-0.5 bg-primary/10 text-primary border-primary/20">
+                              <Globe className="h-2.5 w-2.5" />
+                              Imported
+                            </Badge>
+                          </div>
                           <h3 className="font-playfair text-xs sm:text-sm font-semibold mb-1.5 line-clamp-2 flex-1">
                             {product.title}
                           </h3>
-                          <div className="font-semibold text-xs sm:text-sm text-primary mb-2">
+                          <div className="font-semibold text-xs sm:text-sm text-primary mb-1">
                             {product.price != null
                               ? `KSh ${product.price.toLocaleString()}`
                               : 'Price on request'}
                           </div>
+                          <p className="text-[10px] text-muted-foreground">
+                            ⏱️ 2 months delivery
+                          </p>
                         </CardContent>
                       </Link>
                       <CardFooter className="p-2 sm:p-3 pt-0">
