@@ -8,7 +8,6 @@ import { Card } from '@/components/ui/card'
 
 export function CookieConsent() {
   const [isVisible, setIsVisible] = React.useState(false)
-  const [isAccepted, setIsAccepted] = React.useState(false)
 
   React.useEffect(() => {
     // Check if user has already accepted cookies
@@ -19,15 +18,12 @@ export function CookieConsent() {
         setIsVisible(true)
       }, 1000)
       return () => clearTimeout(timer)
-    } else {
-      setIsAccepted(cookieConsent === 'accepted')
     }
   }, [])
 
   const handleAccept = () => {
     localStorage.setItem('cookie-consent', 'accepted')
     localStorage.setItem('cookie-consent-date', new Date().toISOString())
-    setIsAccepted(true)
     setIsVisible(false)
   }
 

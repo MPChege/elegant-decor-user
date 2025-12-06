@@ -43,6 +43,14 @@ export function ImageLightbox({
     }
   }, [isOpen])
 
+  const goToPrevious = React.useCallback(() => {
+    setCurrentIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1))
+  }, [images.length])
+
+  const goToNext = React.useCallback(() => {
+    setCurrentIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1))
+  }, [images.length])
+
   React.useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (!isOpen) return
@@ -57,15 +65,7 @@ export function ImageLightbox({
 
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [isOpen, currentIndex])
-
-  const goToPrevious = () => {
-    setCurrentIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1))
-  }
-
-  const goToNext = () => {
-    setCurrentIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1))
-  }
+  }, [isOpen, goToNext, goToPrevious, onClose])
 
   const onTouchStart = (e: React.TouchEvent) => {
     setTouchEnd(null)
@@ -227,5 +227,6 @@ export function ImageLightbox({
     </AnimatePresence>
   )
 }
+
 
 

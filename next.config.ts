@@ -2,7 +2,6 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   /* config options here */
-  reactCompiler: true,
   // Exclude admin-dashboard from build
   pageExtensions: ['tsx', 'ts', 'jsx', 'js'],
   images: {
@@ -30,8 +29,6 @@ const nextConfig: NextConfig = {
   },
   // Enable compression
   compress: true,
-  // Optimize production builds
-  swcMinify: true,
   webpack: (config) => {
     config.resolve.alias = {
       ...config.resolve.alias,
