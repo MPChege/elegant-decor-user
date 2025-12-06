@@ -5,7 +5,7 @@ import { MetadataRoute } from 'next'
  * Automatically includes all public routes
  */
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://eleganttiles.co.ke'
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.elegantdecor.co.ke'
   
   const staticRoutes = [
     '',

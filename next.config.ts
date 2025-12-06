@@ -2,6 +2,8 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   /* config options here */
+  // Standalone output for cPanel deployment
+  output: 'standalone',
   // Exclude admin-dashboard from build
   pageExtensions: ['tsx', 'ts', 'jsx', 'js'],
   images: {

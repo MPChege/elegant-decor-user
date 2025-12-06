@@ -8,6 +8,7 @@ import { ScrollToTop } from '@/components/scroll-to-top'
 import { ScrollProgress } from '@/components/scroll-progress'
 import { CookieConsent } from '@/components/cookie-consent'
 import { Toaster } from '@/components/ui/toaster'
+import { StructuredData } from '@/components/seo/structured-data'
 import './globals.css'
 
 const inter = Inter({
@@ -23,7 +24,7 @@ const playfair = Playfair_Display({
 })
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://eleganttiles.co.ke'),
+  metadataBase: new URL('https://www.elegantdecor.co.ke'),
   title: 'Elegant Tiles & Décor Centre Ltd - Luxury Interior Design',
   description:
     'Award-winning interior design and décor company specializing in luxury tiles, custom interiors, and premium design projects.',
@@ -37,7 +38,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     locale: 'en_US',
-    url: 'https://eleganttiles.co.ke',
+    url: 'https://www.elegantdecor.co.ke',
     siteName: 'Elegant Tiles & Décor Centre',
     title: 'Elegant Tiles & Décor Centre Ltd - Luxury Interior Design',
     description:
@@ -93,6 +94,7 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://gqbdjkflempypooplval.supabase.co" />
+        <StructuredData />
         <script
           dangerouslySetInnerHTML={{
             __html: `
