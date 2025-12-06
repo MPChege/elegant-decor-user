@@ -57,7 +57,7 @@ export function LoadingScreen() {
                 priority
               />
               <h1 className="font-playfair text-3xl md:text-4xl font-bold text-foreground mb-2">
-                Elegant Tiles & Décor
+                Elegant Tiles & Décor Centre
               </h1>
               <p className="text-muted-foreground text-sm">
                 Where Elegance Meets Design

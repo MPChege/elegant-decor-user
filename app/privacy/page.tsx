@@ -2,7 +2,7 @@ import { LuxuryLayout } from '@/components/layout/luxury-layout'
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Privacy Policy | Elegant Tiles & Décor',
+  title: 'Privacy Policy | Elegant Tiles & Décor Centre',
   description: 'Privacy Policy for Elegant Tiles & Décor Centre Ltd',
 }
 

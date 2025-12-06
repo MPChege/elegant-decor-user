@@ -91,13 +91,13 @@ export async function generateMetadata({ params }: JournalPostPageProps): Promis
 
   if (!post) {
     return {
-      title: 'Article Not Found | Elegant Tiles & Décor Journal',
+      title: 'Article Not Found | Elegant Tiles & Décor Centre Journal',
       description: 'The article you are looking for could not be found.',
     }
   }
 
   return {
-    title: post.seo_title || `${post.title} | Elegant Tiles & Décor Journal`,
+    title: post.seo_title || `${post.title} | Elegant Tiles & Décor Centre Journal`,
     description: post.seo_description || post.excerpt || undefined,
   }
 }

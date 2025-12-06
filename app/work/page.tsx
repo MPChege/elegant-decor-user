@@ -8,7 +8,7 @@ import type { PublicProject } from '@/lib/public-api'
 export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
-  title: 'Projects | Elegant Tiles & Décor',
+  title: 'Projects | Elegant Tiles & Décor Centre',
   description: 'Explore our portfolio of exceptional design projects showcasing our commitment to excellence in luxury interiors.',
 }
 

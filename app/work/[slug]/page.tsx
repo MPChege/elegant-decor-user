@@ -125,13 +125,13 @@ export async function generateMetadata({ params }: WorkDetailPageProps): Promise
 
   if (!project) {
     return {
-      title: 'Project Not Found | Elegant Tiles & Décor',
+      title: 'Project Not Found | Elegant Tiles & Décor Centre',
       description: 'The project you are looking for could not be found.',
     }
   }
 
   return {
-    title: `${project.title} | Elegant Tiles & Décor Projects`,
+    title: `${project.title} | Elegant Tiles & Décor Centre Projects`,
     description: project.description || undefined,
   }
 }
