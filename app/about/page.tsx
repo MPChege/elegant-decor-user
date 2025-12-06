@@ -60,6 +60,8 @@ const values = [
 // ]
 
 export default function AboutPage() {
+  const [imageError, setImageError] = React.useState(false)
+
   return (
     <LuxuryLayout>
       {/* Hero Section */}
@@ -172,30 +174,32 @@ export default function AboutPage() {
           </ScrollAnimate>
 
           <div className="max-w-5xl mx-auto">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-              {/* Dr. Vivian Shabaan */}
-              <ScrollAnimate direction="right" className="text-center">
-                <div className="mb-6">
-                  <div className="w-32 h-32 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
-                    <Users className="h-16 w-16 text-primary" />
-                  </div>
-                  <h3 className="font-playfair text-3xl font-bold mb-2">
-                    Dr. Vivian Shabaan
-                  </h3>
-                  <p className="text-xl text-primary font-semibold mb-4">
-                    Director – Elegant Tiles & Décor Centre Ltd
-                  </p>
-                  <blockquote className="text-lg text-muted-foreground max-w-xl mx-auto italic border-l-4 border-primary pl-6 my-6 text-left">
-                    &ldquo;My passion is transforming homes through creative, resourceful and personalized projects. Stunning interior design is always possible with the right vision — even when you Do It Yourself!&rdquo;
-                  </blockquote>
-                </div>
-              </ScrollAnimate>
-
+            <div className="flex justify-center">
               {/* Mrs. Agnes Irungu */}
-              <ScrollAnimate direction="left" className="text-center">
+              <ScrollAnimate direction="up" className="text-center max-w-2xl">
                 <div className="mb-6">
-                  <div className="w-32 h-32 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
-                    <Users className="h-16 w-16 text-primary" />
+                  <div className="w-48 h-48 md:w-56 md:h-56 rounded-full overflow-hidden mx-auto mb-6 shadow-luxury-lg border-4 border-primary/20 relative bg-primary/10">
+                    {!imageError ? (
+                      <div className="absolute inset-0 w-full h-full">
+                        <Image
+                          src="/team/agnes-irungu.jpg"
+                          alt="Mrs. Agnes Irungu - MD & Founder"
+                          fill
+                          sizes="(min-width: 768px) 224px, 192px"
+                          className="object-cover rounded-full"
+                          style={{ 
+                            objectPosition: '50% 30%',
+                            transform: 'scale(1.1)'
+                          }}
+                          priority
+                          onError={() => setImageError(true)}
+                        />
+                      </div>
+                    ) : (
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <Users className="h-24 w-24 text-primary" />
+                      </div>
+                    )}
                   </div>
                   <h3 className="font-playfair text-3xl font-bold mb-2">
                     Mrs. Agnes Irungu
