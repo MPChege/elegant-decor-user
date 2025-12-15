@@ -127,7 +127,7 @@ const services = [
     icon: Leaf,
     title: 'Landscaping',
     description:
-      'We design, plant and maintain stunning landscapes that elevate outdoor living spaces. Our landscaping integrates lush lawns, vibrant flowers and strategic plant placement.',
+      'We design, plant and maintain stunning landscapes that enhance outdoor living spaces. Our landscaping integrates lush lawns, vibrant flowers and strategic plant placement.',
     features: [
       'Garden design & planning',
       'Plant selection & placement',
@@ -288,7 +288,7 @@ export default function ServicesPage() {
               Let&apos;s Start Your Project
             </h2>
             <p className="text-lg text-muted-foreground mb-8">
-              Schedule a consultation with our design team to discuss your vision.
+              Schedule a consultation with our designers to discuss your vision.
             </p>
             <Button 
               variant="luxury" 

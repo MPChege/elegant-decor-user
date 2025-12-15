@@ -10,8 +10,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 
 /**
- * AI Moodboard Builder
- * Upload an image and get AI-generated palette and matching products
+ * Moodboard Builder
+ * Upload an image and get a color palette with matching products
  */
 interface MatchingProduct {
   id: string
@@ -42,10 +42,10 @@ export default function MoodboardBuilderPage() {
   const generateMoodboard = async () => {
     setIsGenerating(true)
     
-    // Simulate AI processing
+    // Process image
     await new Promise((resolve) => setTimeout(resolve, 2000))
     
-    // Mock generated palette
+    // Generate palette
     setGeneratedPalette([
       '#8B4513',
       '#DEB887',
@@ -78,14 +78,14 @@ export default function MoodboardBuilderPage() {
           >
             <Badge variant="luxury" className="mb-6">
               <Sparkles className="h-3 w-3 mr-2" />
-              AI-Powered Design Tool
+              Design Tool
             </Badge>
             <h1 className="font-playfair text-5xl md:text-6xl lg:text-7xl font-bold mb-6">
-              AI Moodboard <span className="text-luxury-gradient">Builder</span>
+              Moodboard <span className="text-luxury-gradient">Builder</span>
             </h1>
             <p className="text-lg md:text-xl text-muted-foreground">
-              Upload an inspiration image and let AI generate a perfect palette
-              with matching tile recommendations.
+              Upload an inspiration image to generate a color palette
+              with matching product recommendations.
             </p>
           </motion.div>
         </div>

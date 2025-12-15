@@ -27,7 +27,7 @@ export const metadata: Metadata = {
   metadataBase: new URL('https://www.elegantdecor.co.ke'),
   title: 'Elegant Tiles & Décor Centre Ltd - Luxury Interior Design',
   description:
-    'Award-winning interior design and décor company specializing in luxury tiles, custom interiors, and premium design projects.',
+    'Interior design and décor company specializing in luxury tiles, custom interiors, and premium design projects.',
   keywords:
     'interior design, luxury tiles, décor, custom design, elegant interiors, Kenya',
   authors: [{ name: 'Elegant Tiles & Décor Centre Ltd' }],
@@ -42,7 +42,7 @@ export const metadata: Metadata = {
     siteName: 'Elegant Tiles & Décor Centre',
     title: 'Elegant Tiles & Décor Centre Ltd - Luxury Interior Design',
     description:
-      'Award-winning interior design and décor company specializing in luxury tiles and custom design projects.',
+      'Interior design and décor company specializing in luxury tiles and custom design projects.',
     images: [
       {
         url: '/og-image.jpg',
@@ -55,7 +55,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'Elegant Tiles & Décor Centre Ltd',
-    description: 'Award-winning luxury interior design and décor',
+    description: 'Luxury interior design and décor',
     images: ['/og-image.jpg'],
   },
   robots: {

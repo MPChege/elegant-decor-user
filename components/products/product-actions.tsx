@@ -24,6 +24,8 @@ interface ProductActionsProps {
 }
 
 export function ProductActions({ title, inStock, product }: ProductActionsProps) {
+  // Imported products are always orderable (even if in_stock is false) because they can be ordered with delivery time
+  const isOrderable = product?.is_imported ? true : inStock
   const { toast } = useToast()
   const [dialogOpen, setDialogOpen] = React.useState(false)
 
@@ -66,10 +68,10 @@ export function ProductActions({ title, inStock, product }: ProductActionsProps)
             variant="luxury"
             size="lg"
             className="flex-1"
-            disabled={!inStock}
+            disabled={!isOrderable}
           >
             <ShoppingCart className="mr-2 h-4 w-4" />
-            {inStock ? 'Buy / Inquire' : 'Out of Stock'}
+            {isOrderable ? 'Buy / Inquire' : 'Out of Stock'}
           </Button>
         </DialogTrigger>
         <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">

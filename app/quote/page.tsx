@@ -688,7 +688,7 @@ function QuotePageContent() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
               {[
                 { icon: Zap, title: 'Fast Response', desc: 'Within 24 hours' },
-                { icon: Star, title: 'Expert Team', desc: 'Award-winning designers' },
+                { icon: Star, title: 'Our Designers', desc: 'Experienced professionals' },
                 { icon: Heart, title: 'Personalized', desc: 'Custom quotes for you' },
               ].map((item, index) => (
                 <motion.div

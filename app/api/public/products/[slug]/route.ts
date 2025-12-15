@@ -63,6 +63,8 @@ export async function GET(
       subcategory: (product.subcategory as string) || null,
       price: product.price ? Number(product.price) : null,
       currency: (product.currency as string) || 'KES',
+      price_unit: (product.price_unit as 'per_sqm' | 'unit' | null) || null,
+      is_imported: product.is_imported !== undefined ? Boolean(product.is_imported) : false,
       featured_image: featuredImage,
       images: images,
       tags: (product.tags as string[]) || [],

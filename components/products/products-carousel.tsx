@@ -19,19 +19,29 @@ export function ProductsCarousel({ products: initialProducts }: ProductsCarousel
 
   React.useEffect(() => {
     if (initialProducts && initialProducts.length > 0) {
+      console.log('[ProductsCarousel] Using server-provided products:', initialProducts.length)
       setProducts(initialProducts)
       setLoading(false)
-    } else if (!initialProducts) {
+    } else if (!initialProducts || initialProducts.length === 0) {
+      console.log('[ProductsCarousel] No server products, fetching from API...')
       // Fetch products on client side if not provided
-      fetch('/api/public/products?limit=10&featured=true')
-        .then((res) => res.json())
+      fetch('/api/public/products?limit=30')
+        .then((res) => {
+          if (!res.ok) {
+            throw new Error(`HTTP error! status: ${res.status}`)
+          }
+          return res.json()
+        })
         .then((data) => {
-          if (data.success) {
+          if (data.success && data.data && data.data.length > 0) {
+            console.log('[ProductsCarousel] Fetched products from API:', data.data.length)
             setProducts(data.data || [])
+          } else {
+            console.warn('[ProductsCarousel] No products in API response:', data)
           }
         })
         .catch((err) => {
-          console.error('Error fetching products:', err)
+          console.error('[ProductsCarousel] Error fetching products:', err)
         })
         .finally(() => {
           setLoading(false)
@@ -42,10 +52,28 @@ export function ProductsCarousel({ products: initialProducts }: ProductsCarousel
   const [canScrollLeft, setCanScrollLeft] = React.useState(false)
   const [canScrollRight, setCanScrollRight] = React.useState(true)
 
-  // Show only featured products or first 10 products
-  const displayProducts = products
-    .filter((p) => p.featured || p.in_stock)
-    .slice(0, 10)
+  // Show featured products first, then in_stock products, up to 10 total
+  const displayProducts = React.useMemo(() => {
+    // Sort: featured first, then in_stock, then by created_at
+    const sorted = [...products].sort((a, b) => {
+      // Featured products first
+      if (a.featured && !b.featured) return -1
+      if (!a.featured && b.featured) return 1
+      // Then in_stock
+      if (a.in_stock && !b.in_stock) return -1
+      if (!a.in_stock && b.in_stock) return 1
+      // Then by created_at (newest first) - if available
+      if (a.created_at && b.created_at) {
+        return new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+      }
+      return 0
+    })
+    
+    // Filter to show featured OR in_stock products, then take first 10
+    return sorted
+      .filter((p) => p.featured || p.in_stock)
+      .slice(0, 10)
+  }, [products])
 
   const checkScrollability = () => {
     if (!scrollRef.current) return
@@ -182,10 +210,6 @@ export function ProductsCarousel({ products: initialProducts }: ProductsCarousel
                         <Badge variant="outline" className="w-fit text-[10px] px-1.5 py-0">
                           {product.category}
                         </Badge>
-                        <Badge variant="secondary" className="w-fit text-[9px] px-1.5 py-0 flex items-center gap-0.5 bg-primary/10 text-primary border-primary/20">
-                          <Globe className="h-2.5 w-2.5" />
-                          Imported
-                        </Badge>
                       </div>
                       <h3 className="font-playfair text-sm sm:text-base font-semibold mb-1.5 line-clamp-2">
                         {product.title}
@@ -195,26 +219,28 @@ export function ProductsCarousel({ products: initialProducts }: ProductsCarousel
                       )}
                       <div className="font-semibold text-sm sm:text-base text-primary mt-auto mb-1">
                         {product.price != null
-                          ? `KSh ${product.price.toLocaleString()}/sqm`
+                          ? `KSh ${product.price.toLocaleString()}${product.price_unit === 'per_sqm' ? ' per m²' : ''}`
                           : 'Pricing on request'}
                       </div>
-                      <p className="text-[10px] text-muted-foreground">
-                        ⏱️ 2 months delivery
-                      </p>
+                      {product.is_imported && (
+                        <p className="text-[10px] text-muted-foreground">
+                          ⏱️ 2 months delivery
+                        </p>
+                      )}
                     </CardContent>
                     <CardFooter className="p-3 sm:p-4 pt-0">
                       <Button
-                        variant={product.in_stock ? 'luxury' : 'secondary'}
+                        variant={(product.is_imported || product.in_stock) ? 'luxury' : 'secondary'}
                         className={`w-full font-bold tracking-wide h-9 sm:h-10 text-xs sm:text-sm touch-target ${
-                          product.in_stock
+                          (product.is_imported || product.in_stock)
                             ? 'bg-primary text-white shadow-xl hover:shadow-2xl hover:scale-105 border-2 border-primary'
                             : 'bg-muted text-muted-foreground cursor-not-allowed'
                         }`}
-                        disabled={!product.in_stock}
+                        disabled={!product.is_imported && !product.in_stock}
                         asChild
                       >
                         <Link href={`/products/${product.slug || product.id}`}>
-                          {product.in_stock ? 'View Details' : 'Out of Stock'}
+                          {(product.is_imported || product.in_stock) ? 'View Details' : 'Out of Stock'}
                         </Link>
                       </Button>
                     </CardFooter>

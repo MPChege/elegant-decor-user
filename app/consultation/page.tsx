@@ -26,7 +26,7 @@ const consultationTypes = [
     id: 'design',
     title: 'Design Consultation',
     duration: '90 minutes',
-    description: 'Detailed design planning with our expert team for your specific project.',
+    description: 'Detailed design planning with our designers for your specific project.',
     price: 'KSh 5,000',
     features: ['3D visualizations', 'Material selection', 'Color scheme planning'],
   },
@@ -36,7 +36,7 @@ const consultationTypes = [
     duration: '2 hours',
     description: 'Comprehensive consultation with our lead designer including site visit.',
     price: 'KSh 15,000',
-    features: ['Site visit included', 'Complete design package', 'Project timeline'],
+    features: ['Site visit included', 'Project timeline', 'Design recommendations'],
   },
 ]
 
@@ -166,10 +166,10 @@ export default function ConsultationPage() {
               Book Your Consultation
             </Badge>
             <h1 className="font-playfair text-5xl md:text-6xl lg:text-7xl font-bold mb-6">
-              Start Your <span className="text-luxury-gradient">Design Journey</span>
+              Book Your <span className="text-luxury-gradient">Consultation</span>
             </h1>
             <p className="text-lg md:text-xl text-muted-foreground">
-              Schedule a personalized consultation with our award-winning design team
+              Schedule a personalized consultation with our designers
               and bring your vision to life.
             </p>
           </motion.div>
@@ -456,7 +456,7 @@ export default function ConsultationPage() {
                 {
                   icon: CheckCircle,
                   title: 'Expert Guidance',
-                  description: 'Get personalized advice from our award-winning design team.',
+                  description: 'Get personalized advice from our designers.',
                 },
                 {
                   icon: Sparkles,

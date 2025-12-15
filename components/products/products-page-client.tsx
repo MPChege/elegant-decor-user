@@ -67,18 +67,18 @@ export function ProductsPageClient({ products }: ProductsPageClientProps) {
             <p className="text-lg md:text-xl text-white/85 mb-6">
               Premium tiles and materials from the world&apos;s finest manufacturers.
             </p>
-            {/* Imported Products Notice */}
+            {/* Products Notice */}
             <div className="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-white/10 backdrop-blur-sm border border-white/20">
-              <Globe className="h-5 w-5 text-white" />
+              <Package className="h-5 w-5 text-white" />
               <span className="text-sm md:text-base font-medium">
-                All products are imported • 2 months delivery time
+                Premium products • Some imported, some locally implemented
               </span>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Imported Products Information Section */}
+      {/* Products Information Section */}
       <section className="py-12 bg-gradient-to-br from-primary/5 via-accent/5 to-primary/5 border-b border-border">
         <div className="container px-6">
           <div className="max-w-4xl mx-auto">
@@ -90,19 +90,15 @@ export function ProductsPageClient({ products }: ProductsPageClientProps) {
               </div>
               <div className="flex-1 text-center md:text-left">
                 <h2 className="font-playfair text-2xl md:text-3xl font-bold mb-3">
-                  All Products Are Imported
+                  Premium Products
                 </h2>
                 <p className="text-muted-foreground mb-4">
-                  We source our premium tiles and materials from the world&apos;s finest manufacturers to ensure the highest quality standards for your projects.
+                  We offer a mix of imported and locally implemented products. Some items are sourced internationally for premium quality, while others are crafted locally. Imported items typically have a 2-month delivery time.
                 </p>
                 <div className="flex flex-col sm:flex-row items-center justify-center md:justify-start gap-4">
                   <div className="flex items-center gap-2 text-sm">
-                    <Clock className="h-4 w-4 text-primary" />
-                    <span className="font-medium">2 Months Delivery Time</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-sm">
                     <Globe className="h-4 w-4 text-primary" />
-                    <span className="font-medium">International Sourcing</span>
+                    <span className="font-medium">Imported & Local Options</span>
                   </div>
                 </div>
               </div>
@@ -230,38 +226,31 @@ export function ProductsPageClient({ products }: ProductsPageClientProps) {
                             <Badge variant="outline" className="text-[10px] px-1.5 py-0 w-fit">
                               {product.category}
                             </Badge>
-                            <Badge variant="secondary" className="text-[9px] px-1.5 py-0 w-fit flex items-center gap-0.5 bg-primary/10 text-primary border-primary/20">
-                              <Globe className="h-2.5 w-2.5" />
-                              Imported
-                            </Badge>
                           </div>
                           <h3 className="font-playfair text-xs sm:text-sm font-semibold mb-1.5 line-clamp-2 flex-1">
                             {product.title}
                           </h3>
                           <div className="font-semibold text-xs sm:text-sm text-primary mb-1">
                             {product.price != null
-                              ? `KSh ${product.price.toLocaleString()}`
+                              ? `KSh ${product.price.toLocaleString()}${product.price_unit === 'per_sqm' ? ' per m²' : ''}`
                               : 'Price on request'}
                           </div>
-                          <p className="text-[10px] text-muted-foreground">
-                            ⏱️ 2 months delivery
-                          </p>
                         </CardContent>
                       </Link>
                       <CardFooter className="p-2 sm:p-3 pt-0">
                         <Button
-                          variant={product.in_stock ? 'luxury' : 'secondary'}
+                          variant={(product.is_imported || product.in_stock) ? 'luxury' : 'secondary'}
                           size="sm"
                           className={`w-full text-[10px] sm:text-xs h-7 sm:h-8 font-semibold ${
-                            product.in_stock
+                            (product.is_imported || product.in_stock)
                               ? 'bg-primary text-white hover:scale-105'
                               : 'bg-muted text-muted-foreground cursor-not-allowed'
                           }`}
-                          disabled={!product.in_stock}
+                          disabled={!product.is_imported && !product.in_stock}
                           asChild
                         >
                           <Link href={`/products/${product.slug || product.id}`}>
-                            {product.in_stock ? 'View' : 'Out'}
+                            {(product.is_imported || product.in_stock) ? 'View' : 'Out'}
                           </Link>
                         </Button>
                       </CardFooter>

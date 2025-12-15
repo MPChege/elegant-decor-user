@@ -70,7 +70,7 @@ export default function PrivacyPage() {
               <p className="text-muted-foreground">
                 <strong>Email:</strong> info@elegantdecor.co.ke<br />
                 <strong>Phone:</strong> +254 710 602110<br />
-                <strong>Address:</strong> Mageta road, Lavington, Nairobi, Kenya
+                <strong>Address:</strong> Dhanjay apartment, suite 601, valley arcade lavington
               </p>
             </section>
           </div>

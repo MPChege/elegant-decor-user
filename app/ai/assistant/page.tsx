@@ -24,7 +24,7 @@ export default function AIAssistantPage() {
     {
       role: 'assistant',
       content:
-        "Hello! I'm Amira, your virtual design assistant. How can I help you with your interior design project today?",
+        "Hello! I'm here to help you with your interior design project. How can I assist you today?",
     },
   ])
   const [input, setInput] = React.useState('')
@@ -70,14 +70,13 @@ export default function AIAssistantPage() {
           >
             <Badge variant="luxury" className="mb-6">
               <Sparkles className="h-3 w-3 mr-2" />
-              AI-Powered Assistance
+              Design Assistant
             </Badge>
             <h1 className="font-playfair text-5xl md:text-6xl lg:text-7xl font-bold mb-6">
-              Meet <span className="text-luxury-gradient">Amira</span>
+              Design <span className="text-luxury-gradient">Consultation</span>
             </h1>
             <p className="text-lg md:text-xl text-muted-foreground">
-              Your virtual design assistant ready to help with personalized
-              recommendations.
+              Get personalized design recommendations and assistance with your project.
             </p>
           </motion.div>
         </div>
@@ -91,7 +90,7 @@ export default function AIAssistantPage() {
               <CardHeader className="border-b">
                 <CardTitle className="flex items-center gap-2">
                   <Bot className="h-5 w-5 text-primary" />
-                  Amira - Virtual Design Assistant
+                  Design Assistant
                 </CardTitle>
               </CardHeader>
               

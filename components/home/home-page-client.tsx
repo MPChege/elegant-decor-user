@@ -13,9 +13,9 @@ import { ScrollAnimate } from '@/components/scroll-animate'
 import type { PublicProject } from '@/lib/public-api'
 
 const heroTitles = [
-  { main: 'Transform Your Space', accent: 'With Elegant Design' },
-  { main: 'We Design & Build', accent: 'Homes & Offices' },
-  { main: 'From Concept to Reality', accent: 'We Bring Your Vision to Life' },
+  { main: 'Beautiful Bedrooms', accent: 'Designed for You' },
+  { main: 'Custom Wardrobes', accent: 'Crafted with Care' },
+  { main: 'Your Dream Space', accent: 'Brought to Life' },
 ]
 
 const services = [
@@ -61,7 +61,7 @@ const services = [
   },
   {
     title: 'Landscaping',
-    description: 'Design, plant and maintain stunning landscapes that elevate outdoor living spaces',
+    description: 'Design, plant and maintain stunning landscapes that enhance outdoor living spaces',
     icon: '🌿',
   },
   {
@@ -121,7 +121,7 @@ const signatureSpaces = [
     image: '/FOYERS/FOYER%20REV_1%20-%20Photo.png',
   },
   {
-    title: 'Elevated Dining',
+    title: 'Refined Dining',
     description: 'Tailored for conversation, from bespoke banquettes to wine walls.',
     image: '/KITCHEN%20and%20DINING/KITCHEN_8%20-%20Photo.png',
   },
@@ -410,21 +410,20 @@ export function HomePageClient({ projects, products }: HomePageClientProps) {
               />
             </div>
           ))}
-          <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/30 to-black/60 z-20" />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/15 to-black/40 z-20" />
         </div>
         <div className="container px-6 py-20 text-center relative z-10 text-white">
           <ScrollAnimate>
             <Badge variant="luxury" className="mb-6">
-              <Sparkles className="h-3 w-3 mr-2" />
               Elegant Tiles & Décor Centre Ltd
             </Badge>
           </ScrollAnimate>
 
-          <div className="min-h-[200px] md:min-h-[280px] flex items-center justify-center mb-6">
+          <div className="min-h-[120px] md:min-h-[160px] flex items-center justify-center mb-4">
             {heroTitles.map((title, index) => (
               <h1
                 key={index}
-                className={`font-playfair text-3xl md:text-5xl lg:text-6xl font-bold text-balance absolute transition-opacity duration-1000 ${
+                className={`font-playfair text-2xl md:text-4xl lg:text-5xl font-bold text-balance absolute transition-opacity duration-1000 ${
                   index === currentTitleIndex ? 'opacity-100' : 'opacity-0'
                 }`}
               >
@@ -436,8 +435,8 @@ export function HomePageClient({ projects, products }: HomePageClientProps) {
           </div>
 
           <ScrollAnimate delay={0.2}>
-            <p className="text-lg md:text-xl text-white/90 max-w-3xl mx-auto mb-10 text-balance">
-              We design, build and elevate homes, offices and outdoor spaces with modern interior design, construction excellence and curated décor solutions.
+            <p className="text-base md:text-lg text-white/85 max-w-2xl mx-auto mb-8 text-balance">
+              Custom wardrobes, bedrooms, kitchens and interiors designed by our team.
             </p>
           </ScrollAnimate>
 
@@ -610,13 +609,13 @@ export function HomePageClient({ projects, products }: HomePageClientProps) {
                   <span className="text-luxury-gradient">Elegant Tiles?</span>
                 </h2>
                 <p className="text-lg text-muted-foreground mb-8">
-                  We bring together decades of expertise, award-winning design,
+                  We bring together decades of expertise, quality design,
                   and unwavering commitment to excellence.
                 </p>
 
                 <div className="space-y-4">
                   {[
-                    'Experienced design team',
+                    'Our designers',
                     'High-quality workmanship',
                     'Transparent communication',
                     'Custom design solutions',
@@ -695,8 +694,7 @@ export function HomePageClient({ projects, products }: HomePageClientProps) {
               Ready to Transform Your Space?
             </h2>
             <p className="text-lg text-muted-foreground mb-8">
-              Let&apos;s bring your vision to life with our award-winning design
-              expertise.
+              Let&apos;s bring your vision to life with our design expertise.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Button 

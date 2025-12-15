@@ -84,24 +84,27 @@ async function getProductsForHome(): Promise<PublicProduct[]> {
   try {
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
     if (!supabaseUrl || supabaseUrl === 'https://placeholder.supabase.co' || supabaseUrl.includes('localhost') || supabaseUrl.includes('127.0.0.1')) {
-      console.error('[Home Page] ❌ NEXT_PUBLIC_SUPABASE_URL is not configured properly!')
+      console.error('[Home Page] ❌ NEXT_PUBLIC_SUPABASE_URL is not configured properly! Current value:', supabaseUrl)
+      console.error('[Home Page] Make sure NEXT_PUBLIC_SUPABASE_URL is set to your production Supabase URL (e.g., https://xxxxx.supabase.co)')
       return []
     }
 
     if (!supabaseUrl.startsWith('https://') || !supabaseUrl.includes('.supabase.co')) {
-      console.error('[Home Page] ❌ NEXT_PUBLIC_SUPABASE_URL does not appear to be a valid Supabase URL')
+      console.error('[Home Page] ❌ NEXT_PUBLIC_SUPABASE_URL does not appear to be a valid Supabase URL:', supabaseUrl)
       return []
     }
 
-    console.log('[Home Page] ✅ Fetching products from Supabase')
+    console.log('[Home Page] ✅ Fetching products from Supabase:', supabaseUrl.substring(0, 40) + '...')
 
-    // Query products - try with status filter first
+    // Query products - prioritize featured products, then in_stock, then all
+    // First try to get featured products
     const query = supabaseAdmin
       .from('products')
       .select('*')
       .order('created_at', { ascending: false })
-      .limit(20)
+      .limit(30) // Get more to filter later
     
+    // Try with status filter first
     const { data: dataWithStatus, error: statusError } = await query.eq('status', 'published')
     
     let data = dataWithStatus
@@ -114,13 +117,14 @@ async function getProductsForHome(): Promise<PublicProduct[]> {
         .from('products')
         .select('*')
         .order('created_at', { ascending: false })
-        .limit(20)
+        .limit(30)
       data = allData
       error = allError
     }
     
     if (error) {
       console.error('[Home Page] ❌ Supabase error fetching products:', error)
+      console.error('[Home Page] Error details:', JSON.stringify(error, null, 2))
       return []
     }
     
@@ -129,10 +133,10 @@ async function getProductsForHome(): Promise<PublicProduct[]> {
       return []
     }
     
-    console.log(`[Home Page] ✅ Found ${data.length} products`)
+    console.log(`[Home Page] ✅ Found ${data.length} products from database`)
 
     // Map to PublicProduct format
-    return data.map((product: Record<string, unknown>) => {
+    const mappedProducts = data.map((product: Record<string, unknown>) => {
       const imagesArray = Array.isArray(product.images) ? (product.images as string[]) : []
       const images = imagesArray.map((img: string) => getPublicMediaUrl(img))
       const featuredImage = product.featured_image 
@@ -148,6 +152,8 @@ async function getProductsForHome(): Promise<PublicProduct[]> {
         subcategory: (product.subcategory as string) || null,
         price: product.price ? Number(product.price) : null,
         currency: (product.currency as string) || 'KES',
+        price_unit: (product.price_unit as 'per_sqm' | 'unit' | null) || null,
+        is_imported: product.is_imported !== undefined ? Boolean(product.is_imported) : false,
         featured_image: featuredImage,
         images: images,
         tags: (product.tags as string[]) || [],
@@ -160,8 +166,30 @@ async function getProductsForHome(): Promise<PublicProduct[]> {
         updated_at: product.updated_at as string,
       }
     })
+
+    // Sort: featured first, then in_stock, then by created_at
+    const sortedProducts = mappedProducts.sort((a, b) => {
+      // Featured products first
+      if (a.featured && !b.featured) return -1
+      if (!a.featured && b.featured) return 1
+      // Then in_stock
+      if (a.in_stock && !b.in_stock) return -1
+      if (!a.in_stock && b.in_stock) return 1
+      // Then by created_at (newest first)
+      return new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+    })
+
+    // Return top 20 products
+    const topProducts = sortedProducts.slice(0, 20)
+    console.log(`[Home Page] ✅ Returning ${topProducts.length} products (${topProducts.filter(p => p.featured).length} featured, ${topProducts.filter(p => p.in_stock).length} in stock)`)
+    
+    return topProducts
   } catch (error) {
     console.error('[Home Page] Error fetching products:', error)
+    if (error instanceof Error) {
+      console.error('[Home Page] Error message:', error.message)
+      console.error('[Home Page] Error stack:', error.stack)
+    }
     return []
   }
 }

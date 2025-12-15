@@ -28,19 +28,11 @@ const heroBackground = '/PRAYER%20ROOM/prayer%20room_1%20-%20Photo.png'
 const locations = [
   {
     city: 'Nairobi',
-    address: 'Mageta road, Lavington, Nairobi Kenya',
+    address: 'Dhanjay apartment, suite 601, valley arcade lavington',
     phone: '+254 710 602110',
     email: 'info@elegantdecor.co.ke',
-    mapUrl: 'https://maps.google.com/?q=Lavington+Nairobi+Kenya',
+    mapUrl: 'https://maps.google.com/?q=Dhanjay+apartment+suite+601+valley+arcade+lavington',
     gradient: 'from-primary/20 to-accent/10',
-  },
-  {
-    city: 'Thika',
-    address: 'Giant complex, Thika road, Thika Kenya',
-    phone: '+254 710 602110',
-    email: 'info@elegantdecor.co.ke',
-    mapUrl: 'https://maps.google.com/?q=Thika+Kenya',
-    gradient: 'from-accent/20 to-primary/10',
   },
 ]
 
@@ -243,53 +235,75 @@ export default function ContactPage() {
               Our <span className="text-luxury-gradient">Locations</span>
             </h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
-              Visit our showrooms in Nairobi and Thika to explore our extensive collection
+              Visit our showroom in Nairobi to explore our extensive collection
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
-            {locations.map((location) => (
-              <Card key={location.city} className="overflow-hidden border-luxury hover:shadow-luxury-lg transition-all group">
-                <div className={`h-2 bg-gradient-to-r ${location.gradient}`} />
-                <CardContent className="p-8">
-                  <div className="flex items-start gap-4 mb-6">
-                    <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center flex-shrink-0">
-                      <MapPin className="h-7 w-7 text-primary" />
+          <div className="max-w-5xl mx-auto">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              {/* Location Card */}
+              {locations.map((location) => (
+                <Card key={location.city} className="overflow-hidden border-luxury hover:shadow-luxury-lg transition-all group">
+                  <div className={`h-2 bg-gradient-to-r ${location.gradient}`} />
+                  <CardContent className="p-8">
+                    <div className="flex items-start gap-4 mb-6">
+                      <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center flex-shrink-0">
+                        <MapPin className="h-7 w-7 text-primary" />
+                      </div>
+                      <div>
+                        <h3 className="font-playfair text-2xl font-bold mb-1">{location.city}</h3>
+                        <p className="text-muted-foreground text-sm">Showroom Location</p>
+                      </div>
                     </div>
-                    <div>
-                      <h3 className="font-playfair text-2xl font-bold mb-1">{location.city}</h3>
-                      <p className="text-muted-foreground text-sm">Showroom Location</p>
+                    
+                    <div className="space-y-4 mb-6">
+                      <div className="flex items-start gap-3 p-3 rounded-lg bg-muted/50">
+                        <MapPin className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+                        <span className="text-sm">{location.address}</span>
+                      </div>
+                      <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/50">
+                        <Phone className="h-5 w-5 text-primary flex-shrink-0" />
+                        <a href={`tel:${location.phone.replace(/\s/g, '')}`} className="text-sm hover:text-primary transition-colors">
+                          {location.phone}
+                        </a>
+                      </div>
+                      <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/50">
+                        <Mail className="h-5 w-5 text-primary flex-shrink-0" />
+                        <a href={`mailto:${location.email}`} className="text-sm hover:text-primary transition-colors">
+                          {location.email}
+                        </a>
+                      </div>
                     </div>
-                  </div>
-                  
-                  <div className="space-y-4 mb-6">
-                    <div className="flex items-start gap-3 p-3 rounded-lg bg-muted/50">
-                      <MapPin className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
-                      <span className="text-sm">{location.address}</span>
-                    </div>
-                    <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/50">
-                      <Phone className="h-5 w-5 text-primary flex-shrink-0" />
-                      <a href={`tel:${location.phone.replace(/\s/g, '')}`} className="text-sm hover:text-primary transition-colors">
-                        {location.phone}
-                      </a>
-                    </div>
-                    <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/50">
-                      <Mail className="h-5 w-5 text-primary flex-shrink-0" />
-                      <a href={`mailto:${location.email}`} className="text-sm hover:text-primary transition-colors">
-                        {location.email}
-                      </a>
-                    </div>
-                  </div>
 
-                  <a href={location.mapUrl} target="_blank" rel="noopener noreferrer">
-                    <Button variant="outline" className="w-full group-hover:bg-primary group-hover:text-white transition-colors">
-                      <MapPin className="mr-2 h-4 w-4" />
-                      Get Directions
-                    </Button>
-                  </a>
+                    <a href={location.mapUrl} target="_blank" rel="noopener noreferrer">
+                      <Button variant="outline" className="w-full group-hover:bg-primary group-hover:text-white transition-colors">
+                        <MapPin className="mr-2 h-4 w-4" />
+                        Get Directions
+                      </Button>
+                    </a>
                   </CardContent>
                 </Card>
-            ))}
+              ))}
+
+              {/* Google Maps Embed */}
+              <Card className="overflow-hidden border-luxury">
+                <div className="h-2 bg-gradient-to-r from-primary/20 to-accent/10" />
+                <CardContent className="p-0">
+                  <div className="relative w-full h-full min-h-[450px]">
+                    <iframe
+                      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3988.805068267157!2d36.767826275299434!3d-1.2913055356323078!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x182f1a11ef5e6013%3A0x27e8eb8d288385fc!2sDhanjay%20Apartments!5e0!3m2!1sen!2ske!4v1765283999897!5m2!1sen!2ske"
+                      width="100%"
+                      height="100%"
+                      style={{ border: 0, minHeight: '450px' }}
+                      allowFullScreen
+                      loading="lazy"
+                      referrerPolicy="no-referrer-when-downgrade"
+                      className="absolute inset-0"
+                    />
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
           </div>
         </div>
       </section>
@@ -421,7 +435,7 @@ export default function ContactPage() {
               </h2>
                   <p className="text-muted-foreground mb-8 leading-relaxed">
                     We specialize in full range of home & Office interiors, Imported fully fitted Kitchens, 
-                    Bathroom Vanity sets, and much more. Our expert team is dedicated to transforming your 
+                    Bathroom Vanity sets, and much more. Our designers are dedicated to transforming your 
                     spaces with elegant, high-quality solutions.
                   </p>
 
@@ -452,16 +466,7 @@ export default function ContactPage() {
                       </div>
                       <div>
                         <p className="font-medium">Nairobi Showroom</p>
-                        <p className="text-sm text-muted-foreground">Mageta road, Lavington, Nairobi, Kenya</p>
-                      </div>
-                    </div>
-                    <div className="flex items-start gap-3">
-                      <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0 mt-0.5">
-                        <MapPin className="h-4 w-4 text-primary" />
-                      </div>
-                      <div>
-                        <p className="font-medium">Thika Showroom</p>
-                        <p className="text-sm text-muted-foreground">Giant complex, Thika road, Thika, Kenya</p>
+                        <p className="text-sm text-muted-foreground">Dhanjay apartment, suite 601, valley arcade lavington</p>
                       </div>
                     </div>
                   </div>

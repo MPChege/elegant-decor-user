@@ -9,6 +9,8 @@ export interface PublicProduct {
   subcategory: string | null
   price: number | null
   currency: string
+  price_unit: 'per_sqm' | 'unit' | null
+  is_imported: boolean
   featured_image: string | null
   images: string[]
   tags: string[]

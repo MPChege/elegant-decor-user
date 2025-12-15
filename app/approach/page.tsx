@@ -32,7 +32,7 @@ const steps = [
     icon: Palette,
     title: 'Concept Development',
     description:
-      'Our design team creates detailed concepts and mood boards that bring your vision to life.',
+      'Our designers create detailed concepts and mood boards that bring your vision to life.',
     details: [
       'Design concept presentation',
       'Material and color selection',

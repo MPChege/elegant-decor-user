@@ -185,14 +185,7 @@ export function Footer() {
                   <MapPin className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
                   <div>
                     <div className="font-medium">Nairobi</div>
-                    <div className="text-muted-foreground text-xs">Mageta road, Lavington, Kenya</div>
-                  </div>
-                </div>
-                <div className="flex items-start space-x-3">
-                  <MapPin className="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
-                  <div>
-                    <div className="font-medium">Thika</div>
-                    <div className="text-muted-foreground text-xs">Giant complex, Thika road, Kenya</div>
+                    <div className="text-muted-foreground text-xs">Dhanjay apartment, suite 601, valley arcade lavington</div>
                   </div>
                 </div>
                 <div className="flex items-center space-x-3">

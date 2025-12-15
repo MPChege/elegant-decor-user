@@ -269,7 +269,7 @@ export default function AboutPage() {
             </h2>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+          <div className="grid grid-cols-1 gap-8 max-w-2xl mx-auto">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -282,33 +282,7 @@ export default function AboutPage() {
                   <div className="space-y-3">
                     <div className="flex items-start gap-3">
                       <MapPin className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
-                      <span className="text-muted-foreground">Mageta road, Lavington, Nairobi Kenya</span>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <Phone className="h-5 w-5 text-primary flex-shrink-0" />
-                      <a href="tel:+254710602110" className="text-muted-foreground hover:text-primary">+254 710 602110</a>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <Mail className="h-5 w-5 text-primary flex-shrink-0" />
-                      <a href="mailto:info@elegantdecor.co.ke" className="text-muted-foreground hover:text-primary">info@elegantdecor.co.ke</a>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </motion.div>
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.1 }}
-            >
-              <Card className="h-full border-luxury hover:shadow-luxury-lg transition-all">
-                <CardContent className="p-8">
-                  <h3 className="font-playfair text-2xl font-bold mb-4">Thika</h3>
-                  <div className="space-y-3">
-                    <div className="flex items-start gap-3">
-                      <MapPin className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
-                      <span className="text-muted-foreground">Giant complex, Thika road, Thika Kenya</span>
+                      <span className="text-muted-foreground">Dhanjay apartment, suite 601, valley arcade lavington</span>
                     </div>
                     <div className="flex items-center gap-3">
                       <Phone className="h-5 w-5 text-primary flex-shrink-0" />

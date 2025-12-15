@@ -11,7 +11,7 @@ export function StructuredData() {
     "image": "https://www.elegantdecor.co.ke/etd_logo-removebg-preview.png",
     "@id": "https://www.elegantdecor.co.ke",
     "url": "https://www.elegantdecor.co.ke",
-    "description": "Award-winning interior design and décor company specializing in luxury tiles, custom interiors, and premium design projects in Kenya.",
+    "description": "Interior design and décor company specializing in luxury tiles, custom interiors, and premium design projects in Kenya.",
     "telephone": "+254-XXX-XXX-XXX", // TODO: Update with actual phone number
     "priceRange": "$$",
     "address": {

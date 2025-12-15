@@ -35,6 +35,8 @@ function mapProductToPublic(product: Record<string, unknown>): PublicProduct {
     subcategory: (product.subcategory as string) || null,
     price: product.price ? Number(product.price) : null,
     currency: (product.currency as string) || 'KES',
+    price_unit: (product.price_unit as 'per_sqm' | 'unit' | null) || null,
+    is_imported: product.is_imported !== undefined ? Boolean(product.is_imported) : false,
     featured_image: featuredImage,
     images: images,
     tags: (product.tags as string[]) || [],
@@ -350,14 +352,14 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
                         : 'Pricing on request'}
                   </div>
                     <Button
-                      variant={item.in_stock ? 'luxury' : 'secondary'}
+                      variant={(item.is_imported || item.in_stock) ? 'luxury' : 'secondary'}
                       size="sm"
                       className="mt-4 w-full"
                       asChild
-                      disabled={!item.in_stock}
+                      disabled={!item.is_imported && !item.in_stock}
                     >
                       <Link href={`/products/${item.slug || item.id}`}>
-                        {item.in_stock ? 'View Details' : 'Out of Stock'}
+                        {(item.is_imported || item.in_stock) ? 'View Details' : 'Out of Stock'}
                       </Link>
                     </Button>
                 </CardContent>

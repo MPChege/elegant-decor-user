@@ -71,3 +71,6 @@ export function ProjectGallery({ images, projectTitle }: ProjectGalleryProps) {
 
 
 
+
+
+
