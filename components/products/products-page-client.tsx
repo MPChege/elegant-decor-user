@@ -3,7 +3,7 @@
 import * as React from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { Search, Filter, Grid3x3, List, Package } from 'lucide-react'
+import { Search, Filter, Grid3x3, List, Package, Globe } from 'lucide-react'
 import type { PublicProduct } from '@/lib/public-api'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
