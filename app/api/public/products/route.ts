@@ -245,6 +245,8 @@ export async function GET(request: NextRequest) {
         subcategory: product.subcategory || null,
         price: product.price ? Number(product.price) : null,
         currency: product.currency || 'KES',
+        price_unit: product.price_unit || null,
+        is_imported: product.is_imported !== undefined ? product.is_imported : false,
         featured_image: featuredImage,
         images: images,
         tags: product.tags || [],
