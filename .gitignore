@@ -37,3 +37,6 @@ next-env.d.ts
 /deploy-package
 *.zip
 elegant-decor-cpanel-deploy.zip
+*.zip
+dist/
+deploy-package/
