@@ -191,22 +191,45 @@ export function ProductsPageClient({ products }: ProductsPageClientProps) {
                     <Card className="group overflow-hidden hover:shadow-lg transition-all duration-300 border h-full flex flex-col">
                       <Link href={`/products/${product.slug || product.id}`} className="flex-1 flex flex-col">
                         <div className="aspect-square relative overflow-hidden bg-muted">
-                          {product.featured && (
-                            <Badge
-                              variant="luxury"
-                              className="absolute top-1 left-1 z-10 text-[10px] px-1.5 py-0.5"
-                            >
-                              Featured
-                            </Badge>
-                          )}
-                          {!product.in_stock && (
-                            <Badge
-                              variant="secondary"
-                              className="absolute top-1 right-1 z-10 text-[10px] px-1.5 py-0.5"
-                            >
-                              Out
-                            </Badge>
-                          )}
+                          {/* Badges Container - Top Left */}
+                          <div className="absolute top-1 left-1 z-10 flex flex-col gap-1">
+                            {product.featured && (
+                              <Badge
+                                variant="luxury"
+                                className="text-[10px] px-1.5 py-0.5"
+                              >
+                                Featured
+                              </Badge>
+                            )}
+                            {product.in_stock && (
+                              <Badge
+                                variant="default"
+                                className="text-[10px] px-1.5 py-0.5 bg-green-600 hover:bg-green-700 border-green-700"
+                              >
+                                In Stock
+                              </Badge>
+                            )}
+                          </div>
+                          
+                          {/* Badges Container - Top Right */}
+                          <div className="absolute top-1 right-1 z-10 flex flex-col gap-1">
+                            {product.is_imported && (
+                              <Badge
+                                variant="outline"
+                                className="text-[10px] px-1.5 py-0.5 bg-blue-600/90 text-white border-blue-700 hover:bg-blue-700"
+                              >
+                                Imported
+                              </Badge>
+                            )}
+                            {!product.in_stock && (
+                              <Badge
+                                variant="secondary"
+                                className="text-[10px] px-1.5 py-0.5"
+                              >
+                                Out
+                              </Badge>
+                            )}
+                          </div>
                           {product.featured_image ? (
                             <Image
                               src={product.featured_image}

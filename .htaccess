@@ -1,12 +1,16 @@
+# Enable Rewrite Engine
 <IfModule mod_rewrite.c>
   RewriteEngine On
   
-  # Handle Next.js routing
-  RewriteBase /
-  RewriteRule ^index\.html$ - [L]
+  # Get the port from environment (set by cPanel Node.js)
+  RewriteCond %{ENV:PORT} ^(.+)$
+  
+  # Don't rewrite files or directories
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME} !-d
-  RewriteRule . /index.html [L]
+  
+  # Route everything to Node.js server
+  RewriteRule ^(.*)$ http://localhost:%{ENV:PORT}/$1 [P,L]
 </IfModule>
 
 # Enable compression
@@ -25,7 +29,3 @@
   ExpiresByType text/css "access plus 1 month"
   ExpiresByType application/javascript "access plus 1 month"
 </IfModule>
-
-
-
-

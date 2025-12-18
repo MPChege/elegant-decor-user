@@ -19,8 +19,11 @@ const nextConfig: NextConfig = {
       {
         protocol: 'https',
         hostname: '**.supabase.co',
+        pathname: '/storage/v1/object/public/**',
       },
     ],
+    // Disable optimization for external images in development to avoid timeouts
+    unoptimized: process.env.NODE_ENV === 'development',
   },
   // Performance optimizations
   experimental: {

@@ -435,9 +435,22 @@ export function HomePageClient({ projects, products }: HomePageClientProps) {
           </div>
 
           <ScrollAnimate delay={0.2}>
-            <p className="text-base md:text-lg text-white/85 max-w-2xl mx-auto mb-8 text-balance">
-              Custom wardrobes, bedrooms, kitchens and interiors designed by our team.
-            </p>
+            <div className="max-w-3xl mx-auto mb-8">
+              <div className="backdrop-blur-md bg-white/20 dark:bg-black/30 border border-white/30 dark:border-white/20 rounded-2xl px-6 py-4 md:px-8 md:py-6 shadow-2xl ring-1 ring-white/20 dark:ring-white/10">
+                <p className="text-base md:text-lg lg:text-xl text-white font-medium leading-relaxed text-balance drop-shadow-lg">
+                  <span className="text-white font-semibold">Custom wardrobes</span>
+                  <span className="text-white/90">, </span>
+                  <span className="text-white font-semibold">bedrooms</span>
+                  <span className="text-white/90">, </span>
+                  <span className="text-white font-semibold">kitchens</span>
+                  <span className="text-white/90"> and </span>
+                  <span className="text-white font-semibold">interiors</span>
+                  <span className="text-white/90"> designed by </span>
+                  <span className="text-luxury-gradient font-bold text-lg md:text-xl">our team</span>
+                  <span className="text-white/90">.</span>
+                </p>
+              </div>
+            </div>
           </ScrollAnimate>
 
           <ScrollAnimate delay={0.4}>

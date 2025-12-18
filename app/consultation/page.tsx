@@ -15,28 +15,31 @@ import { useToast } from '@/hooks/use-toast'
 
 const consultationTypes = [
   {
-    id: 'initial',
-    title: 'Initial Consultation',
+    id: 'studio',
+    title: 'Studio Consultation',
     duration: '60 minutes',
-    description: 'Perfect for first-time clients to discuss your vision and project requirements.',
+    description: 'Free consultation at our studio. Perfect for first-time clients to discuss your vision and project requirements.',
     price: 'Free',
-    features: ['Project assessment', 'Design recommendations', 'Budget planning'],
+    location: 'studio',
+    features: ['Project assessment', 'Design recommendations', 'Budget planning', 'At our studio location'],
   },
   {
-    id: 'design',
-    title: 'Design Consultation',
+    id: 'onsite-nairobi',
+    title: 'On-Site Consultation (Nairobi)',
     duration: '90 minutes',
-    description: 'Detailed design planning with our designers for your specific project.',
+    description: 'Consultation at your location within Nairobi. We come to you for a detailed site assessment.',
     price: 'KSh 5,000',
-    features: ['3D visualizations', 'Material selection', 'Color scheme planning'],
+    location: 'nairobi',
+    features: ['Site visit included', 'Detailed assessment', 'Material recommendations', 'Within Nairobi'],
   },
   {
-    id: 'premium',
-    title: 'Premium Consultation',
-    duration: '2 hours',
-    description: 'Comprehensive consultation with our lead designer including site visit.',
-    price: 'KSh 15,000',
-    features: ['Site visit included', 'Project timeline', 'Design recommendations'],
+    id: 'onsite-out-of-town',
+    title: 'On-Site Consultation (Out of Town)',
+    duration: '90 minutes',
+    description: 'Consultation at your location outside Nairobi. Pricing depends on distance and mileage.',
+    price: 'Based on Distance',
+    location: 'out-of-town',
+    features: ['Site visit included', 'Distance-based pricing', 'Mileage calculation', 'Flexible scheduling'],
   },
 ]
 
@@ -47,7 +50,7 @@ const availableTimes = [
 
 export default function ConsultationPage() {
   const { toast } = useToast()
-  const [selectedType, setSelectedType] = React.useState<string>('initial')
+  const [selectedType, setSelectedType] = React.useState<string>('studio')
   const [selectedDate, setSelectedDate] = React.useState('')
   const [selectedTime, setSelectedTime] = React.useState('')
   const [formData, setFormData] = React.useState({
@@ -55,6 +58,8 @@ export default function ConsultationPage() {
     email: '',
     phone: '',
     address: '',
+    location: 'studio', // studio, nairobi, out-of-town
+    distance: '', // For out-of-town consultations
     projectType: 'residential',
     budget: '',
     message: '',
@@ -87,7 +92,7 @@ export default function ConsultationPage() {
           email: formData.email,
           phone: formData.phone,
           subject: `Consultation Request: ${consultationTypes.find(t => t.id === selectedType)?.title}`,
-          message: `Consultation Type: ${consultationTypes.find(t => t.id === selectedType)?.title}\nDate: ${selectedDate}\nTime: ${selectedTime}\nProject Type: ${formData.projectType}\nBudget: ${formData.budget}\nAddress: ${formData.address}\n\nMessage: ${formData.message}`,
+          message: `Consultation Type: ${consultationTypes.find(t => t.id === selectedType)?.title}\nDate: ${selectedDate}\nTime: ${selectedTime}\nLocation: ${selectedType === 'studio' ? 'At Our Studio (Free)' : selectedType === 'onsite-nairobi' ? 'On-Site in Nairobi (KSh 5,000)' : `On-Site Out of Town${formData.distance ? ` (Distance: ${formData.distance}km - Pricing to be calculated)` : ' (Distance to be provided)'}`}\nProject Type: ${formData.projectType}\nBudget: ${formData.budget}\nAddress: ${formData.address}\n\nMessage: ${formData.message}\n\nNote: Design fees start from KSh 150,000 depending on project size.`,
           type: 'project', // Use 'project' type for consultations
         }),
       })
@@ -118,6 +123,8 @@ export default function ConsultationPage() {
       email: '',
       phone: '',
       address: '',
+      location: 'studio',
+      distance: '',
       projectType: 'residential',
       budget: '',
       message: '',
@@ -197,7 +204,17 @@ export default function ConsultationPage() {
                       ? 'border-primary shadow-luxury-lg scale-105'
                       : 'hover:shadow-luxury-md border-luxury'
                   }`}
-                  onClick={() => setSelectedType(type.id)}
+                  onClick={() => {
+                    setSelectedType(type.id)
+                    // Update location based on consultation type
+                    if (type.id === 'studio') {
+                      setFormData({ ...formData, location: 'studio', distance: '' })
+                    } else if (type.id === 'onsite-nairobi') {
+                      setFormData({ ...formData, location: 'nairobi', distance: '' })
+                    } else if (type.id === 'onsite-out-of-town') {
+                      setFormData({ ...formData, location: 'out-of-town', distance: '' })
+                    }
+                  }}
                 >
                   <CardHeader>
                     <div className="flex items-center justify-between mb-2">
@@ -355,15 +372,67 @@ export default function ConsultationPage() {
                     <div className="space-y-2">
                       <Label htmlFor="address" className="flex items-center gap-2">
                         <MapPin className="h-4 w-4" />
-                        Project Address
+                        Project Address *
                       </Label>
                       <Input
                         id="address"
                         name="address"
                         value={formData.address}
                         onChange={handleChange}
+                        required
                         placeholder="123 Design Street, Nairobi"
                       />
+                    </div>
+
+                    {/* Distance field for out-of-town consultations */}
+                    {selectedType === 'onsite-out-of-town' && (
+                      <div className="space-y-2">
+                        <Label htmlFor="distance">Distance from Nairobi (km) *</Label>
+                        <Input
+                          id="distance"
+                          name="distance"
+                          type="number"
+                          value={formData.distance}
+                          onChange={handleChange}
+                          placeholder="e.g., 50"
+                          min="0"
+                          required
+                        />
+                        <p className="text-xs text-muted-foreground">
+                          We'll calculate the consultation fee based on distance and mileage. Our team will contact you with the exact pricing after receiving your booking.
+                        </p>
+                      </div>
+                    )}
+
+                    {/* Pricing Display */}
+                    <div className="p-4 rounded-lg bg-primary/5 border border-primary/20">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm font-medium">Consultation Fee:</span>
+                        <span className="text-lg font-bold text-primary">
+                          {selectedType === 'studio' 
+                            ? 'Free' 
+                            : selectedType === 'onsite-nairobi'
+                            ? 'KSh 5,000'
+                            : formData.distance
+                            ? 'To be calculated'
+                            : 'Based on Distance'}
+                        </span>
+                      </div>
+                      {selectedType === 'studio' && (
+                        <p className="text-xs text-muted-foreground mt-1">
+                          Free consultation at our studio
+                        </p>
+                      )}
+                      {selectedType === 'onsite-nairobi' && (
+                        <p className="text-xs text-muted-foreground mt-1">
+                          Fixed rate for consultations within Nairobi
+                        </p>
+                      )}
+                      {selectedType === 'onsite-out-of-town' && (
+                        <p className="text-xs text-muted-foreground mt-1">
+                          Pricing will be calculated based on distance and mileage
+                        </p>
+                      )}
                     </div>
 
                     {/* Project Details */}
@@ -385,7 +454,7 @@ export default function ConsultationPage() {
                         </select>
                       </div>
 
-                      <div className="space-y-2">
+                        <div className="space-y-2">
                         <Label htmlFor="budget">Estimated Budget</Label>
                         <Input
                           id="budget"
@@ -394,6 +463,9 @@ export default function ConsultationPage() {
                           onChange={handleChange}
                           placeholder="KSh 500,000 - 1,000,000"
                         />
+                        <p className="text-xs text-muted-foreground">
+                          Note: Design fees start from KSh 150,000 depending on project size
+                        </p>
                       </div>
                     </div>
 
@@ -440,6 +512,55 @@ export default function ConsultationPage() {
                 </CardContent>
               </Card>
             </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* Pricing Information */}
+      <section className="py-20 bg-muted/30">
+        <div className="container px-6">
+          <div className="max-w-4xl mx-auto">
+            <h2 className="font-playfair text-3xl md:text-4xl font-bold text-center mb-8">
+              Consultation & Design Fees
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+              <Card className="border-primary/20">
+                <CardHeader>
+                  <CardTitle className="font-playfair text-xl">Consultation Fees</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm">Studio Consultation</span>
+                    <Badge variant="luxury">Free</Badge>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm">On-Site (Within Nairobi)</span>
+                    <span className="font-semibold text-primary">KSh 5,000</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm">On-Site (Out of Town)</span>
+                    <span className="font-semibold text-primary">Based on Distance</span>
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-2">
+                    Out-of-town consultations are priced based on distance and mileage. We'll provide a quote after receiving your location details.
+                  </p>
+                </CardContent>
+              </Card>
+              <Card className="border-primary/20">
+                <CardHeader>
+                  <CardTitle className="font-playfair text-xl">Design Fees</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm">Design Services</span>
+                    <span className="font-semibold text-primary">From KSh 150,000</span>
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-2">
+                    Design fees vary depending on the size and complexity of your project. Our team will provide a detailed quote after the initial consultation.
+                  </p>
+                </CardContent>
+              </Card>
+            </div>
           </div>
         </div>
       </section>

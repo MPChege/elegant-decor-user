@@ -55,116 +55,76 @@ async function getProductById(id: string): Promise<PublicProduct | null> {
     // Clean the id/slug (trim whitespace)
     const cleanId = id.trim()
     
-    // Query product by ID or slug (try both)
+    // Query product by ID or slug - try without status first (more reliable)
     let data: Record<string, unknown> | null = null
-    let error: unknown = null
     
     // First try by slug
     const slugResult: { data: Record<string, unknown> | null; error: unknown } = await supabaseAdmin
       .from('products')
       .select('*')
       .eq('slug', cleanId)
-      .eq('status', 'published')
       .single() as { data: Record<string, unknown> | null; error: unknown }
     
     if (!slugResult.error && slugResult.data) {
       data = slugResult.data
-      error = null
     } else {
       // If not found by slug, try by id
       const idResult: { data: Record<string, unknown> | null; error: unknown } = await supabaseAdmin
         .from('products')
         .select('*')
         .eq('id', cleanId)
-        .eq('status', 'published')
         .single() as { data: Record<string, unknown> | null; error: unknown }
       
       if (!idResult.error && idResult.data) {
         data = idResult.data
-        error = null
       } else {
-        // Try without status filter as fallback
-        const allResult: { data: Record<string, unknown> | null; error: unknown } = await supabaseAdmin
+        // Last resort: try with OR query (limit 1)
+        const orResult: { data: Record<string, unknown>[] | null; error: unknown } = await supabaseAdmin
           .from('products')
           .select('*')
           .or(`slug.eq.${cleanId},id.eq.${cleanId}`)
-          .single() as { data: Record<string, unknown> | null; error: unknown }
+          .limit(1) as { data: Record<string, unknown>[] | null; error: unknown }
         
-        if (!allResult.error && allResult.data) {
-          data = allResult.data
-          error = null
+        if (!orResult.error && orResult.data && Array.isArray(orResult.data) && orResult.data.length > 0) {
+          data = orResult.data[0]
         } else {
-          error = allResult.error
+          console.error('[Product Detail] Product not found:', cleanId)
+          return null
         }
       }
     }
     
-    if (error || !data) {
-      console.error('Supabase query error:', error)
+    if (!data) {
       return null
     }
     
     return mapProductToPublic(data)
   } catch (error) {
-    console.error('Error fetching product:', error)
+    console.error('[Product Detail] Error fetching product:', error)
     return null
   }
 }
 
 async function getProductsByCategory(category: string, excludeId?: string): Promise<PublicProduct[]> {
   try {
-    // Query products by category - try with status filter first
+    // Query products by category - try without status filter first (more reliable)
     let query = supabaseAdmin
       .from('products')
       .select('*')
       .eq('category', category)
       .order('created_at', { ascending: false })
+      .limit(10) // Limit to prevent large queries
     
     if (excludeId) {
       query = query.neq('id', excludeId)
     }
     
-    // Try with status filter first
-    const { data: dataWithStatus, error: statusError } = await query.eq('status', 'published')
-    
-    let data = dataWithStatus
-    let error = statusError
-    
-    // If status column doesn't exist or no results, try without status filter
-    if (error && (error.code === '42703' || error.message?.includes('column') || error.message?.includes('does not exist'))) {
-      console.warn('[Related Products] Status column not found, fetching all products in category')
-      let queryWithoutStatus = supabaseAdmin
-        .from('products')
-        .select('*')
-        .eq('category', category)
-        .order('created_at', { ascending: false })
-      
-      if (excludeId) {
-        queryWithoutStatus = queryWithoutStatus.neq('id', excludeId)
-      }
-      
-      const { data: allData, error: allError } = await queryWithoutStatus
-      data = allData
-      error = allError
-    } else if (!data || data.length === 0) {
-      // If no results with status filter, try without it
-      let queryWithoutStatus = supabaseAdmin
-        .from('products')
-        .select('*')
-        .eq('category', category)
-        .order('created_at', { ascending: false })
-      
-      if (excludeId) {
-        queryWithoutStatus = queryWithoutStatus.neq('id', excludeId)
-      }
-      
-      const { data: allData, error: allError } = await queryWithoutStatus
-      data = allData
-      error = allError
-    }
+    // Try query without status filter (status column might not exist)
+    const { data, error } = await query
     
     if (error) {
-      console.error('[Related Products] Supabase query error:', error)
+      // If error, log but don't fail - return empty array
+      console.error('[Related Products] Query error:', error)
       return []
     }
     
@@ -191,28 +151,8 @@ async function getAllProducts(excludeId?: string, limit: number = 10): Promise<P
       query = query.neq('id', excludeId)
     }
     
-    // Try with status filter first
-    const { data: dataWithStatus, error: statusError } = await query.eq('status', 'published')
-    
-    let data = dataWithStatus
-    let error = statusError
-    
-    // If status column doesn't exist, try without it
-    if (error && (error.code === '42703' || error.message?.includes('column') || error.message?.includes('does not exist'))) {
-      let queryWithoutStatus = supabaseAdmin
-        .from('products')
-        .select('*')
-        .order('created_at', { ascending: false })
-        .limit(limit)
-      
-      if (excludeId) {
-        queryWithoutStatus = queryWithoutStatus.neq('id', excludeId)
-      }
-      
-      const { data: allData, error: allError } = await queryWithoutStatus
-      data = allData
-      error = allError
-    }
+    // Query without status filter (status column might not exist)
+    const { data, error } = await query
     
     if (error) {
       console.error('[Related Products] Error fetching all products:', error)

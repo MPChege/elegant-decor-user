@@ -1,0 +1,94 @@
+═══════════════════════════════════════════════════════════════
+  ELEGANT TILES & DÉCOR - CPANEL DEPLOYMENT QUICK START
+═══════════════════════════════════════════════════════════════
+
+✅ DEPLOYMENT PACKAGE READY: elegant-decor-cpanel-deploy.zip (758MB)
+
+📋 QUICK DEPLOYMENT STEPS:
+───────────────────────────────────────────────────────────────
+
+1. UPLOAD & EXTRACT
+   • Upload elegant-decor-cpanel-deploy.zip to cPanel File Manager
+   • Extract to: /home/elegant6/elegant
+
+2. CREATE NODE.JS APPLICATION IN CPANEL
+   • Go to: cPanel > Node.js Selector > Create Application
+   • Node.js Version: 18.x or 20.x
+   • Application Mode: Production
+   • Application Root: /home/elegant6/elegant
+   • Application URL: elegantdecor.co.ke
+   • Application Startup File: server.js
+   • Click "CREATE"
+
+3. SET ENVIRONMENT VARIABLES (REQUIRED!)
+   • Click "Manage" on your Node.js app
+   • Go to "Environment Variables"
+   • Add these EXACT variables:
+
+   NODE_ENV = production
+   PORT = 3000
+   NEXT_PUBLIC_SITE_URL = https://www.elegantdecor.co.ke
+   NEXT_PUBLIC_SUPABASE_URL = https://gqbdjkflempypooplval.supabase.co
+   NEXT_PUBLIC_SUPABASE_ANON_KEY = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdxYmRqa2ZsZW1weXBvb3BsdmFsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjIxNTMzODQsImV4cCI6MjA3NzcyOTM4NH0.f3wGzFqVnR78dLho5BCxwg09-nZdtwOKZDU_-L74-8Y
+   SUPABASE_SERVICE_ROLE_KEY = sb_secret_YfTgKpa5kRXdRwZYUuY9DQ_AFNGno0_
+
+   • Click "Save" after EACH variable
+
+4. START APPLICATION
+   • Go back to Node.js Selector
+   • Find your application
+   • Click "RESTART" or "START"
+   • Wait for "Running" status
+
+5. VERIFY
+   • Visit: https://www.elegantdecor.co.ke
+   • Site should load without errors
+   • All pages should work properly
+
+═══════════════════════════════════════════════════════════════
+
+📁 PACKAGE CONTENTS:
+───────────────────────────────────────────────────────────────
+✓ server.js (optimized startup file)
+✓ package.json (root level)
+✓ .next/standalone/ (Next.js standalone build)
+  ├── .next/ (build files + static assets)
+  ├── node_modules/ (all dependencies included)
+  ├── public/ (public assets)
+  └── server.js (Next.js server)
+✓ CPANEL_DEPLOYMENT.md (detailed guide)
+
+═══════════════════════════════════════════════════════════════
+
+✨ IMPROVEMENTS IN THIS BUILD:
+───────────────────────────────────────────────────────────────
+• Optimized server.js (no process.chdir - CloudLinux compatible)
+• All static assets included (.next/static)
+• All public assets included (public folder)
+• Production build with all optimizations
+• All dependencies bundled (no npm install needed)
+• Latest code with product badges and glassmorphic design
+
+═══════════════════════════════════════════════════════════════
+
+⚠️  IMPORTANT NOTES:
+───────────────────────────────────────────────────────────────
+• All dependencies are included - NO npm install needed!
+• File size is 758MB (normal for standalone build)
+• Node.js 18.x or higher required
+• Port will be set by cPanel (default: 3000)
+• Virtual environment path: /home/elegant6/nodevenv/elegant/22/bin/activate
+
+═══════════════════════════════════════════════════════════════
+
+🔧 TROUBLESHOOTING:
+───────────────────────────────────────────────────────────────
+• 503 Error → Check Node.js app is "Running" in cPanel
+• App won't start → Check logs in Node.js Selector
+• Pages loading slowly → Check app is running, verify static assets
+• CloudLinux errors → Try pointing to .next/standalone/server.js directly
+• Env vars not working → Check for typos, restart app after adding
+
+═══════════════════════════════════════════════════════════════
+
+For detailed instructions, see: CPANEL_DEPLOYMENT.md (in zip file)

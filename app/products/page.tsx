@@ -24,28 +24,11 @@ async function getProducts(): Promise<PublicProduct[]> {
     console.log('[Products Page] ✅ Fetching products from Supabase:', supabaseUrl.substring(0, 40) + '...')
 
     // Query products directly from Supabase
-    // Try with status filter first, fallback to all products if column doesn't exist
-    const query = supabaseAdmin
+    // Query without status filter (status column might not exist)
+    const { data, error } = await supabaseAdmin
       .from('products')
       .select('*')
       .order('created_at', { ascending: false })
-    
-    // Try to filter by status if column exists
-    const { data: dataWithStatus, error: statusError } = await query.eq('status', 'published')
-    
-    let data = dataWithStatus
-    let error = statusError
-    
-    // If status column doesn't exist, query without it
-    if (error && (error.code === '42703' || error.message?.includes('column') || error.message?.includes('does not exist'))) {
-      console.warn('[Products Page] Status column not found, fetching all products')
-      const { data: allData, error: allError } = await supabaseAdmin
-        .from('products')
-        .select('*')
-        .order('created_at', { ascending: false })
-      data = allData
-      error = allError
-    }
     
     if (error) {
       console.error('[Products Page] Supabase query error:', error)

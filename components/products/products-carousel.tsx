@@ -119,16 +119,17 @@ export function ProductsCarousel({ products: initialProducts }: ProductsCarousel
   return (
     <section className="pt-12 md:pt-16 pb-6 md:pb-8 bg-muted/20 relative">
       <div className="container px-6">
+        {/* Glassmorphic Header */}
         <div className="flex items-center justify-between mb-8">
-          <div>
-            <h2 className="font-playfair text-3xl md:text-4xl font-bold mb-2">
+          <div className="backdrop-blur-md bg-white/70 dark:bg-black/50 border border-white/30 dark:border-white/20 rounded-2xl px-6 py-4 shadow-2xl ring-1 ring-white/20 dark:ring-white/10">
+            <h2 className="font-playfair text-3xl md:text-4xl font-bold mb-2 bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text text-transparent drop-shadow-sm">
               Featured Products
             </h2>
-            <p className="text-base text-muted-foreground">
+            <p className="text-base text-foreground/80 font-medium drop-shadow-sm">
               Discover our premium collection of tiles and materials
             </p>
           </div>
-          <Button variant="outline" size="lg" asChild className="hidden md:flex">
+          <Button variant="outline" size="lg" asChild className="hidden md:flex backdrop-blur-md bg-white/70 dark:bg-black/50 border-white/30 dark:border-white/20 shadow-2xl hover:bg-white/80 dark:hover:bg-black/60 ring-1 ring-white/20 dark:ring-white/10">
             <Link href="/products">
               View All Products
               <ArrowRight className="ml-2 h-4 w-4" />
@@ -182,14 +183,37 @@ export function ProductsCarousel({ products: initialProducts }: ProductsCarousel
                   <Card className="group overflow-hidden hover:shadow-luxury-lg transition-all duration-300 border-luxury h-full flex flex-col">
                     <Link href={`/products/${product.slug || product.id}`}>
                       <div className="aspect-square relative overflow-hidden bg-muted">
-                        {product.featured && (
-                          <Badge
-                            variant="luxury"
-                            className="absolute top-2 left-2 z-10 text-[10px] px-1.5 py-0.5"
-                          >
-                            Featured
-                          </Badge>
-                        )}
+                        {/* Badges Container - Top Left */}
+                        <div className="absolute top-2 left-2 z-10 flex flex-col gap-1">
+                          {product.featured && (
+                            <Badge
+                              variant="luxury"
+                              className="text-[10px] px-1.5 py-0.5"
+                            >
+                              Featured
+                            </Badge>
+                          )}
+                          {product.in_stock && (
+                            <Badge
+                              variant="default"
+                              className="text-[10px] px-1.5 py-0.5 bg-green-600 hover:bg-green-700 border-green-700"
+                            >
+                              In Stock
+                            </Badge>
+                          )}
+                        </div>
+                        
+                        {/* Badges Container - Top Right */}
+                        <div className="absolute top-2 right-2 z-10 flex flex-col gap-1">
+                          {product.is_imported && (
+                            <Badge
+                              variant="outline"
+                              className="text-[10px] px-1.5 py-0.5 bg-blue-600/90 text-white border-blue-700 hover:bg-blue-700"
+                            >
+                              Imported
+                            </Badge>
+                          )}
+                        </div>
                         {product.featured_image ? (
                           <Image
                             src={product.featured_image}
