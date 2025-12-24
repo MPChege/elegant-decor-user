@@ -26,7 +26,7 @@ const consultationTypes = [
   {
     id: 'onsite-nairobi',
     title: 'On-Site Consultation (Nairobi)',
-    duration: '90 minutes',
+    duration: '60 minutes',
     description: 'Consultation at your location within Nairobi. We come to you for a detailed site assessment.',
     price: 'KSh 5,000',
     location: 'nairobi',
@@ -35,7 +35,7 @@ const consultationTypes = [
   {
     id: 'onsite-out-of-town',
     title: 'On-Site Consultation (Out of Town)',
-    duration: '90 minutes',
+    duration: '60 minutes',
     description: 'Consultation at your location outside Nairobi. Pricing depends on distance and mileage.',
     price: 'Based on Distance',
     location: 'out-of-town',
@@ -224,10 +224,6 @@ export default function ConsultationPage() {
                       )}
                     </div>
                     <div className="flex items-center gap-4 text-sm">
-                      <div className="flex items-center gap-1 text-muted-foreground">
-                        <Clock className="h-4 w-4" />
-                        {type.duration}
-                      </div>
                       <Badge variant={type.price === 'Free' ? 'luxury' : 'outline'}>
                         {type.price}
                       </Badge>
@@ -270,7 +266,7 @@ export default function ConsultationPage() {
                   </CardTitle>
                   {selectedConsultation && (
                     <p className="text-muted-foreground font-medium mt-2">
-                      {selectedConsultation.title} - {selectedConsultation.duration}
+                      {selectedConsultation.title}
                     </p>
                   )}
                 </CardHeader>
@@ -399,41 +395,36 @@ export default function ConsultationPage() {
                           required
                         />
                         <p className="text-xs text-muted-foreground">
-                          We'll calculate the consultation fee based on distance and mileage. Our team will contact you with the exact pricing after receiving your booking.
+                          We&apos;ll calculate the consultation fee based on distance and mileage. Our team will contact you with the exact pricing after receiving your booking.
                         </p>
                       </div>
                     )}
 
                     {/* Pricing Display */}
-                    <div className="p-4 rounded-lg bg-primary/5 border border-primary/20">
-                      <div className="flex items-center justify-between">
-                        <span className="text-sm font-medium">Consultation Fee:</span>
-                        <span className="text-lg font-bold text-primary">
-                          {selectedType === 'studio' 
-                            ? 'Free' 
-                            : selectedType === 'onsite-nairobi'
-                            ? 'KSh 5,000'
-                            : formData.distance
-                            ? 'To be calculated'
-                            : 'Based on Distance'}
-                        </span>
+                    {selectedType !== 'studio' && (
+                      <div className="p-4 rounded-lg bg-primary/5 border border-primary/20">
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm font-medium">Consultation Fee:</span>
+                          <span className="text-lg font-bold text-primary">
+                            {selectedType === 'onsite-nairobi'
+                              ? 'KSh 5,000'
+                              : formData.distance
+                              ? 'To be calculated'
+                              : 'Based on Distance'}
+                          </span>
+                        </div>
+                        {selectedType === 'onsite-nairobi' && (
+                          <p className="text-xs text-muted-foreground mt-1">
+                            Fixed rate for consultations within Nairobi
+                          </p>
+                        )}
+                        {selectedType === 'onsite-out-of-town' && (
+                          <p className="text-xs text-muted-foreground mt-1">
+                            Pricing will be calculated based on distance and mileage
+                          </p>
+                        )}
                       </div>
-                      {selectedType === 'studio' && (
-                        <p className="text-xs text-muted-foreground mt-1">
-                          Free consultation at our studio
-                        </p>
-                      )}
-                      {selectedType === 'onsite-nairobi' && (
-                        <p className="text-xs text-muted-foreground mt-1">
-                          Fixed rate for consultations within Nairobi
-                        </p>
-                      )}
-                      {selectedType === 'onsite-out-of-town' && (
-                        <p className="text-xs text-muted-foreground mt-1">
-                          Pricing will be calculated based on distance and mileage
-                        </p>
-                      )}
-                    </div>
+                    )}
 
                     {/* Project Details */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -459,9 +450,11 @@ export default function ConsultationPage() {
                         <Input
                           id="budget"
                           name="budget"
+                          type="number"
                           value={formData.budget}
                           onChange={handleChange}
-                          placeholder="KSh 500,000 - 1,000,000"
+                          placeholder="0"
+                          min="0"
                         />
                         <p className="text-xs text-muted-foreground">
                           Note: Design fees start from KSh 150,000 depending on project size
@@ -542,7 +535,7 @@ export default function ConsultationPage() {
                     <span className="font-semibold text-primary">Based on Distance</span>
                   </div>
                   <p className="text-xs text-muted-foreground mt-2">
-                    Out-of-town consultations are priced based on distance and mileage. We'll provide a quote after receiving your location details.
+                    Out-of-town consultations are priced based on distance and mileage. We&apos;ll provide a quote after receiving your location details.
                   </p>
                 </CardContent>
               </Card>

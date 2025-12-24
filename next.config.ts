@@ -22,8 +22,9 @@ const nextConfig: NextConfig = {
         pathname: '/storage/v1/object/public/**',
       },
     ],
-    // Disable optimization for external images in development to avoid timeouts
-    unoptimized: process.env.NODE_ENV === 'development',
+    // Disable optimization for cPanel deployment to avoid 500 errors
+    // Image optimization requires write permissions that may not be available on cPanel
+    unoptimized: true,
   },
   // Performance optimizations
   experimental: {

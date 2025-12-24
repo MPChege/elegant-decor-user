@@ -112,9 +112,10 @@ export function ProjectsCarousel({ projects }: ProjectsCarouselProps) {
                         src={imageSrc}
                         alt={project.title}
                         fill
-                        sizes="(min-width: 768px) 384px, 320px"
+                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 384px"
                         className="object-cover group-hover:scale-110 transition-transform duration-700"
-                        quality={95}
+                        quality={85}
+                        loading="lazy"
                         onError={(e) => {
                           // Fallback to placeholder if image fails to load
                           const target = e.target as HTMLImageElement

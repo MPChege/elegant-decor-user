@@ -111,7 +111,7 @@ const signatureSpaces = [
     image: '/BATHROOMS/bathroom_2%20-%20Photo.png',
   },
   {
-    title: 'Curated Bedrooms',
+    title: 'Created Bedrooms',
     description: 'Layered textures and couture built-ins for restful suites.',
     image: '/BEDROOMS/GUEST%20BEDROOM_2%20-%20Photo.png',
   },
@@ -220,11 +220,6 @@ function AutoScrollSpaces({ spaces }: { spaces: typeof signatureSpaces }) {
                   {space.title}
                 </div>
               </div>
-              <CardContent className="flex-1 flex items-center justify-center px-4 py-4 text-center">
-                <p className="text-xs md:text-sm text-muted-foreground leading-relaxed text-balance">
-                  {space.description}
-                </p>
-              </CardContent>
             </Card>
           </div>
         ))}
@@ -488,7 +483,7 @@ export function HomePageClient({ projects, products }: HomePageClientProps) {
           <ScrollAnimate>
             <div className="text-center mb-8">
               <h2 className="font-playfair text-3xl md:text-4xl font-bold mb-3">
-                Spaces We Curate
+                Spaces We Created
               </h2>
               <p className="text-base text-muted-foreground max-w-2xl mx-auto">
                 A glimpse into the bathrooms, bedrooms, foyers, kitchens, and beyond that define Elegant Tiles & Décor.

@@ -163,6 +163,7 @@ export default async function WorkDetailPage({ params }: WorkDetailPageProps) {
             fill
             priority
             sizes="100vw"
+            quality={90}
             className="object-cover absolute inset-0 -z-10"
           />
         )}

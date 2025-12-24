@@ -32,8 +32,11 @@ export const metadata: Metadata = {
     'interior design, luxury tiles, décor, custom design, elegant interiors, Kenya',
   authors: [{ name: 'Elegant Tiles & Décor Centre Ltd' }],
   icons: {
-    icon: '/etd_logo-removebg-preview.png',
-    apple: '/etd_logo-removebg-preview.png',
+    icon: [
+      { url: '/favicon.ico', sizes: '32x32', type: 'image/x-icon' },
+      { url: '/icon.png', sizes: '192x192', type: 'image/png' },
+    ],
+    apple: '/apple-icon.png',
   },
   openGraph: {
     type: 'website',
@@ -82,11 +85,12 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning className="light">
       <head>
-        <link rel="icon" href="/etd_logo-removebg-preview.png" type="image/png" sizes="any" />
-        <link rel="apple-touch-icon" href="/etd_logo-removebg-preview.png" />
+        <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+        <link rel="icon" href="/icon.png" type="image/png" sizes="192x192" />
+        <link rel="apple-touch-icon" href="/apple-icon.png" />
         <link rel="manifest" href="/manifest.json" />
         <meta name="theme-color" content="#ffffff" />
-        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, viewport-fit=cover" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
         <meta name="format-detection" content="telephone=no" />
