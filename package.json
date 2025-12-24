@@ -6,6 +6,12 @@
     "dev": "next dev",
     "build": "next build",
     "start": "node server.js",
+    "build:deploy": "node scripts/build-deploy.js",
+    "build:deploy:optimized": "node scripts/build-deploy-optimized.js",
+    "build:deploy:minimal": "node scripts/build-deploy-minimal.js",
+    "build:deploy:balanced": "node scripts/build-deploy-balanced.js",
+    "build:deploy:750mb": "node scripts/build-deploy-750mb.js",
+    "build:deploy:minimal": "node scripts/build-deploy-minimal.js",
     "lint": "next lint",
     "type-check": "tsc --noEmit"
   },
