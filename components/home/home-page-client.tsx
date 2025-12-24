@@ -108,12 +108,12 @@ const signatureSpaces = [
   {
     title: 'Sanctuary Bathrooms',
     description: 'Marble-clad oases with bespoke vanities and warm lighting.',
-    image: '/BATHROOMS/bathroom_2%20-%20Photo.png',
+    image: '/BATHROOMS/mbath_1%20-%20Photo.png',
   },
   {
     title: 'Created Bedrooms',
     description: 'Layered textures and couture built-ins for restful suites.',
-    image: '/BEDROOMS/GUEST%20BEDROOM_2%20-%20Photo.png',
+    image: '/BEDROOMS/MASTER%20BED_2%20-%20Photo.png',
   },
   {
     title: 'Statement Foyers',
@@ -123,12 +123,12 @@ const signatureSpaces = [
   {
     title: 'Refined Dining',
     description: 'Tailored for conversation, from bespoke banquettes to wine walls.',
-    image: '/KITCHEN%20and%20DINING/KITCHEN_8%20-%20Photo.png',
+    image: '/KITCHEN%20and%20DINING/pano_2%20-%20Photo.png',
   },
   {
     title: 'Corporate Luxury',
     description: 'Lehigh reception concepts that merge hospitality and brand.',
-    image: '/LEHIGH/RECEPTION%20FINAL_7%20-%20Photo.png',
+    image: '/LEHIGH/RECEPTION%20FINAL_1%20-%20Photo.png',
   },
   {
     title: 'Executive Offices',
@@ -206,21 +206,23 @@ function AutoScrollSpaces({ spaces }: { spaces: typeof signatureSpaces }) {
         {/* Render spaces twice for seamless loop */}
         {[...spaces, ...spaces].map((space, index) => (
           <div key={`${space.title}-${index}`} className="flex-shrink-0 w-64 md:w-72">
-            <Card className="border-0 shadow-lg hover:shadow-luxury-lg transition-all duration-500 group h-full flex flex-col overflow-hidden rounded-2xl">
-              <div className="relative aspect-[4/3]">
-                <Image
-                  src={space.image}
-                  alt={space.title}
-                  fill
-                  sizes="(min-width: 768px) 288px, 256px"
-                  className="object-cover group-hover:scale-105 transition-transform duration-700"
-                />
-                <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-black/60" />
-                <div className="absolute bottom-3 left-3 text-white font-playfair text-lg md:text-xl">
-                  {space.title}
+            <Link href="/work" className="block h-full">
+              <Card className="border-0 shadow-lg hover:shadow-luxury-lg transition-all duration-500 group h-full flex flex-col overflow-hidden rounded-2xl cursor-pointer">
+                <div className="relative aspect-[4/3]">
+                  <Image
+                    src={space.image}
+                    alt={space.title}
+                    fill
+                    sizes="(min-width: 768px) 288px, 256px"
+                    className="object-cover group-hover:scale-105 transition-transform duration-700"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-black/60" />
+                  <div className="absolute bottom-3 left-3 text-white font-playfair text-lg md:text-xl">
+                    {space.title}
+                  </div>
                 </div>
-              </div>
-            </Card>
+              </Card>
+            </Link>
           </div>
         ))}
       </div>

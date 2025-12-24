@@ -61,6 +61,7 @@ const values = [
 
 export default function AboutPage() {
   const [imageError, setImageError] = React.useState(false)
+  const [imageError2, setImageError2] = React.useState(false)
 
   return (
     <LuxuryLayout>
@@ -173,23 +174,22 @@ export default function AboutPage() {
             </h2>
           </ScrollAnimate>
 
-          <div className="max-w-5xl mx-auto">
-            <div className="flex justify-center">
+          <div className="max-w-6xl mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-16">
               {/* Mrs. Agnes Irungu */}
-              <ScrollAnimate direction="up" className="text-center max-w-2xl">
+              <ScrollAnimate direction="up" className="text-center">
                 <div className="mb-6">
                   <div className="w-48 h-48 md:w-56 md:h-56 rounded-full overflow-hidden mx-auto mb-6 shadow-luxury-lg border-4 border-primary/20 relative bg-primary/10">
                     {!imageError ? (
                       <div className="absolute inset-0 w-full h-full">
                         <Image
                           src="/team/agnes-irungu.jpg"
-                          alt="Mrs. Agnes Irungu - MD & Founder"
+                          alt="Mrs. Agnes Irungu - Managing Director"
                           fill
                           sizes="(min-width: 768px) 224px, 192px"
                           className="object-cover rounded-full"
                           style={{ 
-                            objectPosition: '50% 30%',
-                            transform: 'scale(1.1)'
+                            objectPosition: '50% 25%'
                           }}
                           priority
                           onError={() => setImageError(true)}
@@ -205,17 +205,53 @@ export default function AboutPage() {
                     Mrs. Agnes Irungu
                   </h3>
                   <p className="text-xl text-primary font-semibold mb-4">
-                    MD & Founder
-                  </p>
-                  <p className="text-lg text-muted-foreground mb-6">
-                    Managing Director of Elegant Tiles & Décor Centre Limited.
+                    Managing Director of Elegant Tiles & founder
                   </p>
                   <div className="space-y-3 text-left max-w-xl mx-auto">
                     <p className="text-muted-foreground">
                       Over 20 years experience in administration, procurement and logistics
                     </p>
                     <p className="text-muted-foreground">
-                      Deep passion in construction, home design, décor and landscaping
+                      Deep passion for construction, home design, décor and landscaping
+                    </p>
+                  </div>
+                </div>
+              </ScrollAnimate>
+
+              {/* Dr. Vivian Shabaan */}
+              <ScrollAnimate direction="up" delay={0.2} className="text-center">
+                <div className="mb-6">
+                  <div className="w-48 h-48 md:w-56 md:h-56 rounded-full overflow-hidden mx-auto mb-6 shadow-luxury-lg border-4 border-primary/20 relative bg-primary/10">
+                    {!imageError2 ? (
+                      <div className="absolute inset-0 w-full h-full">
+                        <Image
+                          src="/team/vivian-shabaan.jpg"
+                          alt="Dr. Vivian Shabaan - Director"
+                          fill
+                          sizes="(min-width: 768px) 224px, 192px"
+                          className="object-cover rounded-full"
+                          style={{ 
+                            objectPosition: '50% 25%'
+                          }}
+                          priority
+                          onError={() => setImageError2(true)}
+                        />
+                      </div>
+                    ) : (
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <Users className="h-24 w-24 text-primary" />
+                      </div>
+                    )}
+                  </div>
+                  <h3 className="font-playfair text-3xl font-bold mb-2">
+                    Dr. Vivian Shabaan
+                  </h3>
+                  <p className="text-xl text-primary font-semibold mb-4">
+                    Director
+                  </p>
+                  <div className="space-y-3 text-left max-w-xl mx-auto">
+                    <p className="text-muted-foreground italic">
+                      My passion is transforming homes through resourceful projects, proving that stunning interior design is always within reach with a little creativity as you Do It Yourself! I am a DIY enthusiast!
                     </p>
                   </div>
                 </div>

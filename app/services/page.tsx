@@ -165,7 +165,7 @@ const process = [
   {
     step: '03',
     title: 'Selection',
-    description: 'Choose from our curated selection of premium materials.',
+    description: 'Choose from our created selection of premium materials.',
   },
   {
     step: '04',
